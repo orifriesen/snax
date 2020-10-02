@@ -8,7 +8,7 @@
             "name": "snax",
             "request": "launch",
             "type": "dart",
-            "program": "lib/homePage/homePage.dart"
+            "program": "lib/main.dart"
         }
     ]
 }

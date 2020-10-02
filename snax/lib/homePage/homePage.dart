@@ -2,10 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:snax/homePage/specificSnack.dart';
 import 'snackList.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
