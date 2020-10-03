@@ -3,7 +3,7 @@ import 'package:snax/homePage/snackList.dart';
 
 class ProductPage extends StatelessWidget {
   ProductPage({Key key, this.item}) : super(key: key);
-  final SnackList item;
+  final TrendingSnackList item;
 
   @override
   Widget build(BuildContext context) {

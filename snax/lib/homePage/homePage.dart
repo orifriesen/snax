@@ -39,52 +39,63 @@ class _MainPageState extends State<MainPage> {
   }
 }
 
+class TrendingList extends StatefulWidget {
+  @override
+  _TrendingListState createState() => _TrendingListState();
+}
+
+class _TrendingListState extends State<TrendingList> {
+  final items = TrendingSnackList.getProducts();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: items.length,
+      itemBuilder: (context, index) {
+        return GestureDetector(
+            child: TrendingSnackItem(item: items[index]),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ProductPage(item: items[index])));
+            });
+      },
+    );
+  }
+}
+
 Widget getTabBarPages() {
-  final items = SnackList.getProducts();
   return TabBarView(
-    children: [
-      ListView.builder(
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          return GestureDetector(
-              child: SnackItem(item: items[index]),
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ProductPage(item: items[index])));
-              });
-        },
-      ),
-      ListView.builder(
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          return GestureDetector(
-              child: SnackItem(item: items[index]),
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ProductPage(item: items[index])));
-              });
-        },
-      ),
-    ],
+    children: [TrendingList(), TrendingList()],
   );
 }
 
-class SnackItem extends StatelessWidget {
-  SnackItem({Key key, this.item}) : super(key: key);
-  final SnackList item;
+class TrendingSnackItem extends StatelessWidget {
+  TrendingSnackItem({Key key, this.item}) : super(key: key);
+  final TrendingSnackList item;
 
   Widget build(BuildContext context) {
     return Container(
         padding: EdgeInsets.all(2),
-        height: 140,
+        height: 100,
         child: Card(
             child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
+            Container(
+              padding: EdgeInsets.fromLTRB(24, 6, 6, 6),
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20.0),
+                  child: Container(
+                    child: Align(
+                        alignment: Alignment.center,
+                        widthFactor: .66,
+                        heightFactor: 1.0,
+                        child: Image.asset("assets/" + this.item.image,
+                            width: 75, height: 75)),
+                  )),
+            ),
             Expanded(
                 child: Container(
                     padding: EdgeInsets.all(5),

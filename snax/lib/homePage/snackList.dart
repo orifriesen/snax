@@ -1,16 +1,17 @@
-class SnackList {
+class TrendingSnackList {
   final String name;
+  final String image;
 
-  SnackList(this.name);
+  TrendingSnackList(this.name, this.image);
 
-  static List<SnackList> getProducts() {
-    List<SnackList> items = <SnackList>[];
+  static List<TrendingSnackList> getProducts() {
+    List<TrendingSnackList> items = <TrendingSnackList>[];
 
-    items.add(SnackList("Cheetos"));
-    items.add(SnackList("Cheez-It"));
-    items.add(SnackList("Goldfish"));
-    items.add(SnackList("OREO"));
-    items.add(SnackList("Gardetto's"));
+    items.add(TrendingSnackList("Cheetos", "placeholderImage.jpg"));
+    items.add(TrendingSnackList("Cheez-It", "placeholderImage.jpg"));
+    items.add(TrendingSnackList("Goldfish", "placeholderImage.jpg"));
+    items.add(TrendingSnackList("OREO", "placeholderImage.jpg"));
+    items.add(TrendingSnackList("Gardetto's", "placeholderImage.jpg"));
     return items;
   }
 }
