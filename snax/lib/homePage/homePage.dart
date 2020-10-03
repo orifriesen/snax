@@ -84,9 +84,9 @@ class TrendingSnackItem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Container(
-              padding: EdgeInsets.fromLTRB(24, 6, 6, 6),
+              padding: EdgeInsets.fromLTRB(48, 12, 24, 12),
               child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20.0),
+                  borderRadius: BorderRadius.circular(15.0),
                   child: Container(
                     child: Align(
                         alignment: Alignment.center,
@@ -98,12 +98,18 @@ class TrendingSnackItem extends StatelessWidget {
             ),
             Expanded(
                 child: Container(
-                    padding: EdgeInsets.all(5),
+                    padding: EdgeInsets.fromLTRB(0, 16, 12, 12),
                     child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(this.item.name,
-                              style: TextStyle(fontWeight: FontWeight.bold)),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500, fontSize: 16)),
+                          Text(this.item.categories),
+                          Text(this.item.rating.toString() + " \u2606",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w400, fontSize: 16))
                         ])))
           ],
         )));
