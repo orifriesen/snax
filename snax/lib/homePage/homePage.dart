@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:snax/homePage/searchBar.dart';
 import 'package:snax/homePage/specificSnack.dart';
 import 'snackList.dart';
 
@@ -6,21 +7,35 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        home: DefaultTabController(
-      length: 2,
-      child: Scaffold(
-          appBar: AppBar(
-            bottom: TabBar(
-              tabs: [Tab(text: "Trending"), Tab(text: "Top")],
-            ),
-            title: Text("Snax"),
-            actions: <Widget>[
-              IconButton(icon: const Icon(Icons.search), onPressed: () {})
-            ],
-            centerTitle: true,
+        home: DefaultTabController(length: 2, child: MainPage()));
+  }
+}
+
+class MainPage extends StatefulWidget {
+  @override
+  _MainPageState createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          bottom: TabBar(
+            tabs: [Tab(text: "Trending"), Tab(text: "Top")],
           ),
-          body: getTabBarPages()),
-    ));
+          title: Text("SNAX"),
+          actions: <Widget>[
+            IconButton(
+                icon: const Icon(Icons.search),
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => SnackSearch()));
+                })
+          ],
+          centerTitle: true,
+        ),
+        body: getTabBarPages());
   }
 }
 
