@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smooth_star_rating/smooth_star_rating.dart';
 import 'package:snax/homePage/searchBar.dart';
 import 'package:snax/homePage/specificSnack.dart';
 import 'snackList.dart';
@@ -106,10 +107,24 @@ class TrendingSnackItem extends StatelessWidget {
                           Text(this.item.name,
                               style: TextStyle(
                                   fontWeight: FontWeight.w500, fontSize: 16)),
-                          Text(this.item.categories),
-                          Text(this.item.rating.toString() + " \u2606",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w400, fontSize: 16))
+                          Text(this.item.categories,
+                              style: TextStyle(fontWeight: FontWeight.w300)),
+                          Row(children: <Widget>[
+                            Text(this.item.rating.toStringAsFixed(1) + " ",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w400, fontSize: 16)),
+                            SmoothStarRating(
+                                allowHalfRating: true,
+                                starCount: 5,
+                                rating: this.item.rating,
+                                size: 20.0,
+                                isReadOnly: true,
+                                filledIconData: Icons.star,
+                                halfFilledIconData: Icons.star_half,
+                                color: Colors.amber,
+                                borderColor: Colors.amber,
+                                spacing: 0.0)
+                          ])
                         ])))
           ],
         )));
