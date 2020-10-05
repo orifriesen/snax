@@ -4,14 +4,6 @@ import 'package:snax/homePage/searchBar.dart';
 import 'package:snax/homePage/specificSnack.dart';
 import 'snackList.dart';
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-        home: DefaultTabController(length: 2, child: MainPage()));
-  }
-}
-
 class MainPage extends StatefulWidget {
   @override
   _MainPageState createState() => _MainPageState();
