@@ -23,6 +23,7 @@ environment:
 dependencies:
   flappy_search_bar: 1.7.2
   smooth_star_rating: 1.1.1
+  number_display: 2.3.0
   flutter:
     sdk: flutter
 

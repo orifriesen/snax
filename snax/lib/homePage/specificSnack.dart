@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:number_display/number_display.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 import 'package:snax/homePage/searchBar.dart';
 import 'package:snax/homePage/snackList.dart';
@@ -9,6 +10,8 @@ class ProductPage extends StatelessWidget {
   final TrendingSnackList item;
 
   final items = TrendingSnackList.getProducts();
+
+  final display = createDisplay(placeholder: '--');
 
   @override
   Widget build(BuildContext context) {
@@ -66,16 +69,28 @@ class ProductPage extends StatelessWidget {
                   ],
                 )),
             Container(
+                padding: EdgeInsets.fromLTRB(32, 16, 0, 0),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Text("Ratings ",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20)),
+                      Icon(Icons.info_outline, size: 20, color: Colors.grey)
+                    ])),
+            Container(
                 padding: EdgeInsets.all(8),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text("Overall Rating:  ",
+                      Text("Overall:  ",
                           style: TextStyle(
-                              fontWeight: FontWeight.w400, fontSize: 16)),
+                              fontWeight: FontWeight.w500,
+                              fontSize: 20,
+                              color: Colors.grey[600])),
                       Text(this.item.rating.toStringAsFixed(1) + " ",
                           style: TextStyle(
-                              fontWeight: FontWeight.w400, fontSize: 24)),
+                              fontWeight: FontWeight.w400, fontSize: 36)),
                       SmoothStarRating(
                           allowHalfRating: true,
                           starCount: 5,
@@ -88,8 +103,249 @@ class ProductPage extends StatelessWidget {
                           borderColor: Colors.amber,
                           spacing: 0.0)
                     ])),
-            Text(this.item.totalRatings.toString() + " Total Ratings",
-                style: TextStyle(fontWeight: FontWeight.w300, fontSize: 14)),
+            Text(display(this.item.totalRatings) + " Total Ratings",
+                style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 18,
+                    color: Colors.grey[600])),
+            Container(
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                            padding: EdgeInsets.all(8),
+                            child: Column(children: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  Text("Sweetness:  ",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16,
+                                          color: Colors.grey[600])),
+                                  Text(
+                                      this.item.sweetness.toStringAsFixed(1) +
+                                          " ",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 20)),
+                                ],
+                              ),
+                              SmoothStarRating(
+                                  allowHalfRating: true,
+                                  starCount: 5,
+                                  rating: this.item.sweetness,
+                                  size: 16,
+                                  isReadOnly: true,
+                                  filledIconData: Icons.star,
+                                  halfFilledIconData: Icons.star_half,
+                                  color: Colors.amber,
+                                  borderColor: Colors.amber,
+                                  spacing: 0.0)
+                            ])),
+                        Container(
+                            padding: EdgeInsets.all(8),
+                            child: Column(children: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  Text("Sourness:  ",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16,
+                                          color: Colors.grey[600])),
+                                  Text(
+                                      this.item.sourness.toStringAsFixed(1) +
+                                          " ",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 20)),
+                                ],
+                              ),
+                              SmoothStarRating(
+                                  allowHalfRating: true,
+                                  starCount: 5,
+                                  rating: this.item.sourness,
+                                  size: 16,
+                                  isReadOnly: true,
+                                  filledIconData: Icons.star,
+                                  halfFilledIconData: Icons.star_half,
+                                  color: Colors.amber,
+                                  borderColor: Colors.amber,
+                                  spacing: 0.0)
+                            ])),
+                        Container(
+                            padding: EdgeInsets.all(8),
+                            child: Column(children: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  Text("Saltiness:  ",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16,
+                                          color: Colors.grey[600])),
+                                  Text(
+                                      this.item.saltiness.toStringAsFixed(1) +
+                                          " ",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 20)),
+                                ],
+                              ),
+                              SmoothStarRating(
+                                  allowHalfRating: true,
+                                  starCount: 5,
+                                  rating: this.item.saltiness,
+                                  size: 16,
+                                  isReadOnly: true,
+                                  filledIconData: Icons.star,
+                                  halfFilledIconData: Icons.star_half,
+                                  color: Colors.amber,
+                                  borderColor: Colors.amber,
+                                  spacing: 0.0)
+                            ])),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                            padding: EdgeInsets.all(8),
+                            child: Column(children: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  Text("Spiciness:  ",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16,
+                                          color: Colors.grey[600])),
+                                  Text(
+                                      this.item.spiciness.toStringAsFixed(1) +
+                                          " ",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 20)),
+                                ],
+                              ),
+                              SmoothStarRating(
+                                  allowHalfRating: true,
+                                  starCount: 5,
+                                  rating: this.item.spiciness,
+                                  size: 16,
+                                  isReadOnly: true,
+                                  filledIconData: Icons.star,
+                                  halfFilledIconData: Icons.star_half,
+                                  color: Colors.amber,
+                                  borderColor: Colors.amber,
+                                  spacing: 0.0)
+                            ])),
+                        Container(
+                            padding: EdgeInsets.all(8),
+                            child: Column(children: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  Text("Mouthfeel:  ",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16,
+                                          color: Colors.grey[600])),
+                                  Text(
+                                      this.item.mouthfeel.toStringAsFixed(1) +
+                                          " ",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 20)),
+                                ],
+                              ),
+                              SmoothStarRating(
+                                  allowHalfRating: true,
+                                  starCount: 5,
+                                  rating: this.item.mouthfeel,
+                                  size: 16,
+                                  isReadOnly: true,
+                                  filledIconData: Icons.star,
+                                  halfFilledIconData: Icons.star_half,
+                                  color: Colors.amber,
+                                  borderColor: Colors.amber,
+                                  spacing: 0.0)
+                            ])),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                            padding: EdgeInsets.all(8),
+                            child: Column(children: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  Text("Accessibility:  ",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16,
+                                          color: Colors.grey[600])),
+                                  Text(
+                                      this
+                                              .item
+                                              .accessibility
+                                              .toStringAsFixed(1) +
+                                          " ",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 20)),
+                                ],
+                              ),
+                              SmoothStarRating(
+                                  allowHalfRating: true,
+                                  starCount: 5,
+                                  rating: this.item.accessibility,
+                                  size: 16,
+                                  isReadOnly: true,
+                                  filledIconData: Icons.star,
+                                  halfFilledIconData: Icons.star_half,
+                                  color: Colors.amber,
+                                  borderColor: Colors.amber,
+                                  spacing: 0.0)
+                            ])),
+                        Container(
+                            padding: EdgeInsets.all(8),
+                            child: Column(children: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  Text("Snackability:  ",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16,
+                                          color: Colors.grey[600])),
+                                  Text(
+                                      this
+                                              .item
+                                              .snackability
+                                              .toStringAsFixed(1) +
+                                          " ",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 20)),
+                                ],
+                              ),
+                              SmoothStarRating(
+                                  allowHalfRating: true,
+                                  starCount: 5,
+                                  rating: this.item.snackability,
+                                  size: 16,
+                                  isReadOnly: true,
+                                  filledIconData: Icons.star,
+                                  halfFilledIconData: Icons.star_half,
+                                  color: Colors.amber,
+                                  borderColor: Colors.amber,
+                                  spacing: 0.0)
+                            ])),
+                      ],
+                    )
+                  ],
+                ))
           ],
         ));
   }
