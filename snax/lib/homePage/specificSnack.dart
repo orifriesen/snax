@@ -124,7 +124,7 @@ class ProductPage extends StatelessWidget {
                                   Text("Sweetness:  ",
                                       style: TextStyle(
                                           fontWeight: FontWeight.w500,
-                                          fontSize: 16,
+                                          fontSize: 11,
                                           color: Colors.grey[600])),
                                   Text(
                                       this.item.sweetness.toStringAsFixed(1) +
@@ -154,7 +154,7 @@ class ProductPage extends StatelessWidget {
                                   Text("Sourness:  ",
                                       style: TextStyle(
                                           fontWeight: FontWeight.w500,
-                                          fontSize: 16,
+                                          fontSize: 11,
                                           color: Colors.grey[600])),
                                   Text(
                                       this.item.sourness.toStringAsFixed(1) +
@@ -184,7 +184,7 @@ class ProductPage extends StatelessWidget {
                                   Text("Saltiness:  ",
                                       style: TextStyle(
                                           fontWeight: FontWeight.w500,
-                                          fontSize: 16,
+                                          fontSize: 11,
                                           color: Colors.grey[600])),
                                   Text(
                                       this.item.saltiness.toStringAsFixed(1) +
