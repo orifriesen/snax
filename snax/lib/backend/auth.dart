@@ -69,7 +69,7 @@ Future<OAuthCredential> _createAppleOAuthCred() async {
           webAuthenticationOptions: WebAuthenticationOptions(
             redirectUri: Uri.parse(
                 'https://snax-dde4e.firebaseapp.com/__/auth/handler'),
-            clientId: 'your.app.bundle.name',
+            clientId: 'us.eschr.snax',
           ),
           nonce: sha256.convert(utf8.encode(nonce)).toString(),
         );

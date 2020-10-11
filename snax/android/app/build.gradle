@@ -41,7 +41,7 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "us.eschr.snax"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 28
         multiDexEnabled true
         versionCode flutterVersionCode.toInteger()
@@ -63,4 +63,7 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    // Fix for Duplicate Class Error
+    implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
+    //SOMEHOW THIS ACTUALLY WORKED IT TOOK SO LONG TO FIND https://stackoverflow.com/a/63711606/8359727
 }
