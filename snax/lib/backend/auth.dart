@@ -5,6 +5,11 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:crypto/crypto.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:snax/backend/backend.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+// written by escher
+
 
 
 // Google Sign in
@@ -67,17 +72,18 @@ Future<OAuthCredential> _createAppleOAuthCred() async {
             AppleIDAuthorizationScopes.fullName,
           ],
           webAuthenticationOptions: WebAuthenticationOptions(
-            redirectUri: Uri.parse(
-                'https://snax-dde4e.firebaseapp.com/__/auth/handler'),
-            clientId: 'us.eschr.snax',
+            redirectUri:
+                Uri.parse('https://snax-dde4e.firebaseapp.com/__/auth/handler'),
+            clientId: 'us.eschr.snax.service',
           ),
           nonce: sha256.convert(utf8.encode(nonce)).toString(),
         );
 
   return new OAuthCredential(
     providerId: "apple.com", // MUST be "apple.com"
-    signInMethod: "oauth",   // MUST be "oauth"
-    accessToken: nativeAppleCred.identityToken, // propagate Apple ID token to BOTH accessToken and idToken parameters
+    signInMethod: "oauth", // MUST be "oauth"
+    accessToken: nativeAppleCred
+        .identityToken, // propagate Apple ID token to BOTH accessToken and idToken parameters
     idToken: nativeAppleCred.identityToken,
     rawNonce: nonce,
   );

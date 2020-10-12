@@ -1,9 +1,26 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:snax/backend/auth.dart';
 import 'package:snax/backend/backend.dart';
 
+/*
+  Login Page
+
+  Note: 
+  Sign in with Apple is disabled on Android due to complications with the callback. 
+  Google Login works on both platforms.
+*/
+
+class LoginPageArguments {
+  final Function handler;
+
+  LoginPageArguments(this.handler);
+}
+
 class LoginPage extends StatefulWidget {
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -11,6 +28,9 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
+    //Get the args, which includes the handler function
+    final LoginPageArguments args = ModalRoute.of(context).settings.arguments;
+
     return Scaffold(
         appBar: AppBar(title: Text("Login")),
         body: Container(
@@ -39,10 +59,10 @@ class _LoginPageState extends State<LoginPage> {
                   alignment: Alignment.center,
                 )),
                 Container(
-                    height: 200,
+                    height: Platform.isIOS ? 200 : 145,
                     width: double.infinity,
                     child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 130, 16, 32),
+                      padding: EdgeInsets.fromLTRB(16, Platform.isIOS ? 130 : 65, 16, 32),
                       child: Text(
                         "An account is required to post reviews and make comments on the feed",
                         textAlign: TextAlign.center,
@@ -53,37 +73,40 @@ class _LoginPageState extends State<LoginPage> {
             Padding(
               padding: const EdgeInsets.only(bottom: 100.0),
               child: Flex(
-                direction: Axis.vertical,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                SignInButton(
-                    iconName: "icon-google.png",
-                    buttonColor: Colors.red,
-                    title: "Log In with Google",
-                    press: () async {
-                      try {
-                        await signInWithGoogle();
-                        Navigator.of(context).pop();
-                      } catch (error) {
-                        print("Failed to login (google)");
-                        print(error);
-                      }
-                    }),
-                    Padding(padding: EdgeInsets.only(bottom: 16),),
-                SignInButton(
-                    iconName: "icon-apple.png",
-                    buttonColor: Colors.black87,
-                    title: "Log In with Apple",
-                    press: () async {
-                      try {
-                        await signInWithApple();
-                        Navigator.of(context).pop();
-                      } catch (error) {
-                        print("Failed to login (apple)");
-                        print(error);
-                      }
-                    }),
-              ]),
+                  direction: Axis.vertical,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    SignInButton(
+                        iconName: "icon-google.png",
+                        buttonColor: Colors.red,
+                        title: "Log In with Google",
+                        press: () async {
+                          try {
+                            await signInWithGoogle();
+                            Navigator.of(context).pop();
+                          } catch (error) {
+                            print("Failed to login (google)");
+                            print(error);
+                          }
+                        }),
+                    Padding(
+                      padding: EdgeInsets.only(bottom: 16),
+                    ),
+                    if (Platform.isIOS)
+                      SignInButton(
+                          iconName: "icon-apple.png",
+                          buttonColor: Colors.black87,
+                          title: "Log In with Apple",
+                          press: () async {
+                            try {
+                              await signInWithApple();
+                              Navigator.of(context).pop();
+                            } catch (error) {
+                              print("Failed to login (apple)");
+                              print(error);
+                            }
+                          }),
+                  ]),
             )
           ],
           alignment: Alignment.bottomCenter,

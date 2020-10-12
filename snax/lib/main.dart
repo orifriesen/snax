@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:snax/loginPage/loginPage.dart';
 import 'package:snax/tabs.dart';
 import 'backend/backend.dart';
+import 'backend/requests.dart';
+
+
 
 //Navigator key allows for background tasks to present views without context (used for Firebase listeners)
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
@@ -31,5 +34,8 @@ void main() {
   //Initialize Firebase synchronously (has to happen after runApp)
   initializeFirebase().whenComplete(() {
     print("initialized firebase");
+    /*SnaxBackend.postReview("pringles-pizza", SnackRating(5.0,4.0,4.0,5.0,4.0,0.0,0.0,1.0)).then((d) {
+      print("sent review");
+    });*/
   });
 }
