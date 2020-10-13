@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:number_display/number_display.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
+import 'package:snax/backend/backend.dart';
 import 'package:snax/homePage/searchBar.dart';
 import 'package:snax/homePage/snackList.dart';
 import 'snackList.dart';
 
 class ProductPage extends StatelessWidget {
   ProductPage({Key key, this.item}) : super(key: key);
-  final TrendingSnackList item;
-
-  final items = TrendingSnackList.getProducts();
+  final SnackItem item;
 
   final display = createDisplay(placeholder: '--');
 
@@ -45,7 +44,7 @@ class ProductPage extends StatelessWidget {
                               alignment: Alignment.center,
                               widthFactor: .66,
                               heightFactor: 1.0,
-                              child: Image.asset("assets/" + this.item.image,
+                              child: Image.asset("assets/placeholderImage.jpg",
                                   width: 100, height: 100)),
                         )),
                     Container(
@@ -59,7 +58,7 @@ class ProductPage extends StatelessWidget {
                                     fontWeight: FontWeight.w600, fontSize: 24)),
                             Container(
                                 padding: EdgeInsets.fromLTRB(4, 4, 0, 0),
-                                child: Text(this.item.categories,
+                                child: Text(this.item.name,
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w400,
@@ -88,13 +87,15 @@ class ProductPage extends StatelessWidget {
                               fontWeight: FontWeight.w500,
                               fontSize: 20,
                               color: Colors.grey[600])),
-                      Text(this.item.rating.toStringAsFixed(1) + " ",
+                      Text(
+                          this.item.averageRatings.overall.toStringAsFixed(1) +
+                              " ",
                           style: TextStyle(
                               fontWeight: FontWeight.w400, fontSize: 36)),
                       SmoothStarRating(
                           allowHalfRating: true,
                           starCount: 5,
-                          rating: this.item.rating,
+                          rating: this.item.averageRatings.overall,
                           size: 28,
                           isReadOnly: true,
                           filledIconData: Icons.star,
@@ -103,7 +104,7 @@ class ProductPage extends StatelessWidget {
                           borderColor: Colors.amber,
                           spacing: 0.0)
                     ])),
-            Text(display(this.item.totalRatings) + " Total Ratings",
+            Text(display(this.item.numberOfRatings) + " Total Ratings",
                 style: TextStyle(
                     fontWeight: FontWeight.w400,
                     fontSize: 18,
@@ -127,7 +128,11 @@ class ProductPage extends StatelessWidget {
                                           fontSize: 16,
                                           color: Colors.grey[600])),
                                   Text(
-                                      this.item.sweetness.toStringAsFixed(1) +
+                                      this
+                                              .item
+                                              .averageRatings
+                                              .sweetness
+                                              .toStringAsFixed(1) +
                                           " ",
                                       style: TextStyle(
                                           fontWeight: FontWeight.w400,
@@ -137,7 +142,7 @@ class ProductPage extends StatelessWidget {
                               SmoothStarRating(
                                   allowHalfRating: true,
                                   starCount: 5,
-                                  rating: this.item.sweetness,
+                                  rating: this.item.averageRatings.sweetness,
                                   size: 16,
                                   isReadOnly: true,
                                   filledIconData: Icons.star,
@@ -157,7 +162,11 @@ class ProductPage extends StatelessWidget {
                                           fontSize: 16,
                                           color: Colors.grey[600])),
                                   Text(
-                                      this.item.sourness.toStringAsFixed(1) +
+                                      this
+                                              .item
+                                              .averageRatings
+                                              .sourness
+                                              .toStringAsFixed(1) +
                                           " ",
                                       style: TextStyle(
                                           fontWeight: FontWeight.w400,
@@ -167,7 +176,7 @@ class ProductPage extends StatelessWidget {
                               SmoothStarRating(
                                   allowHalfRating: true,
                                   starCount: 5,
-                                  rating: this.item.sourness,
+                                  rating: this.item.averageRatings.sourness,
                                   size: 16,
                                   isReadOnly: true,
                                   filledIconData: Icons.star,
@@ -187,7 +196,11 @@ class ProductPage extends StatelessWidget {
                                           fontSize: 16,
                                           color: Colors.grey[600])),
                                   Text(
-                                      this.item.saltiness.toStringAsFixed(1) +
+                                      this
+                                              .item
+                                              .averageRatings
+                                              .saltiness
+                                              .toStringAsFixed(1) +
                                           " ",
                                       style: TextStyle(
                                           fontWeight: FontWeight.w400,
@@ -197,7 +210,7 @@ class ProductPage extends StatelessWidget {
                               SmoothStarRating(
                                   allowHalfRating: true,
                                   starCount: 5,
-                                  rating: this.item.saltiness,
+                                  rating: this.item.averageRatings.saltiness,
                                   size: 16,
                                   isReadOnly: true,
                                   filledIconData: Icons.star,
@@ -222,7 +235,11 @@ class ProductPage extends StatelessWidget {
                                           fontSize: 16,
                                           color: Colors.grey[600])),
                                   Text(
-                                      this.item.spiciness.toStringAsFixed(1) +
+                                      this
+                                              .item
+                                              .averageRatings
+                                              .spicyness
+                                              .toStringAsFixed(1) +
                                           " ",
                                       style: TextStyle(
                                           fontWeight: FontWeight.w400,
@@ -232,7 +249,7 @@ class ProductPage extends StatelessWidget {
                               SmoothStarRating(
                                   allowHalfRating: true,
                                   starCount: 5,
-                                  rating: this.item.spiciness,
+                                  rating: this.item.averageRatings.spicyness,
                                   size: 16,
                                   isReadOnly: true,
                                   filledIconData: Icons.star,
@@ -252,7 +269,11 @@ class ProductPage extends StatelessWidget {
                                           fontSize: 16,
                                           color: Colors.grey[600])),
                                   Text(
-                                      this.item.mouthfeel.toStringAsFixed(1) +
+                                      this
+                                              .item
+                                              .averageRatings
+                                              .mouthfeel
+                                              .toStringAsFixed(1) +
                                           " ",
                                       style: TextStyle(
                                           fontWeight: FontWeight.w400,
@@ -262,7 +283,7 @@ class ProductPage extends StatelessWidget {
                               SmoothStarRating(
                                   allowHalfRating: true,
                                   starCount: 5,
-                                  rating: this.item.mouthfeel,
+                                  rating: this.item.averageRatings.mouthfeel,
                                   size: 16,
                                   isReadOnly: true,
                                   filledIconData: Icons.star,
@@ -289,6 +310,7 @@ class ProductPage extends StatelessWidget {
                                   Text(
                                       this
                                               .item
+                                              .averageRatings
                                               .accessibility
                                               .toStringAsFixed(1) +
                                           " ",
@@ -300,7 +322,8 @@ class ProductPage extends StatelessWidget {
                               SmoothStarRating(
                                   allowHalfRating: true,
                                   starCount: 5,
-                                  rating: this.item.accessibility,
+                                  rating:
+                                      this.item.averageRatings.accessibility,
                                   size: 16,
                                   isReadOnly: true,
                                   filledIconData: Icons.star,
@@ -322,6 +345,7 @@ class ProductPage extends StatelessWidget {
                                   Text(
                                       this
                                               .item
+                                              .averageRatings
                                               .snackability
                                               .toStringAsFixed(1) +
                                           " ",
@@ -333,7 +357,7 @@ class ProductPage extends StatelessWidget {
                               SmoothStarRating(
                                   allowHalfRating: true,
                                   starCount: 5,
-                                  rating: this.item.snackability,
+                                  rating: this.item.averageRatings.snackability,
                                   size: 16,
                                   isReadOnly: true,
                                   filledIconData: Icons.star,
