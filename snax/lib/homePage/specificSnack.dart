@@ -349,7 +349,9 @@ class ProductPage extends StatelessWidget {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => UserReviewPage()));
+                                      builder: (context) => UserReviewPage(
+                                            item: items[1],
+                                          )));
                             },
                             child: Text('Review This Snack'),
                           ))),
