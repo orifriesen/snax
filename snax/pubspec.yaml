@@ -33,6 +33,7 @@ dependencies:
   sign_in_with_apple: ^2.5.2
   crypto: ^2.1.5
   shared_preferences: ^0.5.12
+  fluttertoast: ^7.1.1
 
   flutter:
     sdk: flutter

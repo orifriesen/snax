@@ -20,16 +20,26 @@ class LoginPageArguments {
 }
 
 class LoginPage extends StatefulWidget {
-
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
+
+  LoginPageArguments args;
+
+  @override
+    void dispose() {
+      args.handler(false);
+      super.dispose();
+    }
+
+
   @override
   Widget build(BuildContext context) {
     //Get the args, which includes the handler function
-    final LoginPageArguments args = ModalRoute.of(context).settings.arguments;
+    args = ModalRoute.of(context).settings.arguments;
+
 
     return Scaffold(
         appBar: AppBar(title: Text("Login")),
@@ -62,7 +72,8 @@ class _LoginPageState extends State<LoginPage> {
                     height: Platform.isIOS ? 200 : 145,
                     width: double.infinity,
                     child: Padding(
-                      padding: EdgeInsets.fromLTRB(16, Platform.isIOS ? 130 : 65, 16, 32),
+                      padding: EdgeInsets.fromLTRB(
+                          16, Platform.isIOS ? 130 : 65, 16, 32),
                       child: Text(
                         "An account is required to post reviews and make comments on the feed",
                         textAlign: TextAlign.center,
@@ -83,6 +94,7 @@ class _LoginPageState extends State<LoginPage> {
                         press: () async {
                           try {
                             await signInWithGoogle();
+                            args.handler(true);
                             Navigator.of(context).pop();
                           } catch (error) {
                             print("Failed to login (google)");
@@ -100,6 +112,7 @@ class _LoginPageState extends State<LoginPage> {
                           press: () async {
                             try {
                               await signInWithApple();
+                              args.handler(true);
                               Navigator.of(context).pop();
                             } catch (error) {
                               print("Failed to login (apple)");

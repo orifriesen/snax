@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:flutter/material.dart';
 import 'package:snax/main.dart';
 
 import 'backend.dart';
@@ -11,20 +13,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:snax/loginPage/loginPage.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 //Cache the snack types, references aren't fetched in these requests so this map will be used.
 //Example of what it looks like: { "candy-bar": "Candy Bar", "snack-mix": "Snack Mix" }
 Map _snackTypes = {};
 
-double toDouble(dynamic number) {
-  if (number is String) {
-    return double.parse(number);
-  } else if (number is int) {
-    return 0.0 + number;
-  } else {
-    return number;
-  }
-}
+
 
 class SnaxBackend {
   static SnaxUser currentUser;
@@ -81,7 +76,7 @@ class SnaxBackend {
 
   static Future<void> postReview(String snackId, SnackRating rating) async {
     //User has to be logged in
-    if (fbAuth.currentUser == null) throw "Not Signed In";
+    await auth.loginIfNotAlready();
     String token = await fbAuth.currentUser.getIdToken();
     //Create the request body
     Object body = {
@@ -103,6 +98,8 @@ class SnaxBackend {
         await fbCloud.getHttpsCallable(functionName: "rateSnack").call(body);
     //Parse
     if (result.data["status"] == "success") {
+      //TODO: Remove toast
+      Fluttertoast.showToast(msg: "Ratings Sent!");
       return;
     } else if (result.data["error"] != null) {
       throw result.data["error"];
@@ -118,13 +115,30 @@ class SnaxBackend {
 class _SnaxBackendAuth {
 
   //Auth stuff
-//   Future<SnaxUser> loginIfNotAlready() async {
+  Future<SnaxUser> loginIfNotAlready() async {
 
-// Future(() => {});
-//     navigatorKey.currentState.pushNamed("/login",arguments: LoginPageArguments((bool success) {
+    bool loggedIn;
+    
+    if (fbAuth.currentUser != null) {
+      return SnaxBackend.currentUser;
+    } else {
+      navigatorKey.currentState.pushNamed("/login",arguments: LoginPageArguments((bool success) {
+        loggedIn = success;
+      }));
+    }
 
-//     }));
-//   }
+    //Wait for the login
+    await _waitWhile(() => (loggedIn == null));
+
+    //If the user didnt log in
+    if (!loggedIn) throw "You must log in first.";
+
+    print("User Logged in via loginIfNotAlready");
+
+    //Wait for the current user to be fetched from the database and return
+    await _waitWhile(() => (SnaxBackend.currentUser == null));
+    return SnaxBackend.currentUser;
+  }
 
   Future<SnaxUser> getUserInfo(User user, {int attempt = 0}) async {
     //The user's instance takes a second to be created when the account is made, so it has 4 chances to fetch it before throwing.
@@ -170,4 +184,29 @@ class _SnaxBackendAuth {
     await prefs.remove("user_username");
     await prefs.remove("user_name");
   }
+}
+
+// Extra Utility Functions
+
+double toDouble(dynamic number) {
+  if (number is String) {
+    return double.parse(number);
+  } else if (number is int) {
+    return 0.0 + number;
+  } else {
+    return number;
+  }
+}
+
+Future _waitWhile(bool test(), [Duration pollInterval = Duration.zero]) {
+  var completer = new Completer();
+  check() {
+    if (!test()) {
+      completer.complete();
+    } else {
+      new Timer(pollInterval, check);
+    }
+  }
+  check();
+  return completer.future;
 }
