@@ -37,6 +37,8 @@ class SnaxBackend {
   // Private function for getting list of snacks with a sort and limit
   static Future<List<SnackItem>> _queryAllSnacks(
       String sort, bool desc, int limit) async {
+    //Wait for the firebase to be initiated
+    await _waitWhile(() => (fbStore == null));
     //Get the results, ordered by overall score, with an optional limit.
     List<QueryDocumentSnapshot> results = (await fbStore
             .collection("snacks")
@@ -75,6 +77,8 @@ class SnaxBackend {
   }
 
   static Future<void> postReview(String snackId, SnackRating rating) async {
+    //Wait for fbAuth
+    await _waitWhile(() => (fbAuth == null));
     //User has to be logged in
     await auth.loginIfNotAlready();
     String token = await fbAuth.currentUser.getIdToken();
