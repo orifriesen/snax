@@ -4,12 +4,21 @@ import 'package:snax/homePage/searchBar.dart';
 import 'package:snax/homePage/specificSnack.dart';
 import 'snackList.dart';
 
+import 'package:snax/backend/backend.dart';
+import 'package:snax/backend/requests.dart';
+
 class MainPage extends StatefulWidget {
   @override
   _MainPageState createState() => _MainPageState();
+
 }
 
 class _MainPageState extends State<MainPage> {
+
+
+
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
