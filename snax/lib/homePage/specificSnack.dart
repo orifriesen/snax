@@ -58,7 +58,7 @@ class ProductPage extends StatelessWidget {
                                     fontWeight: FontWeight.w600, fontSize: 24)),
                             Container(
                                 padding: EdgeInsets.fromLTRB(4, 4, 0, 0),
-                                child: Text(this.item.name,
+                                child: Text(this.item.type.name,
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w400,
