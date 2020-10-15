@@ -16,10 +16,15 @@ class ProductPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(this.item.name),
           actions: <Widget>[
             IconButton(
                 icon: const Icon(Icons.search),
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => SnackSearch()));
+                }),
+            IconButton(
+                icon: const Icon(Icons.more_vert),
                 onPressed: () {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => SnackSearch()));

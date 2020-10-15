@@ -68,71 +68,7 @@ class _TrendingList extends State<TrendingList> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(12.0),
-      child: Expanded(
-        child: ListView.builder(
-            itemCount: trendingSnacks != null ? trendingSnacks.length : 0,
-            itemBuilder: (context, index) {
-              return ListTile(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                ProductPage(item: trendingSnacks[index])));
-                  },
-                  leading: Container(
-                      padding: EdgeInsets.fromLTRB(40, 2, 8, 2),
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(15.0),
-                          child: Container(
-                            child: Align(
-                                alignment: Alignment.center,
-                                widthFactor: .66,
-                                heightFactor: 1.0,
-                                child: Image.asset(
-                                    "assets/placeholderImage.jpg",
-                                    width: 80,
-                                    height: 80)),
-                          ))),
-                  title: Text(
-                    this.trendingSnacks[index].name,
-                    style: TextStyle(fontSize: 18),
-                  ),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(" " + this.trendingSnacks[index].type.name),
-                      Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                        Text(
-                            " " +
-                                this
-                                    .trendingSnacks[index]
-                                    .averageRatings
-                                    .overall
-                                    .toStringAsFixed(1),
-                            style: TextStyle(fontSize: 16)),
-                        SmoothStarRating(
-                            allowHalfRating: true,
-                            starCount: 5,
-                            rating: this
-                                .trendingSnacks[index]
-                                .averageRatings
-                                .overall,
-                            size: 20.0,
-                            isReadOnly: true,
-                            filledIconData: Icons.star,
-                            halfFilledIconData: Icons.star_half,
-                            color: Colors.amber,
-                            borderColor: Colors.amber,
-                            spacing: 0.0)
-                      ]),
-                    ],
-                  ));
-            }),
-      ),
-    );
+    return getList(context, trendingSnacks);
   }
 }
 
@@ -156,75 +92,76 @@ class _TopList extends State<TopList> {
   @override
   void initState() {
     print("getting charts");
-    SnaxBackend.chartTop().then(hasResults);
+    SnaxBackend.chartTrending().then(hasResults);
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(12.0),
-      child: Expanded(
-        child: ListView.builder(
-            itemCount: topSnacks != null ? topSnacks.length : 0,
-            itemBuilder: (context, index) {
-              return ListTile(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                ProductPage(item: topSnacks[index])));
-                  },
-                  leading: Container(
-                      padding: EdgeInsets.fromLTRB(40, 2, 8, 2),
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(15.0),
-                          child: Container(
-                            child: Align(
-                                alignment: Alignment.center,
-                                widthFactor: .66,
-                                heightFactor: 1.0,
-                                child: Image.asset(
-                                    "assets/placeholderImage.jpg",
-                                    width: 80,
-                                    height: 80)),
-                          ))),
-                  title: Text(
-                    this.topSnacks[index].name,
-                    style: TextStyle(fontSize: 18),
-                  ),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(" " + this.topSnacks[index].type.name),
-                      Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                        Text(
-                            " " +
-                                this
-                                    .topSnacks[index]
-                                    .averageRatings
-                                    .overall
-                                    .toStringAsFixed(1),
-                            style: TextStyle(fontSize: 16)),
-                        SmoothStarRating(
-                            allowHalfRating: true,
-                            starCount: 5,
-                            rating:
-                                this.topSnacks[index].averageRatings.overall,
-                            size: 20.0,
-                            isReadOnly: true,
-                            filledIconData: Icons.star,
-                            halfFilledIconData: Icons.star_half,
-                            color: Colors.amber,
-                            borderColor: Colors.amber,
-                            spacing: 0.0)
-                      ]),
-                    ],
-                  ));
-            }),
-      ),
-    );
+    return getList(context, topSnacks);
   }
+}
+
+Widget getList(BuildContext context, List<SnackItem> snackList) {
+  final List<SnackItem> trendingSnacks = snackList;
+  return Expanded(
+    child: ListView.builder(
+        itemCount: trendingSnacks != null ? trendingSnacks.length : 0,
+        itemBuilder: (context, index) {
+          return Container(
+            padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
+            child: ListTile(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              ProductPage(item: trendingSnacks[index])));
+                },
+                leading: Container(
+                    padding: EdgeInsets.fromLTRB(40, 2, 8, 2),
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.circular(15.0),
+                        child: Container(
+                          child: Align(
+                              alignment: Alignment.center,
+                              widthFactor: .66,
+                              heightFactor: 1.0,
+                              child: Image.asset("assets/placeholderImage.jpg",
+                                  width: 80, height: 80)),
+                        ))),
+                title: Text(
+                  trendingSnacks[index].name,
+                  style: TextStyle(fontSize: 16),
+                ),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(" " + trendingSnacks[index].type.name),
+                    Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                      Text(
+                          " " +
+                              trendingSnacks[index]
+                                  .averageRatings
+                                  .overall
+                                  .toStringAsFixed(1),
+                          style: TextStyle(fontSize: 16)),
+                      SmoothStarRating(
+                          allowHalfRating: true,
+                          starCount: 5,
+                          rating: trendingSnacks[index].averageRatings.overall,
+                          size: 20.0,
+                          isReadOnly: true,
+                          filledIconData: Icons.star,
+                          halfFilledIconData: Icons.star_half,
+                          color: Colors.amber,
+                          borderColor: Colors.amber,
+                          spacing: 0.0)
+                    ]),
+                  ],
+                )),
+          );
+        }),
+  );
 }
