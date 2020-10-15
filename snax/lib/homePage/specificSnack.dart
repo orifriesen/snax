@@ -3,8 +3,7 @@ import 'package:number_display/number_display.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 import 'package:snax/backend/backend.dart';
 import 'package:snax/homePage/searchBar.dart';
-import 'package:snax/homePage/snackList.dart';
-import 'snackList.dart';
+import 'package:snax/homePage/userReview.dart';
 
 class ProductPage extends StatelessWidget {
   ProductPage({Key key, this.item}) : super(key: key);
@@ -371,6 +370,24 @@ class ProductPage extends StatelessWidget {
                                   borderColor: Colors.amber,
                                   spacing: 0.0)
                             ])),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Container(
+                            padding: EdgeInsets.all(8),
+                            child: Center(
+                                child: RaisedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => UserReviewPage(
+                                              item: this.item,
+                                            )));
+                              },
+                              child: Text('Review This Snack'),
+                            ))),
                       ],
                     )
                   ],
