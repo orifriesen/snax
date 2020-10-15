@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:snax/homePage/snackList.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
+import 'package:snax/backend/backend.dart';
 
 // class SliderContainer extends StatefulWidget {
 //   @override
@@ -9,8 +10,7 @@ import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 class UserReviewPage extends StatelessWidget {
   UserReviewPage({this.item});
-  final TrendingSnackList item;
-  final items = TrendingSnackList.getProducts();
+  final SnackItem item;
 
   final double minValue = 1.0;
   final double maxValue = 10.0;
@@ -53,7 +53,7 @@ class UserReviewPage extends StatelessWidget {
                       return SmoothStarRating(
                           allowHalfRating: true,
                           starCount: 5,
-                          rating: this.item.sweetness,
+                          rating: this.item.averageRatings.sweetness,
                           size: 24,
                           isReadOnly: true,
                           filledIconData: Icons.star,
@@ -88,7 +88,7 @@ class UserReviewPage extends StatelessWidget {
                       return SmoothStarRating(
                           allowHalfRating: true,
                           starCount: 5,
-                          rating: this.item.sweetness,
+                          rating: this.item.averageRatings.sweetness,
                           size: 24,
                           isReadOnly: true,
                           filledIconData: Icons.star,
@@ -123,7 +123,7 @@ class UserReviewPage extends StatelessWidget {
                       return SmoothStarRating(
                           allowHalfRating: true,
                           starCount: 5,
-                          rating: this.item.sweetness,
+                          rating: this.item.averageRatings.sweetness,
                           size: 24,
                           isReadOnly: true,
                           filledIconData: Icons.star,
@@ -158,7 +158,7 @@ class UserReviewPage extends StatelessWidget {
                       return SmoothStarRating(
                           allowHalfRating: true,
                           starCount: 5,
-                          rating: this.item.sweetness,
+                          rating: this.item.averageRatings.sweetness,
                           size: 24,
                           isReadOnly: true,
                           filledIconData: Icons.star,
@@ -193,7 +193,7 @@ class UserReviewPage extends StatelessWidget {
                       return SmoothStarRating(
                           allowHalfRating: true,
                           starCount: 5,
-                          rating: this.item.sweetness,
+                          rating: this.item.averageRatings.sweetness,
                           size: 24,
                           isReadOnly: true,
                           filledIconData: Icons.star,
@@ -228,7 +228,7 @@ class UserReviewPage extends StatelessWidget {
                       return SmoothStarRating(
                           allowHalfRating: true,
                           starCount: 5,
-                          rating: this.item.sweetness,
+                          rating: this.item.averageRatings.sweetness,
                           size: 24,
                           isReadOnly: true,
                           filledIconData: Icons.star,
