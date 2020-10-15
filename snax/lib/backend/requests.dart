@@ -72,7 +72,8 @@ class SnaxBackend {
             toDouble(doc.get("computed.score_sweetness")),
             toDouble(doc.get("computed.score_spicyness")),
           ),
-          doc.get("computed_ratings"));
+          doc.get("computed_ratings"),
+          doc.get("computed_trend"));
     }).toList();
   }
 

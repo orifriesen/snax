@@ -67,7 +67,8 @@ class SnackItem {
   int upc;
   SnackRating averageRatings;
   int numberOfRatings;
-  SnackItem(this.name,this.id,this.type,this.upc,this.averageRatings,this.numberOfRatings);
+  int numberOfRatingsThisWeek;
+  SnackItem(this.name,this.id,this.type,this.upc,this.averageRatings,this.numberOfRatings,this.numberOfRatingsThisWeek);
 }
 
 //A snack rating that is calculated, no user data is attached
