@@ -10,7 +10,7 @@ class Post {
 
 class SnackSearch extends StatelessWidget {
   Future<List<Post>> search(String search) async {
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 1));
     return List.generate(search.length, (int index) {
       return Post(
         "Title : $search $index",

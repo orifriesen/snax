@@ -4,11 +4,8 @@ import 'package:snax/tabs.dart';
 import 'backend/backend.dart';
 import 'backend/requests.dart';
 
-
-
 //Navigator key allows for background tasks to present views without context (used for Firebase listeners)
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
-
 
 class MyApp extends StatelessWidget {
   @override
@@ -22,9 +19,8 @@ class MyApp extends StatelessWidget {
         "/login": (context) => LoginPage()
       },
       initialRoute: "/",
-        theme: ThemeData(
-            primaryColor: Colors.red, accentColor: Colors.redAccent[100]),
-      );
+      theme: ThemeData(primaryColor: Colors.red[800], accentColor: Colors.red),
+    );
   }
 }
 

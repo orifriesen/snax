@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 import 'package:snax/homePage/searchBar.dart';
 import 'package:snax/homePage/specificSnack.dart';
-import 'snackList.dart';
 
 import 'package:snax/backend/backend.dart';
 import 'package:snax/backend/requests.dart';
