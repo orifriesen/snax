@@ -377,7 +377,7 @@ class ProductPage extends StatelessWidget {
                         Container(
                             padding: EdgeInsets.all(8),
                             child: Center(
-                                child: RaisedButton(
+                                child: FloatingActionButton.extended(
                               onPressed: () {
                                 Navigator.push(
                                     context,
@@ -385,7 +385,7 @@ class ProductPage extends StatelessWidget {
                                         builder: (context) =>
                                             UserReviewPage()));
                               },
-                              child: Text('Review This Snack'),
+                              label: Text('Review This Snack'),
                             ))),
                       ],
                     )

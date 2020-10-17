@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:snax/backend/backend.dart';
 
 class UserReviewPage extends StatefulWidget {
   @override
@@ -7,11 +8,10 @@ class UserReviewPage extends StatefulWidget {
 }
 
 class _UserReviewPageState extends State<UserReviewPage> {
-  double _rating = 1;
-  double _sliderRating = 1;
-  double testR;
+  SnackRating ratings = SnackRating(null, null, null, null, 0, 0, 0, 0);
+
   IconData _selectedIcon;
-  final double minValue = 1.0;
+  final double minValue = 0.0;
   final double maxValue = 5.0;
 
   @override
@@ -24,134 +24,155 @@ class _UserReviewPageState extends State<UserReviewPage> {
           ),
           body: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Directionality(
-              textDirection: TextDirection.ltr,
-              child: Container(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    //* Overall Score
-                    Container(
-                        height: 40,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Overall Score',
-                              style: TextStyle(fontSize: 25),
-                            ),
-                            Tooltip(
-                              message: "Rate the overall score of the item",
-                              child: IconButton(
-                                icon: Icon(Icons.info_outline),
-                                iconSize: 20.0,
-                                disabledColor: Colors.black,
-                                onPressed: () {},
-                              ),
-                            ),
-                          ],
-                        )),
-                    _overallScore(),
-
-                    // _rating != null
-                    //     ? Text(
-                    //         "Rating: $_rating",
-                    //         style: TextStyle(fontWeight: FontWeight.bold),
-                    //       )
-                    //     : Container(),
-
-                    //* Snackability
-                    Container(
-                        height: 40,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Snackability',
-                              style: TextStyle(fontSize: 25),
-                            ),
-                            Tooltip(
-                              message: "Rate how snackable this item is",
-                              child: IconButton(
-                                icon: Icon(Icons.info_outline),
-                                iconSize: 20.0,
-                                disabledColor: Colors.black,
-                                onPressed: () {},
-                              ),
-                            ),
-                          ],
-                        )),
-                    _snackability(),
-
-                    //* Mouthfeel
-                    Container(
-                        height: 40,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Mouth Feel',
-                              style: TextStyle(fontSize: 25),
-                            ),
-                            Tooltip(
-                              message: "Rate how this item feels",
-                              child: IconButton(
-                                icon: Icon(Icons.info_outline),
-                                iconSize: 20.0,
-                                disabledColor: Colors.black,
-                                onPressed: () {},
-                              ),
-                            ),
-                          ],
-                        )),
-                    _mouthfeel(),
-
-                    //* Accessibility
-                    Container(
-                        height: 40,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Accessibility',
-                              style: TextStyle(fontSize: 25),
-                            ),
-                            Tooltip(
-                              message: "Rate how accessible this item is",
-                              child: IconButton(
-                                icon: Icon(Icons.info_outline),
-                                iconSize: 20.0,
-                                disabledColor: Colors.black,
-                                onPressed: () {},
-                              ),
-                            ),
-                          ],
-                        )),
-                    _accessibility(),
-
-                    //* Sweetness
-                    Container(
-                      child: _sweetness(),
+            child: ListView(
+              children: <Widget>[
+                //* Overall Score
+                Container(
+                    child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Overall Score',
+                      style: TextStyle(fontSize: 25),
                     ),
-
-                    //* Saltiness
-                    Container(
-                      child: _saltiness(),
-                    ),
-
-                    //* Sourness
-                    Container(
-                      child: _sourness(),
-                    ),
-
-                    //* Spiciness
-                    Container(
-                      child: _spiciness(),
+                    Tooltip(
+                      message: "Rate the overall score of the item",
+                      child: IconButton(
+                        icon: Icon(Icons.info_outline),
+                        iconSize: 20.0,
+                        disabledColor: Colors.black,
+                        onPressed: () {},
+                      ),
                     ),
                   ],
+                )),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _overallScore(),
+                  ],
                 ),
-              ),
+
+                // ratings.overall != null
+                //     ? Text(
+                //         "Rating: ${ratings.overall}",
+                //         style: TextStyle(fontWeight: FontWeight.bold),
+                //       )
+                //     : Container(),
+
+                //* Snackability
+                Container(
+                    child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Snackability',
+                      style: TextStyle(fontSize: 25),
+                    ),
+                    Tooltip(
+                      message: "Rate how snackable this item is",
+                      child: IconButton(
+                        icon: Icon(Icons.info_outline),
+                        iconSize: 20.0,
+                        disabledColor: Colors.black,
+                        onPressed: () {},
+                      ),
+                    ),
+                  ],
+                )),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _snackability(),
+                  ],
+                ),
+
+                //* Mouthfeel
+                Container(
+                    child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Mouth Feel',
+                      style: TextStyle(fontSize: 25),
+                    ),
+                    Tooltip(
+                      message: "Rate  the feeling of this item",
+                      child: IconButton(
+                        icon: Icon(Icons.info_outline),
+                        iconSize: 20.0,
+                        disabledColor: Colors.black,
+                        onPressed: () {},
+                      ),
+                    ),
+                  ],
+                )),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _mouthfeel(),
+                  ],
+                ),
+
+                //* Accessibility
+                Container(
+                    child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Accessibility',
+                      style: TextStyle(fontSize: 25),
+                    ),
+                    Tooltip(
+                      message: "Rate how accessible this item is",
+                      child: IconButton(
+                        icon: Icon(Icons.info_outline),
+                        iconSize: 20.0,
+                        disabledColor: Colors.black,
+                        onPressed: () {},
+                      ),
+                    ),
+                  ],
+                )),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _accessibility(),
+                  ],
+                ),
+
+                //* Sweetness
+                Container(
+                  child: _sweetness(),
+                ),
+
+                //* Saltiness
+                Container(
+                  child: _saltiness(),
+                ),
+
+                //* Sourness
+                Container(
+                  child: _sourness(),
+                ),
+
+                //* Spiciness
+                Container(
+                  child: _spiciness(),
+                ),
+
+                //* Submit Button
+                Container(
+                  child: Row(
+                    children: [
+                      FloatingActionButton.extended(
+                        onPressed: () => {},
+                        label: Text("Submit"),
+                      ),
+                    ],
+                  ),
+                )
+              ],
             ),
           ),
         ),
@@ -174,7 +195,7 @@ class _UserReviewPageState extends State<UserReviewPage> {
       ),
       onRatingUpdate: (rating) {
         setState(() {
-          _rating = rating;
+          ratings.overall = rating;
         });
       },
     );
@@ -195,7 +216,7 @@ class _UserReviewPageState extends State<UserReviewPage> {
       ),
       onRatingUpdate: (rating) {
         setState(() {
-          testR = rating;
+          ratings.snackability = rating;
         });
       },
     );
@@ -216,7 +237,7 @@ class _UserReviewPageState extends State<UserReviewPage> {
       ),
       onRatingUpdate: (rating) {
         setState(() {
-          testR = rating;
+          ratings.mouthfeel = rating;
         });
       },
     );
@@ -237,7 +258,7 @@ class _UserReviewPageState extends State<UserReviewPage> {
       ),
       onRatingUpdate: (rating) {
         setState(() {
-          testR = rating;
+          ratings.accessibility = rating;
         });
       },
     );
@@ -279,13 +300,13 @@ class _UserReviewPageState extends State<UserReviewPage> {
             ),
             child: Slider(
                 // divisions: 4,
-                label: _rating.ceil().toString(),
+                label: ratings.sweetness.ceil().toString(),
                 min: minValue,
                 max: maxValue,
-                value: _rating,
+                value: ratings.sweetness,
                 onChanged: (val) {
-                  print(_rating);
-                  setState(() => _rating = val);
+                  print(ratings.sweetness);
+                  setState(() => ratings.sweetness = val);
                 })),
       ],
     );
@@ -327,13 +348,13 @@ class _UserReviewPageState extends State<UserReviewPage> {
             ),
             child: Slider(
                 // divisions: 4,
-                label: _rating.ceil().toString(),
+                label: ratings.saltiness.ceil().toString(),
                 min: minValue,
                 max: maxValue,
-                value: _sliderRating,
+                value: ratings.saltiness,
                 onChanged: (val) {
-                  print(_rating);
-                  setState(() => _sliderRating = val);
+                  print(ratings.saltiness);
+                  setState(() => ratings.saltiness = val);
                 })),
       ],
     );
@@ -375,13 +396,13 @@ class _UserReviewPageState extends State<UserReviewPage> {
             ),
             child: Slider(
                 // divisions: 4,
-                label: _rating.ceil().toString(),
+                label: ratings.sourness.ceil().toString(),
                 min: minValue,
                 max: maxValue,
-                value: _sliderRating,
+                value: ratings.sourness,
                 onChanged: (val) {
-                  print(_rating);
-                  setState(() => _sliderRating = val);
+                  print(ratings.sourness);
+                  setState(() => ratings.sourness = val);
                 })),
       ],
     );
@@ -423,13 +444,13 @@ class _UserReviewPageState extends State<UserReviewPage> {
             ),
             child: Slider(
                 // divisions: 4,
-                label: _rating.ceil().toString(),
+                label: ratings.spicyness.ceil().toString(),
                 min: minValue,
                 max: maxValue,
-                value: _sliderRating,
+                value: ratings.spicyness,
                 onChanged: (val) {
-                  print(_rating);
-                  setState(() => _sliderRating = val);
+                  print(ratings.spicyness);
+                  setState(() => ratings.spicyness = val);
                 })),
       ],
     );
