@@ -1,44 +1,68 @@
-import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flutter/material.dart';
 
-class Post {
-  final String title;
-  final String description;
+class DataSearch extends SearchDelegate<String> {
+  final snacks = [
+    "test1",
+    "test2",
+    "test3",
+    "test4",
+    "test5",
+    "test6",
+  ];
 
-  Post(this.title, this.description);
-}
+  final recentSnacks = [
+    "test1",
+    "test4",
+  ];
 
-class SnackSearch extends StatelessWidget {
-  Future<List<Post>> search(String search) async {
-    await Future.delayed(Duration(seconds: 1));
-    return List.generate(search.length, (int index) {
-      return Post(
-        "Title : $search $index",
-        "Description :$search $index",
-      );
-    });
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [
+      IconButton(
+          icon: Icon(Icons.clear),
+          onPressed: () {
+            query = "";
+          })
+    ];
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: SearchBar<Post>(
-            onSearch: search,
-            onCancelled: () {
-              Navigator.pop(context);
-            },
-            onItemFound: (Post post, int index) {
-              return ListTile(
-                title: Text(post.title),
-                subtitle: Text(post.description),
-              );
-            },
-          ),
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+        icon: AnimatedIcon(
+            icon: AnimatedIcons.menu_arrow, progress: transitionAnimation),
+        onPressed: () {
+          close(context, null);
+        });
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {}
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    final suggestionList = query.isEmpty
+        ? recentSnacks
+        : snacks.where((p) => p.startsWith(query)).toList();
+
+    return ListView.builder(
+      itemBuilder: (context, index) => ListTile(
+        onTap: () {
+          showResults(context);
+        },
+        title: RichText(
+          text: TextSpan(
+              text: suggestionList[index].substring(0, query.length),
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              children: [
+                TextSpan(
+                    text: suggestionList[index].substring(query.length),
+                    style: TextStyle(color: Colors.grey))
+              ]),
         ),
       ),
+      itemCount: suggestionList.length,
     );
   }
 }

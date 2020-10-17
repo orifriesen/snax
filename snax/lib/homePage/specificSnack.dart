@@ -4,7 +4,6 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 import 'package:snax/backend/backend.dart';
 import 'package:snax/homePage/searchBar.dart';
-import 'package:snax/homePage/userReview.dart';
 import 'package:snax/homePage/ratingInfoPage.dart';
 
 class ProductPage extends StatelessWidget {
@@ -21,15 +20,9 @@ class ProductPage extends StatelessWidget {
             IconButton(
                 icon: const Icon(Icons.search),
                 onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => SnackSearch()));
+                  showSearch(context: context, delegate: DataSearch());
                 }),
-            IconButton(
-                icon: const Icon(Icons.more_vert),
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => SnackSearch()));
-                })
+            IconButton(icon: const Icon(Icons.more_vert), onPressed: () {})
           ],
         ),
         body: Column(
@@ -181,14 +174,7 @@ class ProductPage extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(20),
                                   side: BorderSide(
                                       color: Theme.of(context).primaryColor)),
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => UserReviewPage(
-                                              item: this.item,
-                                            )));
-                              },
+                              onPressed: () {},
                               child: Text(
                                 'Review this snack',
                                 style: TextStyle(fontSize: 16),

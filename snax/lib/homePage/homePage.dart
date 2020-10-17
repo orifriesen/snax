@@ -24,12 +24,12 @@ class _MainPageState extends State<MainPage> {
             IconButton(
                 icon: const Icon(Icons.search),
                 onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => SnackSearch()));
+                  showSearch(context: context, delegate: DataSearch());
                 })
           ],
           centerTitle: true,
         ),
+        drawer: Drawer(),
         body: getTabBarPages());
   }
 }
