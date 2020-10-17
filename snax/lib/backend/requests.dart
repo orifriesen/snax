@@ -19,8 +19,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 //Example of what it looks like: { "candy-bar": "Candy Bar", "snack-mix": "Snack Mix" }
 Map _snackTypes = {};
 
-
-
 class SnaxBackend {
   static SnaxUser currentUser;
 
@@ -52,12 +50,20 @@ class SnaxBackend {
         _snackTypes[d.id] = d.get("name");
       });
     }
-    //Return the mapped data
-    return results.map((doc) {
+    List<SnackItem> snacks = [];
+    for (var doc in results) {
       //Grab the id of the snack type
       String snackTypeId = (doc.get("type") as DocumentReference).id;
+      //Get the image
+      String dlURL;
+      try {
+        dlURL =
+            await fbStorage.ref().child("snacks").child(doc.id + ".jpg").getDownloadURL();
+      } catch (error) {
+        //dl url is null. The image doesn't exist
+      }
       //Create an array entry
-      return SnackItem(
+      snacks.add(SnackItem(
           doc.get("name"),
           doc.id,
           SnackItemType(_snackTypes[snackTypeId], snackTypeId),
@@ -72,8 +78,11 @@ class SnaxBackend {
             toDouble(doc.get("computed.score_sweetness")),
             toDouble(doc.get("computed.score_spicyness")),
           ),
-          doc.get("computed_ratings"));
-    }).toList();
+          doc.get("computed_ratings"),
+          dlURL));
+    }
+    //Return the mapped data
+    return snacks;
   }
 
   static Future<void> postReview(String snackId, SnackRating rating) async {
@@ -115,18 +124,16 @@ class SnaxBackend {
   static _SnaxBackendAuth auth = _SnaxBackendAuth();
 }
 
-
 class _SnaxBackendAuth {
-
   //Auth stuff
   Future<SnaxUser> loginIfNotAlready() async {
-
     bool loggedIn;
-    
+
     if (fbAuth.currentUser != null) {
       return SnaxBackend.currentUser;
     } else {
-      navigatorKey.currentState.pushNamed("/login",arguments: LoginPageArguments((bool success) {
+      navigatorKey.currentState.pushNamed("/login",
+          arguments: LoginPageArguments((bool success) {
         loggedIn = success;
       }));
     }
@@ -146,11 +153,12 @@ class _SnaxBackendAuth {
 
   Future<SnaxUser> getUserInfo(User user, {int attempt = 0}) async {
     //The user's instance takes a second to be created when the account is made, so it has 4 chances to fetch it before throwing.
-    if (attempt >= 4) throw "User not found. Please try logging in again later.";
-    
-    DocumentSnapshot userInDB; 
+    if (attempt >= 4)
+      throw "User not found. Please try logging in again later.";
+
+    DocumentSnapshot userInDB;
     try {
-     userInDB = await fbStore.collection("users").doc(user.uid).get();
+      userInDB = await fbStore.collection("users").doc(user.uid).get();
     } catch (error) {
       //Try to get it locally
       return getUserInfoLocally();
@@ -211,6 +219,7 @@ Future _waitWhile(bool test(), [Duration pollInterval = Duration.zero]) {
       new Timer(pollInterval, check);
     }
   }
+
   check();
   return completer.future;
 }

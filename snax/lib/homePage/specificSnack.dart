@@ -5,6 +5,7 @@ import 'package:smooth_star_rating/smooth_star_rating.dart';
 import 'package:snax/backend/backend.dart';
 import 'package:snax/homePage/searchBar.dart';
 import 'package:snax/homePage/ratingInfoPage.dart';
+import 'package:snax/homePage/userReview.dart';
 
 class ProductPage extends StatelessWidget {
   ProductPage({Key key, this.item}) : super(key: key);
@@ -174,14 +175,21 @@ class ProductPage extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(20),
                                   side: BorderSide(
                                       color: Theme.of(context).primaryColor)),
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => UserReviewPage(
+                                              item: this.item,
+                                            )));
+                              },
                               child: Text(
                                 'Review this snack',
                                 style: TextStyle(fontSize: 16),
                               ),
                             ))),
                       ],
-                    )
+                    ),
                   ],
                 ))
           ],

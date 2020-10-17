@@ -1,4 +1,5 @@
 import 'dart:ffi';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:snax/backend/auth.dart';
 import 'package:snax/backend/requests.dart';
 import 'package:snax/main.dart';
@@ -12,6 +13,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 FirebaseApp fbApp;
 FirebaseAuth fbAuth;
 FirebaseFirestore fbStore;
+FirebaseStorage fbStorage;
 CloudFunctions fbCloud;
 
 Future<void> initializeFirebase() async {
@@ -21,6 +23,7 @@ Future<void> initializeFirebase() async {
   fbAuth = FirebaseAuth.instance;
   fbStore = FirebaseFirestore.instance;
   fbCloud = CloudFunctions.instance;
+  fbStorage = FirebaseStorage.instance;
   //Add listeners
   fbAuth.authStateChanges().listen((User user) async { 
     if (user == null) {
@@ -67,7 +70,8 @@ class SnackItem {
   int upc;
   SnackRating averageRatings;
   int numberOfRatings;
-  SnackItem(this.name,this.id,this.type,this.upc,this.averageRatings,this.numberOfRatings);
+  String image;
+  SnackItem(this.name,this.id,this.type,this.upc,this.averageRatings,this.numberOfRatings,this.image);
 }
 
 //A snack rating that is calculated, no user data is attached
