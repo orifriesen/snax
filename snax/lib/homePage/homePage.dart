@@ -14,23 +14,33 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          bottom: TabBar(
-            tabs: [Tab(text: "Trending"), Tab(text: "Top")],
-          ),
-          title: Text("SNAX"),
-          actions: <Widget>[
-            IconButton(
-                icon: const Icon(Icons.search),
-                onPressed: () {
-                  showSearch(context: context, delegate: DataSearch());
-                })
-          ],
-          centerTitle: true,
-        ),
-        drawer: Drawer(),
-        body: getTabBarPages());
+    return DefaultTabController(
+        length: 2,
+        child: new Scaffold(
+            body: new NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[
+              new SliverAppBar(
+                title: Text("SNAX"),
+                floating: true,
+                pinned: true,
+                snap: true,
+                bottom: TabBar(
+                  tabs: [Tab(text: "Trending"), Tab(text: "Top")],
+                ),
+                actions: <Widget>[
+                  IconButton(
+                      icon: const Icon(Icons.search),
+                      onPressed: () {
+                        showSearch(context: context, delegate: DataSearch());
+                      })
+                ],
+                centerTitle: true,
+              ),
+            ];
+          },
+          body: getTabBarPages(),
+        )));
   }
 }
 
@@ -109,7 +119,7 @@ Widget getList(BuildContext context, List<SnackItem> snackList) {
         itemCount: trendingSnacks != null ? trendingSnacks.length : 0,
         itemBuilder: (context, index) {
           return Container(
-            padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
+            padding: EdgeInsets.fromLTRB(0, 12, 0, 12),
             child: ListTile(
                 onTap: () {
                   Navigator.push(

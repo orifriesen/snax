@@ -26,9 +26,7 @@ class ProductPage extends StatelessWidget {
             IconButton(icon: const Icon(Icons.more_vert), onPressed: () {})
           ],
         ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
+        body: ListView(
           children: <Widget>[
             Container(
                 padding: EdgeInsets.fromLTRB(48, 16, 16, 16),
@@ -45,7 +43,7 @@ class ProductPage extends StatelessWidget {
                               alignment: Alignment.center,
                               widthFactor: .66,
                               heightFactor: 1.0,
-                              child: Image.network(item.image,
+                              child: Image.network(this.item.image,
                                   width: 100, height: 100)),
                         )),
                     Container(
@@ -114,11 +112,13 @@ class ProductPage extends StatelessWidget {
                           borderColor: Colors.amber,
                           spacing: 0.0)
                     ])),
-            Text(display(this.item.numberOfRatings) + " total ratings",
-                style: TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 18,
-                    color: Colors.grey[600])),
+            Center(
+              child: Text(display(this.item.numberOfRatings) + " total ratings",
+                  style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 18,
+                      color: Colors.grey[600])),
+            ),
             Container(
                 padding: EdgeInsets.all(16),
                 child: Column(
