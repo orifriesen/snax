@@ -91,7 +91,7 @@ class _TopList extends State<TopList> {
   @override
   void initState() {
     print("getting charts");
-    SnaxBackend.chartTrending().then(hasResults);
+    SnaxBackend.chartTop().then(hasResults);
 
     super.initState();
   }
@@ -123,11 +123,12 @@ Widget getList(BuildContext context, List<SnackItem> snackList) {
                     child: ClipRRect(
                         borderRadius: BorderRadius.circular(15.0),
                         child: Container(
+                          color: Colors.white,
                           child: Align(
                               alignment: Alignment.center,
                               widthFactor: .66,
                               heightFactor: 1.0,
-                              child: Image.asset("assets/placeholderImage.jpg",
+                              child: Image.network(trendingSnacks[index].image,
                                   width: 80, height: 80)),
                         ))),
                 title: Text(

@@ -40,11 +40,12 @@ class ProductPage extends StatelessWidget {
                     ClipRRect(
                         borderRadius: BorderRadius.circular(15.0),
                         child: Container(
+                          color: Colors.white,
                           child: Align(
                               alignment: Alignment.center,
                               widthFactor: .66,
                               heightFactor: 1.0,
-                              child: Image.asset("assets/placeholderImage.jpg",
+                              child: Image.network(item.image,
                                   width: 100, height: 100)),
                         )),
                     Container(
