@@ -172,8 +172,16 @@ class _UserReviewPageState extends State<UserReviewPage> {
                   children: [
                     FloatingActionButton.extended(
                       onPressed: () {
-                        SnaxBackend.postReview(this.widget.snackID, ratings);
-                        Navigator.pop(context);
+                        if (ratings.overall != null &&
+                            ratings.snackability != null &&
+                            ratings.mouthfeel != null &&
+                            ratings.accessibility != null) {
+                          SnaxBackend.postReview(this.widget.snackID, ratings)
+                              .catchError((error) => {});
+                          Navigator.pop(context);
+                        } else {
+                          print("Cannot submit");
+                        }
                       },
                       label: Text("Submit"),
                     ),
@@ -306,13 +314,12 @@ class _UserReviewPageState extends State<UserReviewPage> {
               trackHeight: 15.0,
             ),
             child: Slider(
-                // divisions: 4,
+                divisions: 4,
                 label: ratings.sweetness.ceil().toString(),
                 min: minValue,
                 max: maxValue,
                 value: ratings.sweetness,
                 onChanged: (val) {
-                  print(ratings.sweetness);
                   setState(() => ratings.sweetness = val);
                 })),
       ],
@@ -354,13 +361,12 @@ class _UserReviewPageState extends State<UserReviewPage> {
               trackHeight: 15.0,
             ),
             child: Slider(
-                // divisions: 4,
+                divisions: 4,
                 label: ratings.saltiness.ceil().toString(),
                 min: minValue,
                 max: maxValue,
                 value: ratings.saltiness,
                 onChanged: (val) {
-                  print(ratings.saltiness);
                   setState(() => ratings.saltiness = val);
                 })),
       ],
@@ -402,13 +408,12 @@ class _UserReviewPageState extends State<UserReviewPage> {
               trackHeight: 15.0,
             ),
             child: Slider(
-                // divisions: 4,
+                divisions: 4,
                 label: ratings.sourness.ceil().toString(),
                 min: minValue,
                 max: maxValue,
                 value: ratings.sourness,
                 onChanged: (val) {
-                  print(ratings.sourness);
                   setState(() => ratings.sourness = val);
                 })),
       ],
@@ -450,13 +455,12 @@ class _UserReviewPageState extends State<UserReviewPage> {
               trackHeight: 15.0,
             ),
             child: Slider(
-                // divisions: 4,
+                divisions: 4,
                 label: ratings.spicyness.ceil().toString(),
                 min: minValue,
                 max: maxValue,
                 value: ratings.spicyness,
                 onChanged: (val) {
-                  print(ratings.spicyness);
                   setState(() => ratings.spicyness = val);
                 })),
       ],
