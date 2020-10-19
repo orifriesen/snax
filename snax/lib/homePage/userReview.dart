@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:snax/backend/backend.dart';
+import 'package:snax/backend/requests.dart';
 
 class UserReviewPage extends StatefulWidget {
   @override
@@ -10,174 +11,179 @@ class UserReviewPage extends StatefulWidget {
 class _UserReviewPageState extends State<UserReviewPage> {
   SnackRating ratings = SnackRating(null, null, null, null, 0, 0, 0, 0);
 
+  String snackID;
   IconData _selectedIcon;
   final double minValue = 0.0;
   final double maxValue = 5.0;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Builder(
-        builder: (context) => Scaffold(
-          appBar: AppBar(
-            title: Text('Review'),
-          ),
-          body: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ListView(
-              children: <Widget>[
-                //* Overall Score
-                Container(
-                    child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Overall Score',
-                      style: TextStyle(fontSize: 25),
-                    ),
-                    Tooltip(
-                      message: "Rate the overall score of the item",
-                      child: IconButton(
-                        icon: Icon(Icons.info_outline),
-                        iconSize: 20.0,
-                        disabledColor: Colors.black,
-                        onPressed: () {},
-                      ),
-                    ),
-                  ],
-                )),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _overallScore(),
-                  ],
-                ),
-
-                // ratings.overall != null
-                //     ? Text(
-                //         "Rating: ${ratings.overall}",
-                //         style: TextStyle(fontWeight: FontWeight.bold),
-                //       )
-                //     : Container(),
-
-                //* Snackability
-                Container(
-                    child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Snackability',
-                      style: TextStyle(fontSize: 25),
-                    ),
-                    Tooltip(
-                      message: "Rate how snackable this item is",
-                      child: IconButton(
-                        icon: Icon(Icons.info_outline),
-                        iconSize: 20.0,
-                        disabledColor: Colors.black,
-                        onPressed: () {},
-                      ),
-                    ),
-                  ],
-                )),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _snackability(),
-                  ],
-                ),
-
-                //* Mouthfeel
-                Container(
-                    child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Mouth Feel',
-                      style: TextStyle(fontSize: 25),
-                    ),
-                    Tooltip(
-                      message: "Rate  the feeling of this item",
-                      child: IconButton(
-                        icon: Icon(Icons.info_outline),
-                        iconSize: 20.0,
-                        disabledColor: Colors.black,
-                        onPressed: () {},
-                      ),
-                    ),
-                  ],
-                )),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _mouthfeel(),
-                  ],
-                ),
-
-                //* Accessibility
-                Container(
-                    child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Accessibility',
-                      style: TextStyle(fontSize: 25),
-                    ),
-                    Tooltip(
-                      message: "Rate how accessible this item is",
-                      child: IconButton(
-                        icon: Icon(Icons.info_outline),
-                        iconSize: 20.0,
-                        disabledColor: Colors.black,
-                        onPressed: () {},
-                      ),
-                    ),
-                  ],
-                )),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _accessibility(),
-                  ],
-                ),
-
-                //* Sweetness
-                Container(
-                  child: _sweetness(),
-                ),
-
-                //* Saltiness
-                Container(
-                  child: _saltiness(),
-                ),
-
-                //* Sourness
-                Container(
-                  child: _sourness(),
-                ),
-
-                //* Spiciness
-                Container(
-                  child: _spiciness(),
-                ),
-
-                //* Submit Button
-                Container(
+    return Scaffold(
+        body: Builder(
+      builder: (context) => Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text('Review'),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ListView(
+            children: <Widget>[
+              //* Overall Score
+              Container(
                   child: Row(
-                    children: [
-                      FloatingActionButton.extended(
-                        onPressed: () => {},
-                        label: Text("Submit"),
-                      ),
-                    ],
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Overall Score',
+                    style: TextStyle(fontSize: 25),
                   ),
-                )
-              ],
-            ),
+                  Tooltip(
+                    message: "Rate the overall score of the item",
+                    child: IconButton(
+                      icon: Icon(Icons.info_outline),
+                      iconSize: 20.0,
+                      disabledColor: Colors.black,
+                      onPressed: () {},
+                    ),
+                  ),
+                ],
+              )),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _overallScore(),
+                ],
+              ),
+
+              // ratings.overall != null
+              //     ? Text(
+              //         "Rating: ${ratings.overall}",
+              //         style: TextStyle(fontWeight: FontWeight.bold),
+              //       )
+              //     : Container(),
+
+              //* Snackability
+              Container(
+                  child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Snackability',
+                    style: TextStyle(fontSize: 25),
+                  ),
+                  Tooltip(
+                    message: "Rate how snackable this item is",
+                    child: IconButton(
+                      icon: Icon(Icons.info_outline),
+                      iconSize: 20.0,
+                      disabledColor: Colors.black,
+                      onPressed: () {},
+                    ),
+                  ),
+                ],
+              )),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _snackability(),
+                ],
+              ),
+
+              //* Mouthfeel
+              Container(
+                  child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Mouth Feel',
+                    style: TextStyle(fontSize: 25),
+                  ),
+                  Tooltip(
+                    message: "Rate  the feeling of this item",
+                    child: IconButton(
+                      icon: Icon(Icons.info_outline),
+                      iconSize: 20.0,
+                      disabledColor: Colors.black,
+                      onPressed: () {},
+                    ),
+                  ),
+                ],
+              )),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _mouthfeel(),
+                ],
+              ),
+
+              //* Accessibility
+              Container(
+                  child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Accessibility',
+                    style: TextStyle(fontSize: 25),
+                  ),
+                  Tooltip(
+                    message: "Rate how accessible this item is",
+                    child: IconButton(
+                      icon: Icon(Icons.info_outline),
+                      iconSize: 20.0,
+                      disabledColor: Colors.black,
+                      onPressed: () {},
+                    ),
+                  ),
+                ],
+              )),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _accessibility(),
+                ],
+              ),
+
+              //* Sweetness
+              Container(
+                child: _sweetness(),
+              ),
+
+              //* Saltiness
+              Container(
+                child: _saltiness(),
+              ),
+
+              //* Sourness
+              Container(
+                child: _sourness(),
+              ),
+
+              //* Spiciness
+              Container(
+                child: _spiciness(),
+              ),
+
+              //* Submit Button
+              Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    FloatingActionButton.extended(
+                      onPressed: () {
+                        SnaxBackend.postReview(snackID, ratings);
+                        Navigator.pop(context);
+                      },
+                      label: Text("Submit"),
+                    ),
+                  ],
+                ),
+              )
+            ],
           ),
         ),
       ),
-    );
+    ));
   }
 
   Widget _overallScore() {
