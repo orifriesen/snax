@@ -372,6 +372,8 @@ class ProductPage extends StatelessWidget {
                             ])),
                       ],
                     ),
+
+                    //* Review
                     Row(
                       children: [
                         Container(
@@ -383,7 +385,7 @@ class ProductPage extends StatelessWidget {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            UserReviewPage()));
+                                            UserReviewPage(this.item.id)));
                               },
                               label: Text('Review This Snack'),
                             ))),

@@ -4,6 +4,8 @@ import 'package:snax/backend/backend.dart';
 import 'package:snax/backend/requests.dart';
 
 class UserReviewPage extends StatefulWidget {
+  UserReviewPage(this.snackID);
+  String snackID;
   @override
   _UserReviewPageState createState() => _UserReviewPageState();
 }
@@ -11,7 +13,6 @@ class UserReviewPage extends StatefulWidget {
 class _UserReviewPageState extends State<UserReviewPage> {
   SnackRating ratings = SnackRating(null, null, null, null, 0, 0, 0, 0);
 
-  String snackID;
   IconData _selectedIcon;
   final double minValue = 0.0;
   final double maxValue = 5.0;
@@ -171,7 +172,7 @@ class _UserReviewPageState extends State<UserReviewPage> {
                   children: [
                     FloatingActionButton.extended(
                       onPressed: () {
-                        SnaxBackend.postReview(snackID, ratings);
+                        SnaxBackend.postReview(this.widget.snackID, ratings);
                         Navigator.pop(context);
                       },
                       label: Text("Submit"),
