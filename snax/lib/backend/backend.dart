@@ -54,6 +54,16 @@ class SnaxUser {
   SnaxUser(this.username,this.name,this.uid);
 }
 
+class SnackSearchResultItem {
+  String name;
+  String id;
+  int numberOfRatings;
+  double averageRatingOverall;
+  String image;
+
+  SnackSearchResultItem(this.name,this.id,this.numberOfRatings,this.averageRatingOverall,this.image);
+}
+
 //A type of snack
 class SnackItemType {
   String name;

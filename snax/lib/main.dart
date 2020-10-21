@@ -34,8 +34,23 @@ void main() {
   //Initialize Firebase synchronously (has to happen after runApp)
   initializeFirebase().whenComplete(() {
     print("initialized firebase");
+
+    // me testing the backend functions
+
     // SnaxBackend.postReview("lays-limon", SnackRating(2.0,1.0,4.0,4.0,2.0,4.0,0.0,0.0)).then((d) {
     //   print("sent review");
+    // });
+    // SnaxBackend.search("Pringles").then((search) {
+    //   search.forEach((result) { 
+    //     print(result.id);
+    //     print(result.name);
+    //     print(result.numberOfRatings);
+    //     print(result.averageRatingOverall);
+    //     print(result.image);
+    //    });
+    // });
+    // SnaxBackend.getSnack("pringles-pizza").then((snack) {
+    //   print(snack.name);
     // });
   });
 }
