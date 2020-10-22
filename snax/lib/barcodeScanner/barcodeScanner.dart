@@ -3,6 +3,7 @@ import 'package:camerakit/CameraKitController.dart';
 import 'package:camerakit/CameraKitView.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:snax/backend/requests.dart';
+import 'package:snax/barcodeScanner/barcodeAddCode.dart';
 import 'package:snax/homePage/specificSnack.dart';
 
 class BarcodeScannerPage extends StatefulWidget {
@@ -41,7 +42,7 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
       } catch (error) {
         showDialog(context: context, builder: (context) => AlertDialog(title: Text("Not Found"),content: Text("Would you like to associate this barcode with a snack so other users can find it?"),actions: [
           FlatButton(onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => BarcodeAddCodePage(code)));
           }, child: Text("Find This Snack")),
           FlatButton(onPressed: () {
             Navigator.of(context).pop();
