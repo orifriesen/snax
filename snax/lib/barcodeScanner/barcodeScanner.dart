@@ -3,6 +3,7 @@ import 'package:camerakit/CameraKitController.dart';
 import 'package:camerakit/CameraKitView.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:snax/backend/requests.dart';
+import 'package:snax/homePage/specificSnack.dart';
 
 class BarcodeScannerPage extends StatefulWidget {
   @override
@@ -35,13 +36,23 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
       print("will be searching code " + code.toString());
       try {
         var snack = await SnaxBackend.upcResult(code);
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (BuildContext context) => ProductPage(item: snack)));
       } catch (error) {
-        Fluttertoast.showToast(msg: error);
+        showDialog(context: context, builder: (context) => AlertDialog(title: Text("Not Found"),content: Text("Would you like to associate this barcode with a snack so other users can find it?"),actions: [
+          FlatButton(onPressed: () {
+            Navigator.of(context).pop();
+          }, child: Text("Find This Snack")),
+          FlatButton(onPressed: () {
+            Navigator.of(context).pop();
+          }, child: Text("Cancel")),
+        ],));
         this.blacklist.add(code);
+        //Done loading
+        setState(() {
+          this.searching = false;
+        });
       }
-      setState(() {
-        this.searching = false;
-      });
     }
   }
 
