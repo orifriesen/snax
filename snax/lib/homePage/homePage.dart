@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
-import 'package:snax/barcodeScanner/barcodeScanner.dart';
 import 'package:snax/homePage/searchBar.dart';
 import 'package:snax/homePage/specificSnack.dart';
 
@@ -34,14 +33,6 @@ class _MainPageState extends State<MainPage> {
                       icon: const Icon(Icons.search),
                       onPressed: () {
                         showSearch(context: context, delegate: DataSearch());
-                      }),
-                  IconButton(
-                      icon: const Icon(Icons.qr_code_scanner),
-                      onPressed: () {
-                        //Present Widget
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                BarcodeScannerPage()));
                       })
                 ],
                 centerTitle: true,

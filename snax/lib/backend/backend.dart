@@ -54,16 +54,6 @@ class SnaxUser {
   SnaxUser(this.username,this.name,this.uid);
 }
 
-class SnackSearchResultItem {
-  String name;
-  String id;
-  int numberOfRatings;
-  double averageRatingOverall;
-  String image;
-
-  SnackSearchResultItem(this.name,this.id,this.numberOfRatings,this.averageRatingOverall,this.image);
-}
-
 //A type of snack
 class SnackItemType {
   String name;
@@ -80,9 +70,8 @@ class SnackItem {
   int upc;
   SnackRating averageRatings;
   int numberOfRatings;
-  int numberOfRatingsThisWeek;
   String image;
-  SnackItem(this.name,this.id,this.type,this.upc,this.averageRatings,this.numberOfRatings,this.numberOfRatingsThisWeek,this.image);
+  SnackItem(this.name,this.id,this.type,this.upc,this.averageRatings,this.numberOfRatings,this.image);
 }
 
 //A snack rating that is calculated, no user data is attached
