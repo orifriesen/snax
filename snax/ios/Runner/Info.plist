@@ -41,6 +41,8 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSCameraUsageDescription</key>
+	<string>Snax needs your camera to scan barcodes</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>

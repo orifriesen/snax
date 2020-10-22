@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
+import 'package:snax/barcodeScanner/barcodeScanner.dart';
 import 'package:snax/main.dart';
 
 import 'backend.dart';
@@ -14,6 +15,10 @@ import 'package:snax/loginPage/loginPage.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
+import 'package:camerakit/camerakit.dart';
+import 'package:camerakit/CameraKitController.dart';
+import 'package:camerakit/CameraKitView.dart';
 
 //Cache the snack types, references aren't fetched in these requests so this map will be used.
 //Example of what it looks like: { "candy-bar": "Candy Bar", "snack-mix": "Snack Mix" }
@@ -137,6 +142,59 @@ class SnaxBackend {
 
     //Return the mapped data
     return snacks;
+  }
+
+  static Future<SnackItem> upcResult(int upc) async {
+    //Wait for the firebase to be initiated
+    print("called at lears");
+    await _waitWhile(() => (fbStore == null));
+    //Make request
+    print("searching");
+    QuerySnapshot docs = await fbStore.collection("snacks").where("upc", isEqualTo: upc).limit(1).get();
+    print("got docs");
+    if (docs.size == 0) {
+      print("found no results for a upc");
+      throw "No Results";
+    }
+    QueryDocumentSnapshot doc = docs.docs[0];
+    //Fetch the snack types (if they don't already exist)
+    if (_snackTypes.keys.length == 0) {
+      (await fbStore.collection("snack-types").get()).docs.forEach((d) {
+        _snackTypes[d.id] = d.get("name");
+      });
+    }
+    //Get the image
+    String imgUrl;
+    try {
+      imgUrl = await fbStorage
+          .ref()
+          .child("snacks")
+          .child(doc.id + ".jpg")
+          .getDownloadURL();
+    } catch (error) {
+      // fetch image error
+    }
+    //Grab the id of the snack type
+    String snackTypeId = (doc.get("type") as DocumentReference).id;
+    //Return the snack
+    return SnackItem(
+        doc.get("name"),
+        doc.id,
+        SnackItemType(_snackTypes[snackTypeId], snackTypeId),
+        doc.get("upc"),
+        SnackRating(
+          toDouble(doc.data()["computed.score_overall"]),
+          toDouble(doc.data()["computed.score_mouthfeel"]),
+          toDouble(doc.data()["computed.score_accessibility"]),
+          toDouble(doc.data()["computed.score_snackability"]),
+          toDouble(doc.data()["computed.score_saltiness"]),
+          toDouble(doc.data()["computed.score_sourness"]),
+          toDouble(doc.data()["computed.score_sweetness"]),
+          toDouble(doc.data()["computed.score_spicyness"]),
+        ),
+        doc.data()["computed_ratings"],
+        doc.data()["computed_trend"],
+        imgUrl);
   }
 
   static Future<List<SnackSearchResultItem>> search(String query) async {
