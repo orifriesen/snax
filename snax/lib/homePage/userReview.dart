@@ -314,7 +314,7 @@ class _UserReviewPageState extends State<UserReviewPage> {
               trackHeight: 15.0,
             ),
             child: Slider(
-                divisions: 4,
+                divisions: 5,
                 label: ratings.sweetness.ceil().toString(),
                 min: minValue,
                 max: maxValue,
@@ -361,7 +361,7 @@ class _UserReviewPageState extends State<UserReviewPage> {
               trackHeight: 15.0,
             ),
             child: Slider(
-                divisions: 4,
+                divisions: 5,
                 label: ratings.saltiness.ceil().toString(),
                 min: minValue,
                 max: maxValue,
@@ -408,7 +408,7 @@ class _UserReviewPageState extends State<UserReviewPage> {
               trackHeight: 15.0,
             ),
             child: Slider(
-                divisions: 4,
+                divisions: 5,
                 label: ratings.sourness.ceil().toString(),
                 min: minValue,
                 max: maxValue,
@@ -455,7 +455,7 @@ class _UserReviewPageState extends State<UserReviewPage> {
               trackHeight: 15.0,
             ),
             child: Slider(
-                divisions: 4,
+                divisions: 5,
                 label: ratings.spicyness.ceil().toString(),
                 min: minValue,
                 max: maxValue,
