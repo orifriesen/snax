@@ -52,11 +52,5 @@ void main() {
     // SnaxBackend.getSnack("pringles-pizza").then((snack) {
     //   print(snack.name);
     // });
-
-    SnaxBackend.upcResult(885191430955).then((snack) {
-      print(snack.id);
-    }).catchError((err) {
-      print(err);
-    });
   });
 }

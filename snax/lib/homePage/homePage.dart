@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
-import 'package:snax/barcodeScanner/barcodeScanner.dart';
 import 'package:snax/homePage/searchBar.dart';
 import 'package:snax/homePage/specificSnack.dart';
 import 'snackList.dart';
@@ -11,9 +10,15 @@ import 'package:snax/backend/requests.dart';
 class MainPage extends StatefulWidget {
   @override
   _MainPageState createState() => _MainPageState();
+
 }
 
 class _MainPageState extends State<MainPage> {
+
+
+
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,13 +33,6 @@ class _MainPageState extends State<MainPage> {
                 onPressed: () {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => SnackSearch()));
-                }),
-            IconButton(
-                icon: const Icon(Icons.qr_code_scanner),
-                onPressed: () {
-                  //Present Widget
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => BarcodeScannerPage()));
                 })
           ],
           centerTitle: true,
