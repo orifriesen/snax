@@ -4,8 +4,11 @@ import 'package:snax/tabs.dart';
 import 'backend/backend.dart';
 import 'backend/requests.dart';
 
+
+
 //Navigator key allows for background tasks to present views without context (used for Firebase listeners)
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
+
 
 class MyApp extends StatelessWidget {
   @override
@@ -19,8 +22,9 @@ class MyApp extends StatelessWidget {
         "/login": (context) => LoginPage()
       },
       initialRoute: "/",
-      theme: ThemeData(primaryColor: Colors.red[800], accentColor: Colors.red),
-    );
+        theme: ThemeData(
+            primaryColor: Colors.red, accentColor: Colors.redAccent[100]),
+      );
   }
 }
 
@@ -30,14 +34,29 @@ void main() {
   //Initialize Firebase synchronously (has to happen after runApp)
   initializeFirebase().whenComplete(() {
     print("initialized firebase");
-    // SnaxBackend.postReview("doritos-bbq-rib", SnackRating(4.0,4.0,4.0,5.0,4.0,0.0,0.0,1.0)).then((d) {
+
+    // me testing the backend functions
+
+    // SnaxBackend.postReview("lays-limon", SnackRating(2.0,1.0,4.0,4.0,2.0,4.0,0.0,0.0)).then((d) {
     //   print("sent review");
     // });
-    // SnaxBackend.chartTop().then((snacks) => {
-    //   snacks.forEach((snack) {
-    //     print(snack.id);
-    //     print(snack.image);
-    //    })
+    // SnaxBackend.search("Pringles").then((search) {
+    //   search.forEach((result) { 
+    //     print(result.id);
+    //     print(result.name);
+    //     print(result.numberOfRatings);
+    //     print(result.averageRatingOverall);
+    //     print(result.image);
+    //    });
     // });
+    // SnaxBackend.getSnack("pringles-pizza").then((snack) {
+    //   print(snack.name);
+    // });
+
+    SnaxBackend.upcResult(885191430955).then((snack) {
+      print(snack.id);
+    }).catchError((err) {
+      print(err);
+    });
   });
 }

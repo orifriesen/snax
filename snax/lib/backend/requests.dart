@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
+import 'package:snax/barcodeScanner/barcodeScanner.dart';
 import 'package:snax/main.dart';
 
 import 'backend.dart';
@@ -14,6 +15,10 @@ import 'package:snax/loginPage/loginPage.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
+import 'package:camerakit/camerakit.dart';
+import 'package:camerakit/CameraKitController.dart';
+import 'package:camerakit/CameraKitView.dart';
 
 //Cache the snack types, references aren't fetched in these requests so this map will be used.
 //Example of what it looks like: { "candy-bar": "Candy Bar", "snack-mix": "Snack Mix" }
@@ -30,6 +35,51 @@ class SnaxBackend {
   // Snacks with most reviews in the last week
   static Future<List<SnackItem>> chartTrending({int limit = 25}) {
     return SnaxBackend._queryAllSnacks("computed_trend", true, limit);
+  }
+
+  static Future<SnackItem> getSnack(String id) async {
+    //Wait for the firebase to be initiated
+    await _waitWhile(() => (fbStore == null));
+    //Make request
+    DocumentSnapshot doc = await fbStore.collection("snacks").doc(id).get();
+    //Fetch the snack types (if they don't already exist)
+    if (_snackTypes.keys.length == 0) {
+      (await fbStore.collection("snack-types").get()).docs.forEach((d) {
+        _snackTypes[d.id] = d.get("name");
+      });
+    }
+    //Get the image
+    String imgUrl;
+    try {
+      imgUrl = await fbStorage
+          .ref()
+          .child("snacks")
+          .child(doc.id + ".jpg")
+          .getDownloadURL();
+    } catch (error) {
+      // fetch image error
+    }
+    //Grab the id of the snack type
+    String snackTypeId = (doc.get("type") as DocumentReference).id;
+    //Return the snack
+    return SnackItem(
+        doc.get("name"),
+        doc.id,
+        SnackItemType(_snackTypes[snackTypeId], snackTypeId),
+        doc.get("upc"),
+        SnackRating(
+          toDouble(doc.get("computed.score_overall")),
+          toDouble(doc.get("computed.score_mouthfeel")),
+          toDouble(doc.get("computed.score_accessibility")),
+          toDouble(doc.get("computed.score_snackability")),
+          toDouble(doc.get("computed.score_saltiness")),
+          toDouble(doc.get("computed.score_sourness")),
+          toDouble(doc.get("computed.score_sweetness")),
+          toDouble(doc.get("computed.score_spicyness")),
+        ),
+        doc.get("computed_ratings"),
+        doc.get("computed_trend"),
+        imgUrl);
   }
 
   // Private function for getting list of snacks with a sort and limit
@@ -50,19 +100,26 @@ class SnaxBackend {
         _snackTypes[d.id] = d.get("name");
       });
     }
+
+    //Create the list to return
     List<SnackItem> snacks = [];
+
+    //Iterate through results
     for (var doc in results) {
       //Grab the id of the snack type
       String snackTypeId = (doc.get("type") as DocumentReference).id;
       //Get the image
-      String dlURL;
+      String imgUrl;
       try {
-        dlURL =
-            await fbStorage.ref().child("snacks").child(doc.id + ".jpg").getDownloadURL();
+        imgUrl = await fbStorage
+            .ref()
+            .child("snacks")
+            .child(doc.id + ".jpg")
+            .getDownloadURL();
       } catch (error) {
-        //dl url is null. The image doesn't exist
+        // fetch image error
       }
-      //Create an array entry
+      //Return the snack
       snacks.add(SnackItem(
           doc.get("name"),
           doc.id,
@@ -79,10 +136,106 @@ class SnaxBackend {
             toDouble(doc.get("computed.score_spicyness")),
           ),
           doc.get("computed_ratings"),
-          dlURL));
+          doc.get("computed_trend"),
+          imgUrl));
     }
+
     //Return the mapped data
     return snacks;
+  }
+
+  static Future<SnackItem> upcResult(int upc) async {
+    //Wait for the firebase to be initiated
+    print("called at lears");
+    await _waitWhile(() => (fbStore == null));
+    //Make request
+    print("searching");
+    QuerySnapshot docs = await fbStore.collection("snacks").where("upc", isEqualTo: upc).limit(1).get();
+    print("got docs");
+    if (docs.size == 0) {
+      print("found no results for a upc");
+      throw "No Results";
+    }
+    QueryDocumentSnapshot doc = docs.docs[0];
+    //Fetch the snack types (if they don't already exist)
+    if (_snackTypes.keys.length == 0) {
+      (await fbStore.collection("snack-types").get()).docs.forEach((d) {
+        _snackTypes[d.id] = d.get("name");
+      });
+    }
+    //Get the image
+    String imgUrl;
+    try {
+      imgUrl = await fbStorage
+          .ref()
+          .child("snacks")
+          .child(doc.id + ".jpg")
+          .getDownloadURL();
+    } catch (error) {
+      // fetch image error
+    }
+    //Grab the id of the snack type
+    String snackTypeId = (doc.get("type") as DocumentReference).id;
+    //Return the snack
+    return SnackItem(
+        doc.get("name"),
+        doc.id,
+        SnackItemType(_snackTypes[snackTypeId], snackTypeId),
+        doc.get("upc"),
+        (doc.data()["computed"] != null) ? SnackRating(
+          toDouble(doc.data()["computed"]["score_overall"]),
+          toDouble(doc.data()["computed"]["score_mouthfeel"]),
+          toDouble(doc.data()["computed"]["score_accessibility"]),
+          toDouble(doc.data()["computed"]["score_snackability"]),
+          toDouble(doc.data()["computed"]["score_saltiness"]),
+          toDouble(doc.data()["computed"]["score_sourness"]),
+          toDouble(doc.data()["computed"]["score_sweetness"]),
+          toDouble(doc.data()["computed"]["score_spicyness"]),
+        ) : SnackRating(null,null,null,null,null,null,null,null),
+        doc.data()["computed_ratings"],
+        doc.data()["computed_trend"],
+        imgUrl);
+  }
+
+  static Future<List<SnackSearchResultItem>> search(String query) async {
+    //Wait for the cloud functions client to be initiated
+    await _waitWhile(() => (fbCloud == null));
+    //Call search function from database
+    HttpsCallableResult result = await fbCloud
+        .getHttpsCallable(functionName: "searchSnacks")
+        .call({"q": query.trim()});
+    //Parse
+    if (result.data["status"] == "success") {
+      //Create the results list and an empty classed list
+      List resultItems = result.data["results"];
+      List<SnackSearchResultItem> returnItems = [];
+      //Iterate through search results
+      for (var result in resultItems) {
+        //Get the image url
+        String imgUrl;
+        try {
+          imgUrl = await fbStorage
+              .ref()
+              .child("snacks")
+              .child(result["id"].toString() + ".jpg")
+              .getDownloadURL();
+        } catch (error) {}
+
+        //Add to the list
+        returnItems.add(SnackSearchResultItem(
+            result["name"].toString(),
+            result["id"].toString(),
+            (result["count"] != null) ? (result["count"]) as int : null,
+            (result["overall"] != null) ? (result["overall"]).toDouble() : null,
+            imgUrl));
+      }
+      //Return the list
+      return returnItems;
+    } else if (result.data["error"] != null) {
+      throw result.data["error"];
+    } else {
+      throw "An unknown error occurred, please try again later";
+    }
   }
 
   static Future<void> postReview(String snackId, SnackRating rating) async {
