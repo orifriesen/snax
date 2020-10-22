@@ -146,12 +146,12 @@ class SnaxBackend {
 
   static Future<SnackItem> upcResult(int upc) async {
     //Wait for the firebase to be initiated
-    print("called at lears");
     await _waitWhile(() => (fbStore == null));
     //Make request
-    print("searching");
     QuerySnapshot docs = await fbStore.collection("snacks").where("upc", isEqualTo: upc).limit(1).get();
-    print("got docs");
+    //If primary upc wasn't a success use a user-generated one
+    if (docs.size == 0) docs = await fbStore.collection("snacks").where("upc_extra",arrayContains: upc).limit(1).get();
+    //Check size
     if (docs.size == 0) {
       print("found no results for a upc");
       throw "No Results";
