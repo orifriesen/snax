@@ -202,7 +202,7 @@ Widget displayStarRating(double snackItemData, String title) {
   final double data = snackItemData;
   final String inputName = title;
   return Container(
-      padding: EdgeInsets.all(6),
+      padding: EdgeInsets.fromLTRB(2, 8, 2, 8),
       child: Column(children: <Widget>[
         Row(
           children: <Widget>[
@@ -219,7 +219,7 @@ Widget displayStarRating(double snackItemData, String title) {
             allowHalfRating: true,
             starCount: 5,
             rating: data,
-            size: 16,
+            size: 18,
             isReadOnly: true,
             filledIconData: Icons.star,
             halfFilledIconData: Icons.star_half,
@@ -242,7 +242,7 @@ Widget displayProgressBarRating(
             Text(inputName + ": ",
                 style: TextStyle(
                     fontWeight: FontWeight.w500,
-                    fontSize: 16,
+                    fontSize: 15,
                     color: Colors.grey[600])),
             Text(data.toStringAsFixed(1) + " ",
                 style: TextStyle(fontWeight: FontWeight.w400, fontSize: 20)),

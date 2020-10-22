@@ -119,7 +119,7 @@ Widget getList(BuildContext context, List<SnackItem> snackList) {
         itemCount: trendingSnacks != null ? trendingSnacks.length : 0,
         itemBuilder: (context, index) {
           return Container(
-            padding: EdgeInsets.fromLTRB(0, 12, 0, 12),
+            padding: EdgeInsets.fromLTRB(0, 0, 0, 24),
             child: ListTile(
                 onTap: () {
                   Navigator.push(
