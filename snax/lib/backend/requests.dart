@@ -144,6 +144,21 @@ class SnaxBackend {
     return snacks;
   }
 
+  static Future<void> addUpc(int upc,String snackId) async {
+    //Wait for the cloud functions client to be initiated
+    await _waitWhile(() => (fbCloud == null));
+    //Call search function from database
+    HttpsCallableResult result = await fbCloud
+        .getHttpsCallable(functionName: "addUserUpc")
+        .call({"upc": upc.toString(),"snack_id":snackId});
+    //Parse
+    if (result.data["status"] == "success") {
+      return;
+    } else {
+      throw result.data["error"];
+    }
+  }
+
   static Future<SnackItem> upcResult(int upc) async {
     //Wait for the firebase to be initiated
     await _waitWhile(() => (fbStore == null));
