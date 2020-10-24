@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:snax/backend/backend.dart';
 import 'package:snax/backend/requests.dart';
 
@@ -56,13 +59,6 @@ class _UserReviewPageState extends State<UserReviewPage> {
                   _overallScore(),
                 ],
               ),
-
-              // ratings.overall != null
-              //     ? Text(
-              //         "Rating: ${ratings.overall}",
-              //         style: TextStyle(fontWeight: FontWeight.bold),
-              //       )
-              //     : Container(),
 
               //* Snackability
               Container(
@@ -170,24 +166,30 @@ class _UserReviewPageState extends State<UserReviewPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    FloatingActionButton.extended(
-                      onPressed: () {
-                        if (ratings.overall != null &&
-                            ratings.snackability != null &&
-                            ratings.mouthfeel != null &&
-                            ratings.accessibility != null) {
-                          SnaxBackend.postReview(this.widget.snackID, ratings)
-                              .catchError((error) => {});
-                          Navigator.pop(context);
-                        } else {
-                          print("Cannot submit");
-                        }
-                      },
-                      label: Text("Submit"),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: FloatingActionButton.extended(
+                        elevation: 2,
+                        onPressed: () {
+                          if (ratings.overall != null &&
+                              ratings.snackability != null &&
+                              ratings.mouthfeel != null &&
+                              ratings.accessibility != null) {
+                            SnaxBackend.postReview(this.widget.snackID, ratings)
+                                .catchError((error) => {});
+                            Navigator.pop(context);
+                          } else {
+                            Fluttertoast.showToast(
+                                backgroundColor: Colors.red[300],
+                                msg: "Please rate this snack to submit!");
+                          }
+                        },
+                        label: Text("Submit Review"),
+                      ),
                     ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -291,8 +293,7 @@ class _UserReviewPageState extends State<UserReviewPage> {
             ),
             Tooltip(
               showDuration: Duration(seconds: 3),
-              message:
-                  "Use the slider to rate the sweetness of this item (left is savory, right is sweet)",
+              message: "Rate the sweetness of this snack (0: Savory, 5: Sweet)",
               child: IconButton(
                 icon: Icon(Icons.info_outline),
                 iconSize: 20.0,
@@ -339,7 +340,7 @@ class _UserReviewPageState extends State<UserReviewPage> {
             Tooltip(
               showDuration: Duration(seconds: 3),
               message:
-                  "Use the slider to rate the saltiness of this item (left is less salty, right is more salty)",
+                  "Rate the saltiness of this snack (0: Not Salty, 5: Very Salty)",
               child: IconButton(
                 icon: Icon(Icons.info_outline),
                 iconSize: 20.0,
@@ -386,7 +387,7 @@ class _UserReviewPageState extends State<UserReviewPage> {
             Tooltip(
               showDuration: Duration(seconds: 3),
               message:
-                  "Use the slider to rate the sourness of this item (left is less sour, right is more sour)",
+                  "Rate the sourness of this snack (0: Not Sour, 5: Very Sour)",
               child: IconButton(
                 icon: Icon(Icons.info_outline),
                 iconSize: 20.0,
@@ -433,7 +434,7 @@ class _UserReviewPageState extends State<UserReviewPage> {
             Tooltip(
               showDuration: Duration(seconds: 3),
               message:
-                  "Use the slider to rate the spiciness of this item (left is less spicy, right is more spicy)",
+                  "Rate the spiciness of this snack (0: Not Spicy, 5: Very Spicy)",
               child: IconButton(
                 icon: Icon(Icons.info_outline),
                 iconSize: 20.0,

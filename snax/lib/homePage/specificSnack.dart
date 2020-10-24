@@ -373,24 +373,28 @@ class ProductPage extends StatelessWidget {
                       ],
                     ),
 
-                    //* Review
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                            padding: EdgeInsets.all(8),
-                            child: Center(
-                                child: FloatingActionButton.extended(
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            UserReviewPage(this.item.id)));
-                              },
-                              label: Text('Review This Snack'),
-                            ))),
-                      ],
+                    //* Review Button
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                              padding: EdgeInsets.all(8),
+                              child: Center(
+                                  child: FloatingActionButton.extended(
+                                elevation: 2,
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              UserReviewPage(this.item.id)));
+                                },
+                                label: Text('Review This Snack'),
+                              ))),
+                        ],
+                      ),
                     )
                   ],
                 ))
