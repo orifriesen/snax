@@ -375,6 +375,7 @@ class ProductPage extends StatelessWidget {
 
                     //* Review
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
                             padding: EdgeInsets.all(8),
