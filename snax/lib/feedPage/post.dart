@@ -9,6 +9,7 @@ class Post {
   String body;
   DateTime time;
   int likes;
+  int comments;
 
   Post(this.user, this.snack, this.title, this.body, this.time);
 }
