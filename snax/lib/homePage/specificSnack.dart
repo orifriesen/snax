@@ -255,7 +255,7 @@ Widget displayProgressBarRating(
           progressColor: Theme.of(context).accentColor,
           backgroundColor: Colors.grey[200],
           animation: true,
-          animationDuration: 500,
+          animationDuration: 750,
         )
       ]));
 }
