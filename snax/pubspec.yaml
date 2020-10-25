@@ -34,6 +34,11 @@ dependencies:
   crypto: ^2.1.5
   shared_preferences: ^0.5.12
   fluttertoast: ^7.1.1
+<<<<<<< Updated upstream
+=======
+  percent_indicator: "^2.1.7+2"
+  like_button: ^1.0.3
+>>>>>>> Stashed changes
 
   flutter:
     sdk: flutter

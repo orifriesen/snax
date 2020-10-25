@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:snax/feedPage/demoValues.dart';
 import 'package:snax/loginPage/loginPage.dart';
 import 'package:snax/tabs.dart';
 import 'backend/backend.dart';
@@ -31,6 +32,9 @@ void main() {
   //Initialize Firebase synchronously (has to happen after runApp)
   initializeFirebase().whenComplete(() {
     print("initialized firebase");
+    SnaxBackend.chartTop().then((value) {
+      DemoValues.items = value;
+    });
     // SnaxBackend.postReview("doritos-bbq-rib", SnackRating(4.0,4.0,4.0,5.0,4.0,0.0,0.0,1.0)).then((d) {
     //   print("sent review");
     // });
