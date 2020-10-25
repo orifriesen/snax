@@ -58,7 +58,7 @@ class BarcodeAddSearch extends SearchDelegate<String> {
                         print("tapped");
                         BuildContext _context = context;
 
-                        if (this.confirmDialog)
+                        if (this.confirmDialog == true) {
                           showDialog(
                               context: context,
                               builder: (context) => AlertDialog(
@@ -102,8 +102,10 @@ class BarcodeAddSearch extends SearchDelegate<String> {
                                           textTheme: ButtonTextTheme.primary),
                                     ],
                                   ));
-                        else
+                        } else {
                           this.callback(snacks[i]);
+                          Navigator.of(context).pop();
+                        }
                       },
                     );
                   },
