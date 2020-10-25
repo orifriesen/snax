@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:camerakit/CameraKitController.dart';
 import 'package:camerakit/CameraKitView.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:snax/backend/backend.dart';
 import 'package:snax/backend/requests.dart';
 import 'package:snax/barcodeScanner/barcodeAddCode.dart';
 import 'package:snax/homePage/specificSnack.dart';
@@ -42,11 +43,31 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
       } catch (error) {
         showDialog(context: context, builder: (context) => AlertDialog(title: Text("Not Found"),content: Text("Would you like to associate this barcode with a snack so other users can find it?"),actions: [
           FlatButton(onPressed: () {
-            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => BarcodeAddCodePage(code)));
-          }, child: Text("Find This Snack")),
-          FlatButton(onPressed: () {
             Navigator.of(context).pop();
-          }, child: Text("Cancel")),
+          }, child: Text("Cancel"),textTheme: ButtonTextTheme.accent,),
+          FlatButton(onPressed: () {
+            //Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => BarcodeAddCodePage(code)));
+            Navigator.of(context).pop();
+            showSearch(context: context, delegate: BarcodeAddSearch((SnackSearchResultItem snack) {
+              setState(() {
+                this.searching = true;
+              });
+              SnaxBackend.addUpc(code, snack.id).then((_) {
+                Fluttertoast.showToast(msg: "Added Barcode", textColor: Colors.greenAccent);
+                blacklist.remove(code);
+              }).catchError((error) {
+                if (error.runtimeType.toString() == "String") {
+                  Fluttertoast.showToast(msg: error,textColor: Colors.redAccent);
+                } else {
+                  Fluttertoast.showToast(msg: "Failed to Add",textColor: Colors.redAccent);
+                }
+              }).whenComplete(() {
+                setState(() {
+                  this.searching = false;
+                });
+              });
+            }));
+          }, child: Text("Find This Snack"),),
         ],));
         this.blacklist.add(code);
         //Done loading

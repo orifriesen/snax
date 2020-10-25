@@ -144,14 +144,29 @@ class SnaxBackend {
     return snacks;
   }
 
+  static Future<void> addUpc(int upc,String snackId) async {
+    //Wait for the cloud functions client to be initiated
+    await _waitWhile(() => (fbCloud == null));
+    //Call search function from database
+    HttpsCallableResult result = await fbCloud
+        .getHttpsCallable(functionName: "addUserUpc")
+        .call({"upc": upc.toString(),"snack_id":snackId});
+    //Parse
+    if (result.data["status"] == "success") {
+      return;
+    } else {
+      throw result.data["error"];
+    }
+  }
+
   static Future<SnackItem> upcResult(int upc) async {
     //Wait for the firebase to be initiated
-    print("called at lears");
     await _waitWhile(() => (fbStore == null));
     //Make request
-    print("searching");
     QuerySnapshot docs = await fbStore.collection("snacks").where("upc", isEqualTo: upc).limit(1).get();
-    print("got docs");
+    //If primary upc wasn't a success use a user-generated one
+    if (docs.size == 0) docs = await fbStore.collection("snacks").where("upc_extra",arrayContains: upc).limit(1).get();
+    //Check size
     if (docs.size == 0) {
       print("found no results for a upc");
       throw "No Results";
