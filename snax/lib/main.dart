@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:snax/feedPage/demoValues.dart';
 import 'package:snax/loginPage/loginPage.dart';
 import 'package:snax/tabs.dart';
 import 'backend/backend.dart';
 import 'backend/requests.dart';
 
-
-
 //Navigator key allows for background tasks to present views without context (used for Firebase listeners)
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
-
 
 class MyApp extends StatelessWidget {
   @override
@@ -22,9 +20,9 @@ class MyApp extends StatelessWidget {
         "/login": (context) => LoginPage()
       },
       initialRoute: "/",
-        theme: ThemeData(
-            primaryColor: Colors.red, accentColor: Colors.redAccent[100]),
-      );
+      theme: ThemeData(
+          primaryColor: Colors.red, accentColor: Colors.redAccent[100]),
+    );
   }
 }
 
@@ -34,14 +32,14 @@ void main() {
   //Initialize Firebase synchronously (has to happen after runApp)
   initializeFirebase().whenComplete(() {
     print("initialized firebase");
-
-    // me testing the backend functions
-
-    // SnaxBackend.postReview("lays-limon", SnackRating(2.0,1.0,4.0,4.0,2.0,4.0,0.0,0.0)).then((d) {
+    SnaxBackend.chartTop().then((value) {
+      DemoValues.items = value;
+    });
+    // SnaxBackend.postReview("doritos-bbq-rib", SnackRating(4.0,4.0,4.0,5.0,4.0,0.0,0.0,1.0)).then((d) {
     //   print("sent review");
     // });
     // SnaxBackend.search("Pringles").then((search) {
-    //   search.forEach((result) { 
+    //   search.forEach((result) {
     //     print(result.id);
     //     print(result.name);
     //     print(result.numberOfRatings);
