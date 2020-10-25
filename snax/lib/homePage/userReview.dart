@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -282,189 +283,245 @@ class _UserReviewPageState extends State<UserReviewPage> {
   }
 
   Widget _sweetness() {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Sweetness',
-              style: TextStyle(fontSize: 25),
-            ),
-            Tooltip(
-              showDuration: Duration(seconds: 3),
-              message: "Rate the sweetness of this snack (0: Savory, 5: Sweet)",
-              child: IconButton(
-                icon: Icon(Icons.info_outline),
-                iconSize: 20.0,
-                disabledColor: Colors.black,
-                onPressed: () {},
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Sweetness',
+                style: TextStyle(fontSize: 25),
               ),
-            ),
-          ],
-        ),
-        SliderTheme(
-            data: SliderThemeData(
-              thumbColor: Colors.white,
-              valueIndicatorColor: Colors.amber,
-              valueIndicatorTextStyle: TextStyle(
-                fontSize: 10.0,
-                color: Colors.black,
+              //* This is the info icon
+              // Tooltip(
+              //   showDuration: Duration(seconds: 3),
+              //   message: "Rate the sweetness of this snack (0: Savory, 5: Sweet)",
+              //   child: IconButton(
+              //     icon: Icon(Icons.info_outline),
+              //     iconSize: 20.0,
+              //     disabledColor: Colors.black,
+              //     onPressed: () {},
+              //   ),
+              // ),
+            ],
+          ),
+          SliderTheme(
+              data: SliderThemeData(
+                thumbColor: Colors.white,
+                showValueIndicator: ShowValueIndicator.always,
+                valueIndicatorColor: Colors.amber,
+                valueIndicatorTextStyle: TextStyle(
+                  fontSize: 10.0,
+                  color: Colors.black,
+                ),
+                overlayColor: Colors.transparent,
+                trackHeight: 10.0,
               ),
-              overlayColor: Colors.transparent,
-              trackHeight: 15.0,
+              child: Slider(
+                  label: ratings.sweetness.floor().toString(),
+                  min: minValue,
+                  max: maxValue,
+                  value: ratings.sweetness,
+                  onChanged: (val) {
+                    setState(() => ratings.sweetness = val);
+                  })),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(24, 0, 26, 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Savory'),
+                Text('Sweet'),
+              ],
             ),
-            child: Slider(
-                divisions: 5,
-                label: ratings.sweetness.ceil().toString(),
-                min: minValue,
-                max: maxValue,
-                value: ratings.sweetness,
-                onChanged: (val) {
-                  setState(() => ratings.sweetness = val);
-                })),
-      ],
+          ),
+        ],
+      ),
     );
   }
 
   Widget _saltiness() {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Saltiness',
-              style: TextStyle(fontSize: 25),
-            ),
-            Tooltip(
-              showDuration: Duration(seconds: 3),
-              message:
-                  "Rate the saltiness of this snack (0: Not Salty, 5: Very Salty)",
-              child: IconButton(
-                icon: Icon(Icons.info_outline),
-                iconSize: 20.0,
-                disabledColor: Colors.black,
-                onPressed: () {},
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Saltiness',
+                style: TextStyle(fontSize: 25),
               ),
-            ),
-          ],
-        ),
-        SliderTheme(
-            data: SliderThemeData(
-              thumbColor: Colors.white,
-              valueIndicatorColor: Colors.amber,
-              valueIndicatorTextStyle: TextStyle(
-                fontSize: 10.0,
-                color: Colors.black,
+              //* This is the info icon
+              // Tooltip(
+              //   showDuration: Duration(minutes: 2),
+              //   message:
+              //       "Rate the saltiness of this snack (0: Not Salty, 5: Very Salty)",
+              //   child: IconButton(
+              //     icon: Icon(Icons.info_outline),
+              //     iconSize: 20.0,
+              //     disabledColor: Colors.black,
+              //     onPressed: () {},
+              //   ),
+              // ),
+            ],
+          ),
+          SliderTheme(
+              data: SliderThemeData(
+                thumbColor: Colors.white,
+                showValueIndicator: ShowValueIndicator.always,
+                valueIndicatorColor: Colors.amber,
+                valueIndicatorTextStyle: TextStyle(
+                  fontSize: 10.0,
+                  color: Colors.black,
+                ),
+                overlayColor: Colors.transparent,
+                trackHeight: 10.0,
               ),
-              overlayColor: Colors.transparent,
-              trackHeight: 15.0,
+              child: Slider(
+                  label: ratings.saltiness.floor().toString(),
+                  min: minValue,
+                  max: maxValue,
+                  value: ratings.saltiness,
+                  onChanged: (val) {
+                    setState(() => ratings.saltiness = val);
+                  })),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(24, 0, 26, 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Not Salty'),
+                Text('Very Salty'),
+              ],
             ),
-            child: Slider(
-                divisions: 5,
-                label: ratings.saltiness.ceil().toString(),
-                min: minValue,
-                max: maxValue,
-                value: ratings.saltiness,
-                onChanged: (val) {
-                  setState(() => ratings.saltiness = val);
-                })),
-      ],
+          ),
+        ],
+      ),
     );
   }
 
   Widget _sourness() {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Sourness',
-              style: TextStyle(fontSize: 25),
-            ),
-            Tooltip(
-              showDuration: Duration(seconds: 3),
-              message:
-                  "Rate the sourness of this snack (0: Not Sour, 5: Very Sour)",
-              child: IconButton(
-                icon: Icon(Icons.info_outline),
-                iconSize: 20.0,
-                disabledColor: Colors.black,
-                onPressed: () {},
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Sourness',
+                style: TextStyle(fontSize: 25),
               ),
-            ),
-          ],
-        ),
-        SliderTheme(
-            data: SliderThemeData(
-              thumbColor: Colors.white,
-              valueIndicatorColor: Colors.amber,
-              valueIndicatorTextStyle: TextStyle(
-                fontSize: 10.0,
-                color: Colors.black,
+              //* This is the info icon
+              // Tooltip(
+              //   showDuration: Duration(seconds: 3),
+              //   message:
+              //       "Rate the sourness of this snack (0: Not Sour, 5: Very Sour)",
+              //   child: IconButton(
+              //     icon: Icon(Icons.info_outline),
+              //     iconSize: 20.0,
+              //     disabledColor: Colors.black,
+              //     onPressed: () {},
+              //   ),
+              // ),
+            ],
+          ),
+          SliderTheme(
+              data: SliderThemeData(
+                thumbColor: Colors.white,
+                showValueIndicator: ShowValueIndicator.always,
+                valueIndicatorColor: Colors.amber,
+                valueIndicatorTextStyle: TextStyle(
+                  fontSize: 10.0,
+                  color: Colors.black,
+                ),
+                overlayColor: Colors.transparent,
+                trackHeight: 10.0,
               ),
-              overlayColor: Colors.transparent,
-              trackHeight: 15.0,
+              child: Slider(
+                  label: ratings.sourness.floor().toString(),
+                  min: minValue,
+                  max: maxValue,
+                  value: ratings.sourness,
+                  onChanged: (val) {
+                    setState(() => ratings.sourness = val);
+                  })),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(24, 0, 26, 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Not Sour'),
+                Text('Very Sour'),
+              ],
             ),
-            child: Slider(
-                divisions: 5,
-                label: ratings.sourness.ceil().toString(),
-                min: minValue,
-                max: maxValue,
-                value: ratings.sourness,
-                onChanged: (val) {
-                  setState(() => ratings.sourness = val);
-                })),
-      ],
+          ),
+        ],
+      ),
     );
   }
 
   Widget _spiciness() {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Spiciness',
-              style: TextStyle(fontSize: 25),
-            ),
-            Tooltip(
-              showDuration: Duration(seconds: 3),
-              message:
-                  "Rate the spiciness of this snack (0: Not Spicy, 5: Very Spicy)",
-              child: IconButton(
-                icon: Icon(Icons.info_outline),
-                iconSize: 20.0,
-                disabledColor: Colors.black,
-                onPressed: () {},
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Spiciness',
+                style: TextStyle(fontSize: 25),
               ),
-            ),
-          ],
-        ),
-        SliderTheme(
-            data: SliderThemeData(
-              thumbColor: Colors.white,
-              valueIndicatorColor: Colors.amber,
-              valueIndicatorTextStyle: TextStyle(
-                fontSize: 10.0,
-                color: Colors.black,
+              //* This is the info icon
+              // Tooltip(
+              //   showDuration: Duration(seconds: 3),
+              //   message:
+              //       "Rate the spiciness of this snack (0: Not Spicy, 5: Very Spicy)",
+              //   child: IconButton(
+              //     icon: Icon(Icons.info_outline),
+              //     iconSize: 20.0,
+              //     disabledColor: Colors.black,
+              //     onPressed: () {},
+              //   ),
+              // ),
+            ],
+          ),
+          SliderTheme(
+              data: SliderThemeData(
+                thumbColor: Colors.white,
+                showValueIndicator: ShowValueIndicator.always,
+                valueIndicatorColor: Colors.amber,
+                valueIndicatorTextStyle: TextStyle(
+                  fontSize: 10.0,
+                  color: Colors.black,
+                ),
+                overlayColor: Colors.transparent,
+                trackHeight: 10.0,
               ),
-              overlayColor: Colors.transparent,
-              trackHeight: 15.0,
+              child: Slider(
+                  label: ratings.spicyness.floor().toString(),
+                  min: minValue,
+                  max: maxValue,
+                  value: ratings.spicyness,
+                  onChanged: (val) {
+                    setState(() => ratings.spicyness = val);
+                  })),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(24, 0, 26, 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Not Spicy'),
+                Text('Very Spicy'),
+              ],
             ),
-            child: Slider(
-                divisions: 5,
-                label: ratings.spicyness.ceil().toString(),
-                min: minValue,
-                max: maxValue,
-                value: ratings.spicyness,
-                onChanged: (val) {
-                  setState(() => ratings.spicyness = val);
-                })),
-      ],
+          ),
+        ],
+      ),
     );
   }
 }
