@@ -15,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "551974726539-f9t2dejuf2ha7hrhc158iavm0eau3sk1.apps.googleusercontent.com",
+          "client_id": "551974726539-2gb5tf0thf4pra8aoepvlg18guugkkk0.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "us.eschr.snax",
-            "certificate_hash": "b295fdfa6164e610777857e44a36a33e3be23013"
+            "certificate_hash": "fa1f7895f15d8cd65a9424039dc2d351dbd36472"
           }
         },
         {
