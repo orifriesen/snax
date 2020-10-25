@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:loading/indicator/ball_pulse_indicator.dart';
+import 'package:loading/indicator/ball_spin_fade_loader_indicator.dart';
+import 'package:loading/loading.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
+import 'package:snax/barcodeScanner/barcodeScanner.dart';
 import 'package:snax/homePage/searchBar.dart';
 import 'package:snax/homePage/specificSnack.dart';
-import 'snackList.dart';
 
 import 'package:snax/backend/backend.dart';
 import 'package:snax/backend/requests.dart';
@@ -15,23 +18,41 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          bottom: TabBar(
-            tabs: [Tab(text: "Trending"), Tab(text: "Top")],
-          ),
-          title: Text("SNAX"),
-          actions: <Widget>[
-            IconButton(
-                icon: const Icon(Icons.search),
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => SnackSearch()));
-                })
-          ],
-          centerTitle: true,
-        ),
-        body: getTabBarPages());
+    return DefaultTabController(
+        length: 2,
+        child: new Scaffold(
+            body: new NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[
+              new SliverAppBar(
+                title: Text("SNAX"),
+                floating: true,
+                pinned: true,
+                snap: true,
+                bottom: TabBar(
+                  tabs: [Tab(text: "Trending"), Tab(text: "Top")],
+                ),
+                actions: <Widget>[
+                  IconButton(
+                      icon: const Icon(Icons.search),
+                      onPressed: () {
+                        showSearch(context: context, delegate: DataSearch());
+                      }),
+                  IconButton(
+                      icon: const Icon(Icons.qr_code_scanner),
+                      onPressed: () {
+                        //Present Widget
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                BarcodeScannerPage()));
+                      })
+                ],
+                centerTitle: true,
+              ),
+            ];
+          },
+          body: getTabBarPages(),
+        )));
   }
 }
 
@@ -92,7 +113,7 @@ class _TopList extends State<TopList> {
   @override
   void initState() {
     print("getting charts");
-    SnaxBackend.chartTrending().then(hasResults);
+    SnaxBackend.chartTop().then(hasResults);
 
     super.initState();
   }
@@ -106,62 +127,77 @@ class _TopList extends State<TopList> {
 Widget getList(BuildContext context, List<SnackItem> snackList) {
   final List<SnackItem> trendingSnacks = snackList;
   return Expanded(
-    child: ListView.builder(
-        itemCount: trendingSnacks != null ? trendingSnacks.length : 0,
-        itemBuilder: (context, index) {
-          return Container(
-            padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
-            child: ListTile(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              ProductPage(item: trendingSnacks[index])));
-                },
-                leading: Container(
-                    padding: EdgeInsets.fromLTRB(40, 2, 8, 2),
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(15.0),
-                        child: Container(
-                          child: Align(
-                              alignment: Alignment.center,
-                              widthFactor: .66,
-                              heightFactor: 1.0,
-                              child: Image.asset("assets/placeholderImage.jpg",
-                                  width: 80, height: 80)),
-                        ))),
-                title: Text(
-                  trendingSnacks[index].name,
-                  style: TextStyle(fontSize: 16),
-                ),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(" " + trendingSnacks[index].type.name),
-                    Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                      Text(
-                          " " +
-                              trendingSnacks[index]
-                                  .averageRatings
-                                  .overall
-                                  .toStringAsFixed(1),
-                          style: TextStyle(fontSize: 16)),
-                      SmoothStarRating(
-                          allowHalfRating: true,
-                          starCount: 5,
-                          rating: trendingSnacks[index].averageRatings.overall,
-                          size: 20.0,
-                          isReadOnly: true,
-                          filledIconData: Icons.star,
-                          halfFilledIconData: Icons.star_half,
-                          color: Colors.amber,
-                          borderColor: Colors.amber,
-                          spacing: 0.0)
-                    ]),
-                  ],
-                )),
-          );
-        }),
-  );
+      child: trendingSnacks != null
+          ? ListView.builder(
+              itemCount: trendingSnacks.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  padding: EdgeInsets.fromLTRB(0, 0, 0, 24),
+                  child: ListTile(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    ProductPage(item: trendingSnacks[index])));
+                      },
+                      leading: Container(
+                          padding: EdgeInsets.fromLTRB(40, 2, 8, 2),
+                          child: ClipRRect(
+                              borderRadius: BorderRadius.circular(15.0),
+                              child: Container(
+                                color: Colors.white,
+                                child: Align(
+                                    alignment: Alignment.center,
+                                    widthFactor: .66,
+                                    heightFactor: 1.0,
+                                    child: Image.network(
+                                        trendingSnacks[index].image,
+                                        width: 80,
+                                        height: 80)),
+                              ))),
+                      title: Text(
+                        trendingSnacks[index].name,
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(" " + trendingSnacks[index].type.name),
+                          Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Text(
+                                    " " +
+                                        trendingSnacks[index]
+                                            .averageRatings
+                                            .overall
+                                            .toStringAsFixed(1),
+                                    style: TextStyle(fontSize: 16)),
+                                SmoothStarRating(
+                                    allowHalfRating: true,
+                                    starCount: 5,
+                                    rating: trendingSnacks[index]
+                                        .averageRatings
+                                        .overall,
+                                    size: 20.0,
+                                    isReadOnly: true,
+                                    filledIconData: Icons.star,
+                                    halfFilledIconData: Icons.star_half,
+                                    color: Colors.amber,
+                                    borderColor: Colors.amber,
+                                    spacing: 0.0)
+                              ]),
+                        ],
+                      )),
+                );
+              })
+          : Container(
+              child: Center(
+                  child: Loading(
+                indicator: BallSpinFadeLoaderIndicator(),
+                size: 50.0,
+                color: Theme.of(context).primaryColor,
+              )),
+            ));
 }

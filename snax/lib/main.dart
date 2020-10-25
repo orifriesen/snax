@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       },
       initialRoute: "/",
       theme: ThemeData(
-          primaryColor: Colors.red, accentColor: Colors.redAccent[100]),
+          primaryColor: Colors.red, accentColor: Colors.redAccent[200]),
     );
   }
 }
@@ -38,11 +38,23 @@ void main() {
     // SnaxBackend.postReview("doritos-bbq-rib", SnackRating(4.0,4.0,4.0,5.0,4.0,0.0,0.0,1.0)).then((d) {
     //   print("sent review");
     // });
-    // SnaxBackend.chartTop().then((snacks) => {
-    //   snacks.forEach((snack) { 
-    //     print(snack.id);
-    //     print(snack.image);
-    //    })
+    // SnaxBackend.search("Pringles").then((search) {
+    //   search.forEach((result) {
+    //     print(result.id);
+    //     print(result.name);
+    //     print(result.numberOfRatings);
+    //     print(result.averageRatingOverall);
+    //     print(result.image);
+    //    });
     // });
+    // SnaxBackend.getSnack("pringles-pizza").then((snack) {
+    //   print(snack.name);
+    // });
+
+    SnaxBackend.upcResult(885191430955).then((snack) {
+      print(snack.id);
+    }).catchError((err) {
+      print(err);
+    });
   });
 }
