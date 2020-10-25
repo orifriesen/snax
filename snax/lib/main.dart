@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       },
       initialRoute: "/",
       theme: ThemeData(
-          primaryColor: Colors.red, accentColor: Colors.redAccent[100]),
+          primaryColor: Colors.red, accentColor: Colors.redAccent[200]),
     );
   }
 }
