@@ -4,6 +4,7 @@ import 'package:snax/feedPage/makePostPage.dart';
 import 'package:snax/feedPage/post.dart';
 import 'package:intl/intl.dart';
 import 'package:like_button/like_button.dart';
+import 'package:snax/feedPage/postDetailsPage.dart';
 
 class FeedPage extends StatefulWidget {
   @override
@@ -85,21 +86,25 @@ Widget getFeed(BuildContext context, List<Post> demoPost) {
         padding: const EdgeInsets.only(right: 2.0, left: 2.0),
         child: Card(
           child: GestureDetector(
-            //onTap: ,
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => PostDetailsPage(post: demoPosts[index]),
+                  fullscreenDialog: true));
+            },
             child: Container(
                 padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 4.0),
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ListTile(
-                        contentPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                        leading: CircleAvatar(
-                          backgroundColor: Colors.white,
-                          child: AspectRatio(
-                              aspectRatio: 1.0,
-                              child:
-                                  Image.network(demoPosts[index].snack.image)),
-                        ),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 0.0),
+                        visualDensity: VisualDensity.compact,
+                        leading: AspectRatio(
+                            aspectRatio: 1.0,
+                            child: Image.network(
+                              demoPosts[index].snack.image,
+                              scale: 4,
+                            )),
                         title: Text(demoPosts[index].snack.name),
                         subtitle: Text(demoPosts[index].user.name),
                       ),
