@@ -294,17 +294,6 @@ class _UserReviewPageState extends State<UserReviewPage> {
                 'Sweetness',
                 style: TextStyle(fontSize: 25),
               ),
-              //* This is the info icon
-              // Tooltip(
-              //   showDuration: Duration(seconds: 3),
-              //   message: "Rate the sweetness of this snack (0: Savory, 5: Sweet)",
-              //   child: IconButton(
-              //     icon: Icon(Icons.info_outline),
-              //     iconSize: 20.0,
-              //     disabledColor: Colors.black,
-              //     onPressed: () {},
-              //   ),
-              // ),
             ],
           ),
           SliderTheme(
@@ -354,18 +343,6 @@ class _UserReviewPageState extends State<UserReviewPage> {
                 'Saltiness',
                 style: TextStyle(fontSize: 25),
               ),
-              //* This is the info icon
-              // Tooltip(
-              //   showDuration: Duration(minutes: 2),
-              //   message:
-              //       "Rate the saltiness of this snack (0: Not Salty, 5: Very Salty)",
-              //   child: IconButton(
-              //     icon: Icon(Icons.info_outline),
-              //     iconSize: 20.0,
-              //     disabledColor: Colors.black,
-              //     onPressed: () {},
-              //   ),
-              // ),
             ],
           ),
           SliderTheme(
@@ -415,18 +392,6 @@ class _UserReviewPageState extends State<UserReviewPage> {
                 'Sourness',
                 style: TextStyle(fontSize: 25),
               ),
-              //* This is the info icon
-              // Tooltip(
-              //   showDuration: Duration(seconds: 3),
-              //   message:
-              //       "Rate the sourness of this snack (0: Not Sour, 5: Very Sour)",
-              //   child: IconButton(
-              //     icon: Icon(Icons.info_outline),
-              //     iconSize: 20.0,
-              //     disabledColor: Colors.black,
-              //     onPressed: () {},
-              //   ),
-              // ),
             ],
           ),
           SliderTheme(
@@ -476,18 +441,6 @@ class _UserReviewPageState extends State<UserReviewPage> {
                 'Spiciness',
                 style: TextStyle(fontSize: 25),
               ),
-              //* This is the info icon
-              // Tooltip(
-              //   showDuration: Duration(seconds: 3),
-              //   message:
-              //       "Rate the spiciness of this snack (0: Not Spicy, 5: Very Spicy)",
-              //   child: IconButton(
-              //     icon: Icon(Icons.info_outline),
-              //     iconSize: 20.0,
-              //     disabledColor: Colors.black,
-              //     onPressed: () {},
-              //   ),
-              // ),
             ],
           ),
           SliderTheme(
