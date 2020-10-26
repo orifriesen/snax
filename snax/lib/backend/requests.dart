@@ -144,6 +144,34 @@ class SnaxBackend {
     return snacks;
   }
 
+  static Future<void> feedMakePost(String title,String body,String snackId) async {
+    //Check all the values
+    if (title.isEmpty || title == null || body.isEmpty || body == null || snackId == null) {
+      throw "Missing Data";
+    } else if (title.length > 100 || body.length > 500) {
+      throw "Your title or body is too long";
+    }
+
+    //Login
+    await SnaxBackend.auth.loginIfNotAlready();
+    //Get token
+    String token = await fbAuth.currentUser.getIdToken();
+
+    //Send request
+    HttpsCallableResult result = await fbCloud
+        .getHttpsCallable(functionName: "feedMakePost")
+        .call({"snack_id":snackId,"title":title,"body":body,"token":token});
+    
+    if (result.data["status"] == "success") {
+      return;
+    } else {
+      throw result.data["error"];
+    }
+
+  }
+
+  
+
   static Future<void> addUpc(int upc,String snackId) async {
     //Wait for the cloud functions client to be initiated
     await _waitWhile(() => (fbCloud == null));

@@ -51,10 +51,15 @@ void main() {
     //   print(snack.name);
     // });
 
-    SnaxBackend.upcResult(885191430955).then((snack) {
-      print(snack.id);
-    }).catchError((err) {
-      print(err);
+    SnaxBackend.feedMakePost("Test Post", "this is a post by escher", "goldfish-cheddar").then((_) {
+      print("sent");
+    }).catchError((error) {
+      print("error");
     });
+    // SnaxBackend.upcResult(885191430955).then((snack) {
+    //   print(snack.id);
+    // }).catchError((err) {
+    //   print(err);
+    // });
   });
 }
