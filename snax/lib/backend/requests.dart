@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:snax/barcodeScanner/barcodeScanner.dart';
+import 'package:snax/feedPage/post.dart';
 import 'package:snax/main.dart';
 
 import 'backend.dart';
@@ -170,7 +171,9 @@ class SnaxBackend {
 
   }
 
-  
+  static Future<List<Post>> feedGetPosts() {
+    
+  }
 
   static Future<void> addUpc(int upc,String snackId) async {
     //Wait for the cloud functions client to be initiated
