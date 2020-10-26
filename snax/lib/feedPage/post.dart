@@ -8,10 +8,11 @@ class Post {
   String title;
   String body;
   DateTime time;
-  int likes = 0;
+  int likeCount = 0;
+  int commentCount = 0;
   List<Comment> comments = <Comment>[];
 
-  Post(this.user, this.snack, this.title, this.body, this.time, this.comments);
+  Post(this.user, this.snack, this.title, this.body, this.time, this.likeCount, this.commentCount, { this.comments });
 }
 
 class Comment {

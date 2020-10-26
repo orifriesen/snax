@@ -121,7 +121,7 @@ Widget getPostDetails(BuildContext context, Post post) {
                         size: 20.0,
                       );
                     },
-                    likeCount: (post.likes > 0) ? post.likes : null,
+                    likeCount: (post.likeCount > 0) ? post.likeCount : null,
                     countPostion: CountPostion.left,
                   )),
                 ],

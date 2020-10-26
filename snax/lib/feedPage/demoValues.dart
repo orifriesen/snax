@@ -18,28 +18,36 @@ class DemoValues {
         "Cheetos gud",
         "Omg i luv cheetos but can we do something about that mascot? He looks like a slimy middle aged man who would be a little league baseball coach predator.",
         DateTime.now(),
-        demoComments),
+        0,
+        0,
+        comments: demoComments),
     Post(
         demoUsers[1],
         items[1],
         "Cheetos gud",
         "Omg i luv cheetos but can we do something about that mascot? He looks like a slimy middle aged man who would be a little league baseball coach predat",
         DateTime.now(),
-        demoComments),
+        0,
+        0,
+        comments: demoComments),
     Post(
         demoUsers[1],
         items[3],
         "Cheetos gud",
         "Omg i luv cheetos but can we do something about that mascot? He looks like a slimy middle aged man who would be a little league baseball coach predato",
         DateTime.now(),
-        demoComments),
+        0,
+        0,
+        comments: demoComments),
     Post(
         demoUsers[1],
         items[0],
         "Cheetos gud",
         "Omg i luv cheetos but can we do something about that mascot? He looks like a slimy middle aged man who would be a little league baseball coach predator",
         DateTime.now(),
-        demoComments)
+        0,
+        0,
+        comments: demoComments)
   ];
 
   static List<Comment> demoComments = [

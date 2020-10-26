@@ -145,9 +145,14 @@ class SnaxBackend {
     return snacks;
   }
 
-  static Future<void> feedMakePost(String title,String body,String snackId) async {
+  static Future<void> feedMakePost(
+      String title, String body, String snackId) async {
     //Check all the values
-    if (title.isEmpty || title == null || body.isEmpty || body == null || snackId == null) {
+    if (title.isEmpty ||
+        title == null ||
+        body.isEmpty ||
+        body == null ||
+        snackId == null) {
       throw "Missing Data";
     } else if (title.length > 100 || body.length > 500) {
       throw "Your title or body is too long";
@@ -161,27 +166,104 @@ class SnaxBackend {
     //Send request
     HttpsCallableResult result = await fbCloud
         .getHttpsCallable(functionName: "feedMakePost")
-        .call({"snack_id":snackId,"title":title,"body":body,"token":token});
-    
+        .call({
+      "snack_id": snackId,
+      "title": title,
+      "body": body,
+      "token": token
+    });
+
     if (result.data["status"] == "success") {
       return;
     } else {
       throw result.data["error"];
     }
-
   }
 
-  static Future<List<Post>> feedGetPosts() {
-    
+  static Future<List<Post>> feedGetTopPosts() async {
+    //Wait for firebase init
+    await _waitWhile(() => (fbStore == null));
+    List<QueryDocumentSnapshot> docs = (await fbStore
+            .collection("feed")
+            .orderBy("likes", descending: true)
+            .limit(25)
+            .get())
+        .docs;
+    return _feedGrabRefs(docs);
   }
 
-  static Future<void> addUpc(int upc,String snackId) async {
+  //Grab extra info like user and snack for a given list of feed database items
+  static Future<List<Post>> _feedGrabRefs(
+      List<QueryDocumentSnapshot> docs) async {
+    //Prepare to grab all the snack and user ids
+    List<String> userIds = [];
+    List<String> snackIds = [];
+    docs.forEach((doc) {
+      //Add user id
+      if (!userIds.contains(doc.data()["uid"])) userIds.add(doc.data()["uid"]);
+      //Add snack id
+      if (!snackIds.contains(doc.data()["snack_id"]))
+        snackIds.add(doc.data()["snack_id"]);
+    });
+    //Grab all
+    List<QuerySnapshot> results = await Future.wait([
+      fbStore
+          .collection("snacks")
+          .where(FieldPath.documentId, whereIn: snackIds)
+          .get(),
+      fbStore
+          .collection("users")
+          .where(FieldPath.documentId, whereIn: userIds)
+          .get()
+    ]);
+    //Organize the data
+    Map<String, Map> snackDatas = {};
+    results[0].docs.forEach((e) {
+      snackDatas[e.id] = e.data();
+    });
+    Map<String, Map> userDatas = {};
+    results[1].docs.forEach((e) {
+      userDatas[e.id] = e.data();
+    });
+    //Create posts
+    List<Post> posts = [];
+    for (var doc in docs) {
+      var data = doc.data();
+      if (!snackDatas.containsKey(data["snack_id"]) ||
+          !userDatas.containsKey(data["uid"])) continue;
+      //Create user
+      SnaxUser user = SnaxUser(userDatas[data["uid"]]["username"],
+          userDatas[data["uid"]]["name"], data["uid"]);
+      //Get snack image
+      String snackImg;
+      try {
+        snackImg = await fbStorage
+            .ref()
+            .child("snacks")
+            .child(data["snack_id"] + ".jpg")
+            .getDownloadURL();
+      } catch (error) {}
+      //Create snack
+      SnackSearchResultItem snack = SnackSearchResultItem(
+          snackDatas[data["snack_id"]]["name"],
+          data["snack_id"],
+          snackDatas[data["snack_id"]]["computed_ratings"],
+          (snackDatas[data["snack_id"]]["computed"] ??
+              {"score_overall": null})["score_overall"],
+          snackImg);
+          //Add post
+      posts.add(Post(user, snack, data["post_title"], data["post_body"], DateTime.fromMillisecondsSinceEpoch(data["timestamp"]), data["comments"], data["likes"]));
+    }
+    return posts;
+  }
+
+  static Future<void> addUpc(int upc, String snackId) async {
     //Wait for the cloud functions client to be initiated
     await _waitWhile(() => (fbCloud == null));
     //Call search function from database
     HttpsCallableResult result = await fbCloud
         .getHttpsCallable(functionName: "addUserUpc")
-        .call({"upc": upc.toString(),"snack_id":snackId});
+        .call({"upc": upc.toString(), "snack_id": snackId});
     //Parse
     if (result.data["status"] == "success") {
       return;
@@ -194,9 +276,18 @@ class SnaxBackend {
     //Wait for the firebase to be initiated
     await _waitWhile(() => (fbStore == null));
     //Make request
-    QuerySnapshot docs = await fbStore.collection("snacks").where("upc", isEqualTo: upc).limit(1).get();
+    QuerySnapshot docs = await fbStore
+        .collection("snacks")
+        .where("upc", isEqualTo: upc)
+        .limit(1)
+        .get();
     //If primary upc wasn't a success use a user-generated one
-    if (docs.size == 0) docs = await fbStore.collection("snacks").where("upc_extra",arrayContains: upc).limit(1).get();
+    if (docs.size == 0)
+      docs = await fbStore
+          .collection("snacks")
+          .where("upc_extra", arrayContains: upc)
+          .limit(1)
+          .get();
     //Check size
     if (docs.size == 0) {
       print("found no results for a upc");
@@ -228,16 +319,18 @@ class SnaxBackend {
         doc.id,
         SnackItemType(_snackTypes[snackTypeId], snackTypeId),
         doc.get("upc"),
-        (doc.data()["computed"] != null) ? SnackRating(
-          toDouble(doc.data()["computed"]["score_overall"]),
-          toDouble(doc.data()["computed"]["score_mouthfeel"]),
-          toDouble(doc.data()["computed"]["score_accessibility"]),
-          toDouble(doc.data()["computed"]["score_snackability"]),
-          toDouble(doc.data()["computed"]["score_saltiness"]),
-          toDouble(doc.data()["computed"]["score_sourness"]),
-          toDouble(doc.data()["computed"]["score_sweetness"]),
-          toDouble(doc.data()["computed"]["score_spicyness"]),
-        ) : SnackRating(null,null,null,null,null,null,null,null),
+        (doc.data()["computed"] != null)
+            ? SnackRating(
+                toDouble(doc.data()["computed"]["score_overall"]),
+                toDouble(doc.data()["computed"]["score_mouthfeel"]),
+                toDouble(doc.data()["computed"]["score_accessibility"]),
+                toDouble(doc.data()["computed"]["score_snackability"]),
+                toDouble(doc.data()["computed"]["score_saltiness"]),
+                toDouble(doc.data()["computed"]["score_sourness"]),
+                toDouble(doc.data()["computed"]["score_sweetness"]),
+                toDouble(doc.data()["computed"]["score_spicyness"]),
+              )
+            : SnackRating(null, null, null, null, null, null, null, null),
         doc.data()["computed_ratings"],
         doc.data()["computed_trend"],
         imgUrl);
