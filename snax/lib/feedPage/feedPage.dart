@@ -78,7 +78,6 @@ class _FeedPageState extends State<FeedPage> {
 
 Widget getFeed(BuildContext context, List<Post> demoPost) {
   final List<Post> demoPosts = demoPost;
-  print(demoPosts.length);
   return ListView.builder(
     itemCount: demoPosts.length,
     itemBuilder: (context, index) {

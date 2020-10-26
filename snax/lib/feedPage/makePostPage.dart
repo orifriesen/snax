@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:snax/backend/backend.dart';
+import 'package:snax/backend/requests.dart';
 import 'package:snax/barcodeScanner/barcodeAddCode.dart';
 
 class MakePostPage extends StatefulWidget {
@@ -19,6 +20,9 @@ class _MakePostPageState extends State<MakePostPage> {
         }));
   }
 
+  final titleController = TextEditingController();
+  final bodyController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,7 +30,16 @@ class _MakePostPageState extends State<MakePostPage> {
         //title: Text("Make a Post"),
         actions: [
           TextButton(
-              onPressed: () {},
+              onPressed: () {
+                SnaxBackend.feedMakePost(
+                        titleController.text, bodyController.text, snack.id)
+                    .then((_) {
+                  print("sent");
+                  Navigator.pop(context);
+                }).catchError((error) {
+                  print("error");
+                });
+              },
               child: Text(
                 "Post",
                 style: TextStyle(
@@ -56,16 +69,20 @@ class _MakePostPageState extends State<MakePostPage> {
                   trailing: Icon(Icons.arrow_drop_down_outlined),
                   onTap: chooseNewSnack),
           TextField(
+            decoration: InputDecoration(
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.all(16.0),
+                hintText: 'Post Title'),
+            controller: titleController,
+          ),
+          Expanded(
+            child: TextField(
               decoration: InputDecoration(
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.all(16.0),
-                  hintText: 'Post Title')),
-          Expanded(
-            child: TextField(
-                decoration: InputDecoration(
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.all(16.0),
-                    hintText: 'What\'s your opinion on this snack?')),
+                  hintText: 'What\'s your opinion on this snack?'),
+              controller: bodyController,
+            ),
           )
         ],
       ),
