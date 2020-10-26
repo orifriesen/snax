@@ -4,11 +4,22 @@ import 'package:snax/homePage/snackList.dart';
 
 class Post {
   SnaxUser user;
-  SnackItem snack;
+  SnackSearchResultItem snack;
   String title;
   String body;
   DateTime time;
-  int likes;
+  int likes = 0;
+  List<Comment> comments = <Comment>[];
 
-  Post(this.user, this.snack, this.title, this.body, this.time);
+  Post(this.user, this.snack, this.title, this.body, this.time, this.comments);
+}
+
+class Comment {
+  SnaxUser user;
+  String body;
+  DateTime time;
+  int likes = 0;
+  List<Comment> comments = [];
+
+  Comment(this.user, this.body, this.time);
 }

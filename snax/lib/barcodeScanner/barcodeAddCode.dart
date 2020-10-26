@@ -4,8 +4,9 @@ import 'package:snax/backend/requests.dart';
 
 class BarcodeAddSearch extends SearchDelegate<String> {
   Function callback;
+  bool confirmDialog = false;
 
-  BarcodeAddSearch(this.callback);
+  BarcodeAddSearch(this.callback, {this.confirmDialog});
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -56,43 +57,55 @@ class BarcodeAddSearch extends SearchDelegate<String> {
                       onTap: () {
                         print("tapped");
                         BuildContext _context = context;
-                        showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                                  title: Text("Confirm Choice"),
-                                  content: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(bottom: 16),
-                                        child: Container(
-                                            height: 100,
-                                            child: AspectRatio(
-                                              child: Image.network(
-                                                  snacks[i].image),
-                                              aspectRatio: 1.0,
-                                            )),
-                                      ),
-                                      Text(snacks[i].name,style: TextStyle(fontWeight: FontWeight.bold),textAlign: TextAlign.center,),
-                                      Text("Is this the right snack?")
+
+                        if (this.confirmDialog == true) {
+                          showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                    title: Text("Confirm Choice"),
+                                    content: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.only(bottom: 16),
+                                          child: Container(
+                                              height: 100,
+                                              child: AspectRatio(
+                                                child: Image.network(
+                                                    snacks[i].image),
+                                                aspectRatio: 1.0,
+                                              )),
+                                        ),
+                                        Text(
+                                          snacks[i].name,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        Text("Is this the right snack?")
+                                      ],
+                                    ),
+                                    actions: [
+                                      FlatButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Text("Cancel"),
+                                          textTheme: ButtonTextTheme.accent),
+                                      FlatButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                            Navigator.of(_context).pop();
+                                            this.callback(snacks[i]);
+                                          },
+                                          child: Text("Confirm"),
+                                          textTheme: ButtonTextTheme.primary),
                                     ],
-                                  ),
-                                  actions: [
-                                    FlatButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: Text("Cancel"), textTheme: ButtonTextTheme.accent),
-                                    FlatButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                          Navigator.of(_context).pop();
-                                          this.callback(snacks[i]);
-                                        },
-                                        child: Text("Confirm"),
-                                        textTheme: ButtonTextTheme.primary),
-                                  ],
-                                ));
+                                  ));
+                        } else {
+                          this.callback(snacks[i]);
+                          Navigator.of(context).pop();
+                        }
                       },
                     );
                   },
