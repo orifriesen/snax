@@ -74,6 +74,8 @@ class _MakePostPageState extends State<MakePostPage> {
                 contentPadding: EdgeInsets.all(16.0),
                 hintText: 'Post Title'),
             controller: titleController,
+            minLines: 1,
+            maxLines: 2,
           ),
           Expanded(
             child: TextField(
@@ -82,6 +84,8 @@ class _MakePostPageState extends State<MakePostPage> {
                   contentPadding: EdgeInsets.all(16.0),
                   hintText: 'What\'s your opinion on this snack?'),
               controller: bodyController,
+              minLines: 1,
+              maxLines: 20,
             ),
           )
         ],
