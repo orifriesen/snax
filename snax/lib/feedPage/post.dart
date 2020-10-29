@@ -12,7 +12,9 @@ class Post {
   int commentCount = 0;
   List<Comment> comments = <Comment>[];
 
-  Post(this.user, this.snack, this.title, this.body, this.time, this.likeCount, this.commentCount, { this.comments });
+  Post(this.user, this.snack, this.title, this.body, this.time, this.likeCount,
+      this.commentCount,
+      {this.comments});
 }
 
 class Comment {
@@ -22,5 +24,5 @@ class Comment {
   int likes = 0;
   List<Comment> comments = [];
 
-  Comment(this.user, this.body, this.time);
+  Comment(this.user, this.body, this.time, this.likes);
 }

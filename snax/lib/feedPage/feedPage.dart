@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:snax/backend/requests.dart';
 import 'package:snax/feedPage/demoValues.dart';
 import 'package:snax/feedPage/makePostPage.dart';
 import 'package:snax/feedPage/post.dart';
@@ -14,6 +15,8 @@ class FeedPage extends StatefulWidget {
 class _FeedPageState extends State<FeedPage> {
   List<String> options = ["Trending", "New", "Top"];
   String dropDownValue = "Trending";
+
+  List<Post> posts = DemoValues.demoPosts;
 
   @override
   Widget build(BuildContext context) {
@@ -44,9 +47,17 @@ class _FeedPageState extends State<FeedPage> {
                     );
                   }).toList();
                 },
-                onChanged: (String newValue) {
+                onChanged: (String newValue) async {
+                  List<Post> newPosts;
+                  if (newValue == "Top") {
+                    print("getting top posts");
+                    newPosts = await SnaxBackend.feedGetTopPosts();
+                  } else
+                    newPosts = DemoValues.demoPosts;
                   setState(() {
                     dropDownValue = newValue;
+                    posts = newPosts;
+                    print(posts.length.toString() + " posts");
                   });
                 },
                 items: [
@@ -72,7 +83,7 @@ class _FeedPageState extends State<FeedPage> {
                 builder: (context) => MakePostPage(), fullscreenDialog: true));
           },
         ),
-        body: getFeed(context, DemoValues.demoPosts));
+        body: getFeed(context, posts));
   }
 }
 
