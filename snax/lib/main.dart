@@ -35,6 +35,16 @@ void main() {
     SnaxBackend.search("Cheet").then((value) {
       DemoValues.items = value;
     });
+    SnaxBackend.feedGetTopPosts().then((posts) => {
+          posts.forEach((post) {
+            print(post.title);
+            print(post.body);
+            print(post.snack.name);
+            print(post.user.name);
+            print(post.user.username);
+            print(post.time);
+          })
+        });
     print(DemoValues.items.length);
     // SnaxBackend.postReview("doritos-bbq-rib", SnackRating(4.0,4.0,4.0,5.0,4.0,0.0,0.0,1.0)).then((d) {
     //   print("sent review");
