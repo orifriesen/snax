@@ -258,8 +258,8 @@ class SnaxBackend {
           data["post_title"],
           data["post_body"],
           DateTime.fromMillisecondsSinceEpoch(data["timestamp"]),
-          data["comments"],
-          data["likes"]));
+          data["likes"],
+          data["comments"]));
     }
     return posts;
   }
