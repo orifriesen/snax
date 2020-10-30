@@ -128,70 +128,75 @@ Widget getList(BuildContext context, List<SnackItem> snackList) {
   final List<SnackItem> trendingSnacks = snackList;
   return Expanded(
       child: trendingSnacks != null
-          ? ListView.builder(
-              itemCount: trendingSnacks.length,
-              itemBuilder: (context, index) {
-                return Container(
-                  padding: EdgeInsets.fromLTRB(0, 0, 0, 24),
-                  child: ListTile(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    ProductPage(item: trendingSnacks[index])));
-                      },
-                      leading: Container(
-                          padding: EdgeInsets.fromLTRB(40, 2, 8, 2),
-                          child: ClipRRect(
-                              borderRadius: BorderRadius.circular(15.0),
-                              child: Container(
-                                color: Colors.white,
-                                child: Align(
-                                    alignment: Alignment.center,
-                                    widthFactor: .66,
-                                    heightFactor: 1.0,
-                                    child: Image.network(
-                                        trendingSnacks[index].image,
-                                        width: 80,
-                                        height: 80)),
-                              ))),
-                      title: Text(
-                        trendingSnacks[index].name,
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(" " + trendingSnacks[index].type.name),
-                          Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                Text(
-                                    " " +
-                                        trendingSnacks[index]
+          ? RefreshIndicator(
+              onRefresh: () async {
+                return await Future.delayed(Duration(seconds: 3));
+              },
+              child: ListView.builder(
+                  itemCount: trendingSnacks.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      padding: EdgeInsets.fromLTRB(0, 0, 0, 24),
+                      child: ListTile(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ProductPage(
+                                        item: trendingSnacks[index])));
+                          },
+                          leading: Container(
+                              padding: EdgeInsets.fromLTRB(40, 2, 8, 2),
+                              child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                  child: Container(
+                                    color: Colors.white,
+                                    child: Align(
+                                        alignment: Alignment.center,
+                                        widthFactor: .66,
+                                        heightFactor: 1.0,
+                                        child: Image.network(
+                                            trendingSnacks[index].image,
+                                            width: 80,
+                                            height: 80)),
+                                  ))),
+                          title: Text(
+                            trendingSnacks[index].name,
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(" " + trendingSnacks[index].type.name),
+                              Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    Text(
+                                        " " +
+                                            trendingSnacks[index]
+                                                .averageRatings
+                                                .overall
+                                                .toStringAsFixed(1),
+                                        style: TextStyle(fontSize: 16)),
+                                    SmoothStarRating(
+                                        allowHalfRating: true,
+                                        starCount: 5,
+                                        rating: trendingSnacks[index]
                                             .averageRatings
-                                            .overall
-                                            .toStringAsFixed(1),
-                                    style: TextStyle(fontSize: 16)),
-                                SmoothStarRating(
-                                    allowHalfRating: true,
-                                    starCount: 5,
-                                    rating: trendingSnacks[index]
-                                        .averageRatings
-                                        .overall,
-                                    size: 20.0,
-                                    isReadOnly: true,
-                                    filledIconData: Icons.star,
-                                    halfFilledIconData: Icons.star_half,
-                                    color: Colors.amber,
-                                    borderColor: Colors.amber,
-                                    spacing: 0.0)
-                              ]),
-                        ],
-                      )),
-                );
-              })
+                                            .overall,
+                                        size: 20.0,
+                                        isReadOnly: true,
+                                        filledIconData: Icons.star,
+                                        halfFilledIconData: Icons.star_half,
+                                        color: Colors.amber,
+                                        borderColor: Colors.amber,
+                                        spacing: 0.0)
+                                  ]),
+                            ],
+                          )),
+                    );
+                  }),
+            )
           : Container(
               child: Center(
                   child: Loading(
