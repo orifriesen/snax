@@ -98,8 +98,8 @@ Widget getFeed(BuildContext context, List<Post> demoPost) {
           child: GestureDetector(
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => PostDetailsPage(post: demoPosts[index]),
-                  fullscreenDialog: true));
+                builder: (context) => PostDetailsPage(post: demoPosts[index]),
+              ));
             },
             child: Container(
                 padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 4.0),
@@ -129,7 +129,8 @@ Widget getFeed(BuildContext context, List<Post> demoPost) {
                       ),
                       ListTile(
                         contentPadding: EdgeInsets.symmetric(horizontal: 0.0),
-                        leading: FittedBox(child: LikeButton(
+                        leading: FittedBox(
+                            child: LikeButton(
                           likeBuilder: (bool isLiked) {
                             return Icon(
                               Icons.favorite,
@@ -139,6 +140,8 @@ Widget getFeed(BuildContext context, List<Post> demoPost) {
                               size: 20.0,
                             );
                           },
+                          likeCount: demoPosts[index].likeCount,
+                          countPostion: CountPostion.right,
                         )),
                         trailing: Text(
                             DateFormat("MMM dd").format(demoPosts[index].time)),

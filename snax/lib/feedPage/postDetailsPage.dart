@@ -88,7 +88,8 @@ Widget getPostDetails(BuildContext context, Post post) {
               ),
               ListTile(
                 contentPadding: EdgeInsets.symmetric(horizontal: 0.0),
-                leading: FittedBox(child: LikeButton(
+                leading: FittedBox(
+                    child: LikeButton(
                   likeBuilder: (bool isLiked) {
                     return Icon(
                       Icons.favorite,
@@ -97,6 +98,7 @@ Widget getPostDetails(BuildContext context, Post post) {
                       size: 20.0,
                     );
                   },
+                  likeCount: post.likeCount,
                 )),
                 trailing: Text(DateFormat("MMM dd").format(post.time)),
               ),
@@ -143,7 +145,7 @@ Widget getPostDetails(BuildContext context, Post post) {
                         size: 20.0,
                       );
                     },
-                    likeCount: (post.likeCount > 0) ? post.likeCount : null,
+                    likeCount: (comment.likes > 0) ? comment.likes : null,
                     countPostion: CountPostion.left,
                   )),
                 ],
