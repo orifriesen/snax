@@ -37,6 +37,7 @@ class _AppTabsState extends State<AppTabs> {
             new BottomNavigationBarItem(
                 icon: Icon(Icons.person), label: "Profile")
           ],
+          showUnselectedLabels: false,
         ),
         body: [
           DefaultTabController(length: 2, child: MainPage()),
