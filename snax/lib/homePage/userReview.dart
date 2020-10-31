@@ -8,8 +8,9 @@ import 'package:snax/backend/backend.dart';
 import 'package:snax/backend/requests.dart';
 
 class UserReviewPage extends StatefulWidget {
-  UserReviewPage(this.snackID);
+  UserReviewPage(this.snackID, this.item);
   String snackID;
+  String item;
   @override
   _UserReviewPageState createState() => _UserReviewPageState();
 }
@@ -28,7 +29,7 @@ class _UserReviewPageState extends State<UserReviewPage> {
       builder: (context) => Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text('Review'),
+          title: Text('Review ${this.widget.item}'),
         ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),

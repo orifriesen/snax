@@ -182,6 +182,7 @@ class ProductPage extends StatelessWidget {
                                     MaterialPageRoute(
                                         builder: (context) => UserReviewPage(
                                               this.item.id,
+                                              this.item.name,
                                             )));
                               },
                               child: Text(
