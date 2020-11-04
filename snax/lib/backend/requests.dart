@@ -268,11 +268,18 @@ class SnaxBackend {
           snackDatas[data["snack_id"]]["name"],
           data["snack_id"],
           snackDatas[data["snack_id"]]["computed_ratings"],
-          (snackDatas[data["snack_id"]]["computed"] ??
-              {"score_overall": null})["score_overall"],
+          toDouble((snackDatas[data["snack_id"]]["computed"] ??
+              {"score_overall": null})["score_overall"]),
           snackImg);
-          //Add post
-      posts.add(Post(user, snack, data["post_title"], data["post_body"], DateTime.fromMillisecondsSinceEpoch(data["timestamp"]), data["comments"], data["likes"]));
+      //Add post
+      posts.add(Post(
+          user,
+          snack,
+          data["post_title"],
+          data["post_body"],
+          DateTime.fromMillisecondsSinceEpoch(data["timestamp"]),
+          data["likes"],
+          data["comments"]));
     }
     return posts;
   }

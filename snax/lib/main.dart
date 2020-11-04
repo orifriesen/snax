@@ -43,6 +43,7 @@ void main() {
             print(post.user.name);
             print(post.user.username);
             print(post.time);
+            print(post.likeCount);
           })
         });
     print(DemoValues.items.length);

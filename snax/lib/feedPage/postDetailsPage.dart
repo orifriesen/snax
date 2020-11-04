@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
+import 'package:snax/backend/requests.dart';
+import 'package:snax/feedPage/demoValues.dart';
 import 'package:snax/feedPage/post.dart';
 import 'package:intl/intl.dart';
 
@@ -19,7 +21,7 @@ class _PostDetailsPage extends State<PostDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: getPostDetails(context, widget.post),
+      body: commentLoader(context, widget.post),
       bottomSheet: TextField(
         minLines: 1,
         maxLines: 5,
@@ -28,6 +30,26 @@ class _PostDetailsPage extends State<PostDetailsPage> {
       ),
     );
   }
+}
+
+Widget commentLoader(BuildContext context, Post post) {
+  if (post.comments != null)
+    return getPostDetails(context, post);
+  else
+    return FutureBuilder(
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          post.comments = DemoValues.demoComments; // delete once comments load
+          return getPostDetails(context, post);
+        } else if (snapshot.hasError)
+          return Center(
+            child: Text("Failed to load post."),
+          );
+        else
+          return Center(child: CircularProgressIndicator());
+      },
+      future: SnaxBackend.search("Cheetos"),
+    );
 }
 
 Widget getPostDetails(BuildContext context, Post post) {
@@ -66,7 +88,8 @@ Widget getPostDetails(BuildContext context, Post post) {
               ),
               ListTile(
                 contentPadding: EdgeInsets.symmetric(horizontal: 0.0),
-                leading: FittedBox(child: LikeButton(
+                leading: FittedBox(
+                    child: LikeButton(
                   likeBuilder: (bool isLiked) {
                     return Icon(
                       Icons.favorite,
@@ -75,6 +98,7 @@ Widget getPostDetails(BuildContext context, Post post) {
                       size: 20.0,
                     );
                   },
+                  likeCount: post.likeCount,
                 )),
                 trailing: Text(DateFormat("MMM dd").format(post.time)),
               ),
@@ -121,7 +145,7 @@ Widget getPostDetails(BuildContext context, Post post) {
                         size: 20.0,
                       );
                     },
-                    likeCount: (post.likeCount > 0) ? post.likeCount : null,
+                    likeCount: (comment.likes > 0) ? comment.likes : null,
                     countPostion: CountPostion.left,
                   )),
                 ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:snax/backend/requests.dart';
 import 'package:snax/feedPage/demoValues.dart';
 import 'package:snax/feedPage/makePostPage.dart';
 import 'package:snax/feedPage/post.dart';
@@ -14,6 +15,8 @@ class FeedPage extends StatefulWidget {
 class _FeedPageState extends State<FeedPage> {
   List<String> options = ["Trending", "New", "Top"];
   String dropDownValue = "Trending";
+
+  List<Post> posts = DemoValues.demoPosts;
 
   @override
   Widget build(BuildContext context) {
@@ -44,9 +47,17 @@ class _FeedPageState extends State<FeedPage> {
                     );
                   }).toList();
                 },
-                onChanged: (String newValue) {
+                onChanged: (String newValue) async {
+                  List<Post> newPosts;
+                  if (newValue == "Top") {
+                    print("getting top posts");
+                    newPosts = await SnaxBackend.feedGetTopPosts();
+                  } else
+                    newPosts = DemoValues.demoPosts;
                   setState(() {
                     dropDownValue = newValue;
+                    posts = newPosts;
+                    print(posts.length.toString() + " posts");
                   });
                 },
                 items: [
@@ -72,13 +83,12 @@ class _FeedPageState extends State<FeedPage> {
                 builder: (context) => MakePostPage(), fullscreenDialog: true));
           },
         ),
-        body: getFeed(context, DemoValues.demoPosts));
+        body: getFeed(context, posts));
   }
 }
 
 Widget getFeed(BuildContext context, List<Post> demoPost) {
   final List<Post> demoPosts = demoPost;
-  print(demoPosts.length);
   return ListView.builder(
     itemCount: demoPosts.length,
     itemBuilder: (context, index) {
@@ -88,8 +98,8 @@ Widget getFeed(BuildContext context, List<Post> demoPost) {
           child: GestureDetector(
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => PostDetailsPage(post: demoPosts[index]),
-                  fullscreenDialog: true));
+                builder: (context) => PostDetailsPage(post: demoPosts[index]),
+              ));
             },
             child: Container(
                 padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 4.0),
@@ -119,7 +129,8 @@ Widget getFeed(BuildContext context, List<Post> demoPost) {
                       ),
                       ListTile(
                         contentPadding: EdgeInsets.symmetric(horizontal: 0.0),
-                        leading: FittedBox(child: LikeButton(
+                        leading: FittedBox(
+                            child: LikeButton(
                           likeBuilder: (bool isLiked) {
                             return Icon(
                               Icons.favorite,
@@ -129,6 +140,8 @@ Widget getFeed(BuildContext context, List<Post> demoPost) {
                               size: 20.0,
                             );
                           },
+                          likeCount: demoPosts[index].likeCount,
+                          countPostion: CountPostion.right,
                         )),
                         trailing: Text(
                             DateFormat("MMM dd").format(demoPosts[index].time)),
