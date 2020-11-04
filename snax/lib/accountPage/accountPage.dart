@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:snax/accountPage/settingsPage.dart';
 import 'package:snax/accountPage/sizeConfig.dart';
+
+import 'editProfile.dart';
 
 import 'package:snax/backend/backend.dart';
 import 'package:snax/backend/requests.dart';
@@ -16,52 +19,59 @@ class _AccountPageState extends State<AccountPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("My Account"),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.settings),
-            onPressed: () => {},
-          )
-        ],
-      ),
-      body: ListView(
-        children: [
-          Stack(
-            overflow: Overflow.visible,
+      body: Builder(
+        builder: (context) => Scaffold(
+          appBar: AppBar(
+            title: Text("My Account"),
+            actions: [
+              IconButton(
+                icon: Icon(Icons.settings),
+                onPressed: () => {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => SettingsPage())),
+                },
+              )
+            ],
+          ),
+          body: ListView(
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [burningOrangeEnd, burningOrangeStart],
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    width: double.infinity,
-                    height: 350,
-                    child: Column(
-                      children: [
-                        _profileInfo(),
-                        SizedBox(
-                          height: 10,
+              Stack(
+                overflow: Overflow.visible,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [burningOrangeEnd, burningOrangeStart],
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        width: double.infinity,
+                        height: 250,
+                        child: Column(
+                          children: [
+                            _profileInfo(),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            _profileBio(),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            _profileStats(context),
+                          ],
                         ),
-                        _profileBio(),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        _profileStats(),
-                      ],
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -74,8 +84,8 @@ Widget _profileInfo() {
       Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
-          width: 100,
-          height: 160,
+          width: 80,
+          height: 80,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             image: DecorationImage(
@@ -99,8 +109,8 @@ Widget _profileInfo() {
             height: 5,
           ),
           Text(
-            'Your Handle',
-            style: TextStyle(fontSize: 15, color: Colors.white),
+            '@YourHandle',
+            style: TextStyle(fontSize: 15, color: Colors.grey[300]),
           ),
         ],
       ),
@@ -126,7 +136,7 @@ Widget _profileBio() {
 }
 
 //* This is for the following, followers, and EP
-Widget _profileStats() {
+Widget _profileStats(context) {
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: Row(
@@ -176,7 +186,10 @@ Widget _profileStats() {
               borderRadius: BorderRadius.circular(30),
               side: BorderSide(color: Colors.white, width: 2),
             ),
-            onPressed: () => {},
+            onPressed: () => {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => EditProfile())),
+            },
             child: Text('Edit Profile', style: TextStyle(color: Colors.white)),
           ),
         ),
