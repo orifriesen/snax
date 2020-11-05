@@ -192,6 +192,26 @@ class SnaxBackend {
     return _feedGrabRefs(docs);
   }
 
+  static Future<void> feedCommentOnPost(String postId,String content) async {
+    if (content.isEmpty ||
+        content == null ||
+        postId == null) {
+      throw "Missing Data";
+    } else if (content.length > 500) {
+      throw "Your title or body is too long";
+    }
+
+    //Login
+    await SnaxBackend.auth.loginIfNotAlready();
+    
+    //Send request
+    HttpsCallableResult result = await fbCloud
+        .getHttpsCallable(functionName: "feedMakeComment")
+        .call({
+      "post-id"
+    });
+  }
+
   //Grab extra info like user and snack for a given list of feed database items
   static Future<List<Post>> _feedGrabRefs(
       List<QueryDocumentSnapshot> docs) async {
