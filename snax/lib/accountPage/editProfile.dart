@@ -16,6 +16,7 @@ class _EditProfileState extends State<EditProfile> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         leadingWidth: 90,
@@ -57,13 +58,17 @@ class _EditProfileState extends State<EditProfile> {
             Divider(
               color: Colors.black,
             ),
-            _nameTextField(),
-            Divider(
-              color: Colors.black,
-            ),
-            _bioTextField(),
-            Divider(
-              color: Colors.black,
+            Container(
+              height: 200,
+              width: double.infinity,
+              margin: EdgeInsets.symmetric(horizontal: size.width * .05),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _nameTextField(),
+                  _bioTextField(),
+                ],
+              ),
             ),
           ],
         ),
@@ -138,21 +143,26 @@ class _EditProfileState extends State<EditProfile> {
 
   //* This allows the user to change their name
   Widget _nameTextField() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
+    return Material(
+      elevation: 4,
+      shadowColor: Colors.grey,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
       child: TextFormField(
         decoration: InputDecoration(
-          prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
-          isDense: true,
-          prefixIcon: Padding(
-            padding: const EdgeInsets.all(8),
-            child: Text(
-              'Name',
-              style: TextStyle(fontSize: 15),
-            ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: BorderSide.none,
           ),
-          border: InputBorder.none,
-          hintText: 'Enter your name',
+          counterStyle: TextStyle(color: Colors.transparent, fontSize: 0),
+          contentPadding: EdgeInsets.only(left: 16, top: 16),
+          hintText: 'Name',
+          hintStyle: TextStyle(
+            letterSpacing: 2,
+            color: Colors.black54,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );
@@ -160,25 +170,29 @@ class _EditProfileState extends State<EditProfile> {
 
   //* This allows the user to change their bio
   Widget _bioTextField() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
+    return Material(
+      elevation: 4,
+      shadowColor: Colors.grey,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
       child: TextFormField(
-        maxLength: 150,
         minLines: 1,
         maxLines: 5,
+        maxLength: 150,
         decoration: InputDecoration(
-          counterStyle: TextStyle(color: Colors.transparent, fontSize: 0),
-          prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
-          isDense: true,
-          prefixIcon: Padding(
-            padding: const EdgeInsets.all(8),
-            child: Text(
-              'Bio',
-              style: TextStyle(fontSize: 15),
-            ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: BorderSide.none,
           ),
-          border: InputBorder.none,
+          counterStyle: TextStyle(color: Colors.transparent, fontSize: 0),
+          contentPadding: EdgeInsets.only(left: 16, top: 16),
           hintText: 'Bio',
+          hintStyle: TextStyle(
+            letterSpacing: 2,
+            color: Colors.black54,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );

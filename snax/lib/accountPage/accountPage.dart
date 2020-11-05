@@ -10,6 +10,7 @@ import 'tabPages/secondTab.dart';
 
 import 'package:snax/backend/backend.dart';
 import 'package:snax/backend/requests.dart';
+import 'package:snax/helpers.dart';
 
 class AccountPage extends StatefulWidget {
   @override
@@ -64,14 +65,14 @@ class _AccountPageState extends State<AccountPage>
                 padding: const EdgeInsets.all(0.0),
                 child: Container(
                   decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                          color: Color.fromARGB(60, 0, 0, 0), blurRadius: 12)
+                    ],
                     borderRadius: BorderRadius.only(
                         bottomLeft: Radius.circular(40),
                         bottomRight: Radius.circular(40)),
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [burningOrangeEnd, burningOrangeStart],
-                    ),
+                    gradient: SnaxGradients.redBigThings,
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
