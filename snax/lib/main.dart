@@ -20,6 +20,7 @@ class MyApp extends StatelessWidget {
         "/login": (context) => LoginPage()
       },
       initialRoute: "/",
+      darkTheme: ThemeData.dark(),
       theme: ThemeData(
           primaryColor: Colors.red, accentColor: Colors.redAccent[200]),
     );
