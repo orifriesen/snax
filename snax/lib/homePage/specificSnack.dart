@@ -4,6 +4,7 @@ import 'package:number_display/number_display.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 import 'package:snax/backend/backend.dart';
+import 'package:snax/helpers.dart';
 import 'package:snax/homePage/searchBar.dart';
 import 'package:snax/homePage/ratingInfoPage.dart';
 import 'package:snax/homePage/userReview.dart';
@@ -16,30 +17,44 @@ class ProductPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      CustomPaint(
-        painter: Sky(),
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: <Widget>[
+          IconButton(
+              icon: const Icon(Icons.search),
+              onPressed: () {
+                showSearch(context: context, delegate: DataSearch());
+              }),
+          IconButton(icon: const Icon(Icons.more_vert), onPressed: () {})
+        ],
       ),
-      Scaffold(
-        extendBodyBehindAppBar: true,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          actions: <Widget>[
-            IconButton(
-                icon: const Icon(Icons.search),
-                onPressed: () {
-                  showSearch(context: context, delegate: DataSearch());
-                }),
-            IconButton(icon: const Icon(Icons.more_vert), onPressed: () {})
-          ],
-        ),
-        body: ListView(children: <Widget>[
+      body: Stack(children: [
+        Container(
+            child: SafeArea(
+                left: false,
+                right: false,
+                bottom: false,
+                child: Container(height: 80)),
+            decoration: BoxDecoration(
+                color: SnaxColors.redAccent,
+                gradient: SnaxGradients.redBigThings,
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(20),
+                    bottomRight: Radius.circular(20)))),
+        ListView(children: <Widget>[
           Padding(
             padding: const EdgeInsets.fromLTRB(16.0, 8, 16, 16),
-            child: Card(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24)),
+            child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Color.fromARGB(36, 0, 0, 0), blurRadius: 12)
+                    ]),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Row(
@@ -121,31 +136,35 @@ class ProductPage extends StatelessWidget {
                             isReadOnly: true,
                             filledIconData: Icons.star,
                             halfFilledIconData: Icons.star_half,
-                            color: Colors.red,
-                            borderColor: Colors.red,
+                            color: SnaxColors.redAccent,
+                            borderColor: SnaxColors.redAccent,
                             spacing: 0.0)
                       ])),
                 ]),
           ),
           criteriaList()
         ]),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: new FloatingActionButton.extended(
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => UserReviewPage(
-                            this.item.id,
-                            this.item.name,
-                          )));
-            },
-            label: Padding(
+      ]),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: new FloatingActionButton.extended(
+          highlightElevation: 1,
+          backgroundColor: SnaxColors.redAccent,
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => UserReviewPage(
+                          this.item.id,
+                          this.item.name,
+                        )));
+          },
+          label: Container(
+            child: Padding(
               padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
               child: Text("Rate Snack", style: TextStyle(fontSize: 18)),
-            )),
-      ),
-    ]);
+            ),
+          )),
+    );
   }
 
   Widget criteriaList() {
@@ -215,8 +234,8 @@ class ProductPage extends StatelessWidget {
                       isReadOnly: true,
                       filledIconData: Icons.star,
                       halfFilledIconData: Icons.star_half,
-                      color: Colors.red,
-                      borderColor: Colors.red,
+                      color: SnaxColors.redAccent,
+                      borderColor: SnaxColors.redAccent,
                       spacing: 0.0)
                   : Padding(
                       padding: const EdgeInsets.only(top: 6.0),
@@ -224,7 +243,7 @@ class ProductPage extends StatelessWidget {
                         width: 120.0,
                         lineHeight: 12.0,
                         percent: snackItemData / 5,
-                        progressColor: Colors.red,
+                        progressColor: SnaxColors.redAccent,
                         backgroundColor: Colors.grey[200],
                         animation: true,
                         animationDuration: 750,
@@ -234,53 +253,4 @@ class ProductPage extends StatelessWidget {
       ]),
     );
   }
-}
-
-class Sky extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    var rect = Offset.zero & size;
-    var gradient = RadialGradient(
-      center: const Alignment(0.7, -0.6),
-      radius: 0.2,
-      colors: [const Color(0xFFFFFF00), const Color(0xFF0099FF)],
-      stops: [0.4, 1.0],
-    );
-    canvas.drawRect(
-      rect,
-      Paint()..shader = gradient.createShader(rect),
-    );
-  }
-
-  @override
-  SemanticsBuilderCallback get semanticsBuilder {
-    return (Size size) {
-      // Annotate a rectangle containing the picture of the sun
-      // with the label "Sun". When text to speech feature is enabled on the
-      // device, a user will be able to locate the sun on this picture by
-      // touch.
-      var rect = Offset.zero & size;
-      var width = size.shortestSide * 0.4;
-      rect = const Alignment(0.8, -0.9).inscribe(Size(width, width), rect);
-      return [
-        CustomPainterSemantics(
-          rect: rect,
-          properties: SemanticsProperties(
-            label: 'Sun',
-            textDirection: TextDirection.ltr,
-          ),
-        ),
-      ];
-    };
-  }
-
-  // Since this Sky painter has no fields, it always paints
-  // the same thing and semantics information is the same.
-  // Therefore we return false here. If we had fields (set
-  // from the constructor) then we would return true if any
-  // of them differed from the same fields on the oldDelegate.
-  @override
-  bool shouldRepaint(Sky oldDelegate) => false;
-  @override
-  bool shouldRebuildSemantics(Sky oldDelegate) => false;
 }
