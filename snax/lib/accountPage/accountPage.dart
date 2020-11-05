@@ -60,47 +60,57 @@ class _AccountPageState extends State<AccountPage>
           ListView(
             shrinkWrap: true,
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [burningOrangeEnd, burningOrangeStart],
+              Padding(
+                padding: const EdgeInsets.all(0.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(40),
+                        bottomRight: Radius.circular(40)),
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [burningOrangeEnd, burningOrangeStart],
+                    ),
                   ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    width: double.infinity,
-                    height: size.height * .35,
-                    child: Column(
-                      children: [
-                        _profileInfo(),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        _profileBio(),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        _profileStats(),
-                      ],
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      width: double.infinity,
+                      height: size.height * .35,
+                      child: Column(
+                        children: [
+                          _profileInfo(),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          _profileBio(),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          _profileStats(),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-              TabBar(
-                controller: _tabController,
-                labelColor: Colors.black,
-                unselectedLabelColor: Colors.grey,
-                tabs: [
-                  Tab(
-                    text: 'Posts',
-                  ),
-                  Tab(
-                    text: 'Reviewed',
-                  ),
-                ],
+              SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.only(left: 16.0, right: 16),
+                child: TabBar(
+                  controller: _tabController,
+                  labelColor: Colors.black,
+                  unselectedLabelColor: Colors.grey,
+                  tabs: [
+                    Tab(
+                      text: 'Posts',
+                    ),
+                    Tab(
+                      text: 'Reviewed',
+                    ),
+                  ],
+                ),
               ),
               [
                 FirstTab(),
@@ -158,7 +168,7 @@ class _AccountPageState extends State<AccountPage>
   Widget _profileBio() {
     return Container(
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.only(left: 16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -175,7 +185,7 @@ class _AccountPageState extends State<AccountPage>
   //* This is for the following, followers, and EP
   Widget _profileStats() {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.only(top: 16.0, right: 16.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
