@@ -25,21 +25,22 @@ class _MainPageState extends State<MainPage> {
         length: 2,
         child: new Scaffold(
             body: new NestedScrollView(
-          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-            return <Widget>[
-              new SliverAppBar(
-                title: Text("SNAX"),
-                floating: true,
-                pinned: true,
-                snap: true,
-                bottom: TabBar(
-                  tabs: [Tab(text: "Trending"), Tab(text: "Top")],
-                ),
-                actions: <Widget>[
-                  IconButton(
-                      icon: const Icon(Icons.search),
-                      onPressed: () {
-                        /*showSearch(
+                headerSliverBuilder:
+                    (BuildContext context, bool innerBoxIsScrolled) {
+                  return <Widget>[
+                    new SliverAppBar(
+                      title: Text("SNAX"),
+                      floating: true,
+                      pinned: true,
+                      snap: true,
+                      bottom: TabBar(
+                        tabs: [Tab(text: "Trending"), Tab(text: "Top")],
+                      ),
+                      actions: <Widget>[
+                        IconButton(
+                            icon: const Icon(Icons.search),
+                            onPressed: () {
+                              /*showSearch(
                             context: context,
                             delegate: BarcodeAddSearch(
                                 (SnackSearchResultItem returnSnack) {
@@ -51,22 +52,21 @@ class _MainPageState extends State<MainPage> {
                                       builder: (context) =>
                                           ProductPage(item: chosenSnack)));
                             }));*/
-                      }),
-                  IconButton(
-                      icon: const Icon(Icons.qr_code_scanner),
-                      onPressed: () {
-                        //Present Widget
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                BarcodeScannerPage()));
-                      })
-                ],
-                centerTitle: true,
-              ),
-            ];
-          },
-          body: getTabBarPages(),
-        )));
+                            }),
+                        IconButton(
+                            icon: const Icon(Icons.qr_code_scanner),
+                            onPressed: () {
+                              //Present Widget
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      BarcodeScannerPage()));
+                            })
+                      ],
+                      centerTitle: true,
+                    ),
+                  ];
+                },
+                body: getTabBarPages())));
   }
 }
 
@@ -148,6 +148,7 @@ class _TopList extends State<TopList>
 
 Widget getList(BuildContext context, List<SnackItem> snackList) {
   final List<SnackItem> trendingSnacks = snackList;
+
   return Expanded(
       child: trendingSnacks != null
           ? ListView.builder(
