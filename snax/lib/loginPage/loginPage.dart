@@ -1,9 +1,12 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:snax/backend/auth.dart';
 import 'package:snax/backend/backend.dart';
+
+import 'package:snax/helpers.dart';
 
 /*
   Login Page
@@ -25,21 +28,101 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-
   LoginPageArguments args;
 
   @override
-    void dispose() {
-      args.handler(false);
-      super.dispose();
-    }
-
+  void dispose() {
+    args.handler(false);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     //Get the args, which includes the handler function
     args = ModalRoute.of(context).settings.arguments;
 
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        shadowColor: Colors.transparent,
+      ),
+      extendBodyBehindAppBar: true,
+      body: Stack(children: [
+        Container(
+            width: double.infinity,
+            height: double.infinity,
+            decoration: BoxDecoration(gradient: SnaxGradients.redBigThings),),
+            Container(
+            width: double.infinity,
+            height: double.infinity,
+            padding: EdgeInsets.only(bottom: 160),
+            child: Opacity(opacity:0.2,child: Image.asset("assets/login-splash-alt.jpg",fit: BoxFit.cover,)),),
+        Container(
+          child: Column(children: [
+            Expanded(
+              child: Center(
+                  child: Container(
+                      child: Image.asset("assets/snax-temp-logo.png"),
+                      height: 70)),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).canvasColor,
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(29), topRight: Radius.circular(29))
+              ),
+              child: Column(
+                children: [
+                  Padding(
+                      padding: EdgeInsets.fromLTRB(20, 32, 20, 32),
+                      child: Text(
+                        "Sign in or create an account to continue",
+                        textAlign: TextAlign.center,
+                      )),
+                  Padding(
+                      padding: EdgeInsets.fromLTRB(16, 0, 16, 8),
+                      child: SnaxButton(
+                          "Sign in with Google", HexColor.fromHex("#4285F4"),
+                          () async {
+                        try {
+                          await signInWithGoogle();
+                          Navigator.of(context).pop();
+                          args.handler(true);
+                        } catch (error) {
+                          print("Failed to login (google)");
+                          print(error);
+                        }
+                      })),
+                  (Platform.isIOS)
+                      ? Padding(
+                          padding: EdgeInsets.fromLTRB(16, 0, 16, 8),
+                          child: SnaxButton("Sign in with Apple",
+                              isDark(context) ? Colors.white : Colors.black,
+                              () async {
+                            try {
+                              await signInWithApple();
+                              Navigator.of(context).pop();
+                              args.handler(true);
+                            } catch (error) {
+                              print("Failed to login (apple)");
+                              print(error);
+                            }
+                          }))
+                      : Container(),
+                  SafeArea(
+                    child: Container(),
+                    left: false,
+                    top: false,
+                    right: false,
+                    bottom: true,
+                    minimum: EdgeInsets.only(bottom: 12),
+                  )
+                ],
+              ),
+            )
+          ]),
+        ),
+      ]),
+    );
 
     return Scaffold(
         appBar: AppBar(title: Text("Login")),
