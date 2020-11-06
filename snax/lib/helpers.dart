@@ -22,6 +22,9 @@ abstract class SnaxColors {
   static Color gradientStart = HexColor.fromHex("FF4B2B");
   static Color gradientEnd = HexColor.fromHex("FF416C");
 
+  static Color darkGreyGradientStart = HexColor.fromHex("3C3C3C");
+  static Color darkGreyGradientEnd = HexColor.fromHex("2C2C2C");
+
   static Color redAccent = HexColor.fromHex("FF4844");
 
   static Color subtext = HexColor.fromHex("ABABAB");
@@ -41,6 +44,17 @@ abstract class SnaxGradients {
       begin: Alignment(-0.5, -1.5),
       end: Alignment(1.5, 2.5),
       colors: [SnaxColors.gradientStart, SnaxColors.gradientEnd]);
+
+      //buttons and stuff, more subdued and less dramatic
+  static LinearGradient darkGreyCard = LinearGradient(
+      begin: Alignment(0, -0.2),
+      end: Alignment(0, 1.5),
+      colors: [SnaxColors.darkGreyGradientStart, SnaxColors.darkGreyGradientEnd]);
+}
+
+abstract class SnaxShadows {
+  static BoxShadow cardShadow = BoxShadow(color: Color.fromARGB(36, 0, 0, 0), blurRadius: 12);
+  static BoxShadow cardShadowSubtler = BoxShadow(color: Color.fromARGB(20, 0, 0, 0), blurRadius: 10);
 }
 
 MaterialButton SnaxButton(String title, Color color, Function tap) =>
@@ -49,7 +63,7 @@ MaterialButton SnaxButton(String title, Color color, Function tap) =>
       textColor: color.computeLuminance() > 0.5 ? Colors.black : Colors.white,
       height: 58,
       minWidth: double.infinity,
-      elevation: 0,
+      elevation: 1,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(29)),
       onPressed: tap,
       child: Text(

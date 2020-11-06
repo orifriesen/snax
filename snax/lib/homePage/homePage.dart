@@ -25,48 +25,48 @@ class _MainPageState extends State<MainPage> {
         length: 2,
         child: new Scaffold(
             body: new NestedScrollView(
-          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-            return <Widget>[
-              new SliverAppBar(
-                title: Text("SNAX"),
-                floating: true,
-                pinned: true,
-                snap: true,
-                bottom: TabBar(
-                  tabs: [Tab(text: "Trending"), Tab(text: "Top")],
-                ),
-                actions: <Widget>[
-                  IconButton(
-                      icon: const Icon(Icons.search),
-                      onPressed: () {
-                        /*showSearch(
+                headerSliverBuilder:
+                    (BuildContext context, bool innerBoxIsScrolled) {
+                  return <Widget>[
+                    new SliverAppBar(
+                      title: Text("SNAX"),
+                      floating: true,
+                      pinned: true,
+                      snap: true,
+                      bottom: TabBar(
+                        tabs: [Tab(text: "Trending"), Tab(text: "Top")],
+                      ),
+                      actions: <Widget>[
+                        IconButton(
+                            icon: const Icon(Icons.search),
+                            onPressed: () {
+                              showSearch(
                             context: context,
                             delegate: BarcodeAddSearch(
-                                (SnackSearchResultItem returnSnack) {
-                              chosenSnack =
-                                  SnaxBackend.getSnack(returnSnack.id);
+                                (SnackSearchResultItem returnSnack) async {
+                              SnackItem chosenSnack =
+                                  await SnaxBackend.getSnack(returnSnack.id);
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
                                           ProductPage(item: chosenSnack)));
-                            }));*/
-                      }),
-                  IconButton(
-                      icon: const Icon(Icons.qr_code_scanner),
-                      onPressed: () {
-                        //Present Widget
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                BarcodeScannerPage()));
-                      })
-                ],
-                centerTitle: true,
-              ),
-            ];
-          },
-          body: getTabBarPages(),
-        )));
+                            }, popOnCallback: false));
+                            }),
+                        IconButton(
+                            icon: const Icon(Icons.qr_code_scanner),
+                            onPressed: () {
+                              //Present Widget
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      BarcodeScannerPage()));
+                            })
+                      ],
+                      centerTitle: true,
+                    ),
+                  ];
+                },
+                body: getTabBarPages())));
   }
 }
 

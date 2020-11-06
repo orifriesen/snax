@@ -404,6 +404,10 @@ class SnaxBackend {
     }
   }
 
+  static Future<List<String>> recentSearches() async {
+    return ["Cheetos Limon","Gardettos","Goldfish","Pringles BBQ","Pringles Barbeque","Pringles Barbecue","Lays"];
+  }
+
   static Future<void> postReview(String snackId, SnackRating rating) async {
     //Wait for fbAuth
     await _waitWhile(() => (fbAuth == null));

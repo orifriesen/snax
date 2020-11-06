@@ -1,9 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:snax/feedPage/demoValues.dart';
 import 'package:snax/loginPage/loginPage.dart';
 import 'package:snax/tabs.dart';
 import 'backend/backend.dart';
 import 'backend/requests.dart';
+import 'package:snax/helpers.dart';
 
 //Navigator key allows for background tasks to present views without context (used for Firebase listeners)
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
@@ -20,9 +22,20 @@ class MyApp extends StatelessWidget {
         "/login": (context) => LoginPage()
       },
       initialRoute: "/",
-      darkTheme: ThemeData.dark(),
+      darkTheme: ThemeData(
+          canvasColor: HexColor.fromHex("252525"),
+          primaryColor: SnaxColors.redAccent,
+          accentColor: SnaxColors.redAccent,
+          cursorColor: SnaxColors.redAccent,
+          brightness: ThemeData.dark().brightness,
+          cupertinoOverrideTheme:
+              CupertinoThemeData(primaryColor: SnaxColors.redAccent)),
       theme: ThemeData(
-          primaryColor: Colors.red, accentColor: Colors.redAccent[200]),
+          primaryColor: SnaxColors.redAccent,
+          accentColor: SnaxColors.redAccent,
+          cupertinoOverrideTheme:
+              CupertinoThemeData(primaryColor: SnaxColors.redAccent),
+          appBarTheme: AppBarTheme(brightness: Brightness.light)),
     );
   }
 }
