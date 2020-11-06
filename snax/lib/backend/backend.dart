@@ -42,7 +42,7 @@ Future<void> initializeFirebase() async {
   });
 
   //uncomment to show login screen on startup
-  navigatorKey.currentState.pushNamed("/login");
+  //navigatorKey.currentState.pushNamed("/login");
 }
 
 //A user
