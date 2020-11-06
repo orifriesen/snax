@@ -62,6 +62,8 @@ class SnackSearchResultItem {
 
   SnackSearchResultItem(this.name, this.id, this.numberOfRatings,
       this.averageRatingOverall, this.image);
+
+      static fromSnackItem(SnackItem snackItem) => SnackSearchResultItem(snackItem.name, snackItem.id, snackItem.numberOfRatings, snackItem.averageRatings.overall, snackItem.image);
 }
 
 //A type of snack

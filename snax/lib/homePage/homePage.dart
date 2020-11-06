@@ -40,18 +40,18 @@ class _MainPageState extends State<MainPage> {
                         IconButton(
                             icon: const Icon(Icons.search),
                             onPressed: () {
-                              /*showSearch(
+                              showSearch(
                             context: context,
                             delegate: BarcodeAddSearch(
-                                (SnackSearchResultItem returnSnack) {
-                              chosenSnack =
-                                  SnaxBackend.getSnack(returnSnack.id);
+                                (SnackSearchResultItem returnSnack) async {
+                              SnackItem chosenSnack =
+                                  await SnaxBackend.getSnack(returnSnack.id);
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
                                           ProductPage(item: chosenSnack)));
-                            }));*/
+                            }, popOnCallback: false));
                             }),
                         IconButton(
                             icon: const Icon(Icons.qr_code_scanner),
