@@ -25,24 +25,23 @@ Future<void> initializeFirebase() async {
   fbCloud = CloudFunctions.instance;
   fbStorage = FirebaseStorage.instance;
   //Add listeners
-  fbAuth.authStateChanges().listen((User user) async { 
+  fbAuth.authStateChanges().listen((User user) async {
     if (user == null) {
       print('User is currently signed out!');
       //Reset the current user
       SnaxBackend.currentUser = null;
       //Delete the local data
       SnaxBackend.auth.deleteUserInfoLocally();
-      
     } else {
       print('User is signed in!');
       //Grab the user's data from the server
       SnaxBackend.currentUser = await SnaxBackend.auth.getUserInfo(user);
-      print("got current user,"+SnaxBackend.currentUser.username);
+      print("got current user," + SnaxBackend.currentUser.username);
     }
   });
 
   //uncomment to show login screen on startup
-  navigatorKey.currentState.pushNamed("/login");
+  //navigatorKey.currentState.pushNamed("/login");
 }
 
 //A user
@@ -51,7 +50,7 @@ class SnaxUser {
   String name;
   String uid;
 
-  SnaxUser(this.username,this.name,this.uid);
+  SnaxUser(this.username, this.name, this.uid);
 }
 
 class SnackSearchResultItem {
@@ -61,7 +60,10 @@ class SnackSearchResultItem {
   double averageRatingOverall;
   String image;
 
-  SnackSearchResultItem(this.name,this.id,this.numberOfRatings,this.averageRatingOverall,this.image);
+  SnackSearchResultItem(this.name, this.id, this.numberOfRatings,
+      this.averageRatingOverall, this.image);
+
+      static fromSnackItem(SnackItem snackItem) => SnackSearchResultItem(snackItem.name, snackItem.id, snackItem.numberOfRatings, snackItem.averageRatings.overall, snackItem.image);
 }
 
 //A type of snack
@@ -69,7 +71,7 @@ class SnackItemType {
   String name;
   String id;
 
-  SnackItemType(this.name,this.id);
+  SnackItemType(this.name, this.id);
 }
 
 //A Snack
@@ -82,7 +84,8 @@ class SnackItem {
   int numberOfRatings;
   int numberOfRatingsThisWeek;
   String image;
-  SnackItem(this.name,this.id,this.type,this.upc,this.averageRatings,this.numberOfRatings,this.numberOfRatingsThisWeek,this.image);
+  SnackItem(this.name, this.id, this.type, this.upc, this.averageRatings,
+      this.numberOfRatings, this.numberOfRatingsThisWeek, this.image);
 }
 
 //A snack rating that is calculated, no user data is attached
@@ -96,7 +99,15 @@ class SnackRating {
   double sweetness;
   double spicyness;
 
-  SnackRating(this.overall,this.mouthfeel,this.accessibility,this.snackability,this.saltiness,this.sourness,this.sweetness,this.spicyness);
+  SnackRating(
+      this.overall,
+      this.mouthfeel,
+      this.accessibility,
+      this.snackability,
+      this.saltiness,
+      this.sourness,
+      this.sweetness,
+      this.spicyness);
 }
 
 //A snack rating that a user submitted, user data is attached
@@ -111,6 +122,13 @@ class SnackUserRating {
   double spicyness;
   //TODO: add user item
 
-  SnackUserRating(this.overall,this.mouthfeel,this.accessibility,this.snackability,this.saltiness,this.sourness,this.sweetness,this.spicyness);
+  SnackUserRating(
+      this.overall,
+      this.mouthfeel,
+      this.accessibility,
+      this.snackability,
+      this.saltiness,
+      this.sourness,
+      this.sweetness,
+      this.spicyness);
 }
-

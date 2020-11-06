@@ -29,7 +29,20 @@ class _UserReviewPageState extends State<UserReviewPage> {
       builder: (context) => Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text('Review ${this.widget.item}'),
+          title: Text('Review'),
+          bottom: PreferredSize(
+            preferredSize: null,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Text(
+                '${this.widget.item}',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 15,
+                ),
+              ),
+            ),
+          ),
         ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),

@@ -17,7 +17,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 version: 1.0.0+1
 
-environment:  
+environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
@@ -39,6 +39,7 @@ dependencies:
   percent_indicator: "^2.1.7+2"
   loading: ^1.0.2
   like_button: ^1.0.3
+  image_picker: ^0.6.7+12
 
   flutter:
     sdk: flutter
@@ -69,7 +70,6 @@ flutter:
     - assets/icon-google.png
     - assets/icon-apple.png
     - assets/snax-chip.png
-
 
   # To add assets to your application, add an assets section, like this:
   # assets:
