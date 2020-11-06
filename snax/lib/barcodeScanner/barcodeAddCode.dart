@@ -72,7 +72,7 @@ class BarcodeAddSearch extends SearchDelegate<String> {
                                             8),
                                         child: searchPageLilCard(
                                             context, snacks[i], () {
-                                          if (this.popOnCallback)
+                                          if (this.popOnCallback == true)
                                             Navigator.of(context).pop();
                                           this.callback(SnackSearchResultItem
                                               .fromSnackItem(snacks[i]));
@@ -193,7 +193,7 @@ class BarcodeAddSearch extends SearchDelegate<String> {
                                       FlatButton(
                                           onPressed: () {
                                             Navigator.of(context).pop();
-                                            if (this.popOnCallback)
+                                            if (this.popOnCallback == true)
                                               Navigator.of(_context).pop();
                                             this.callback(snacks[i]);
                                           },
@@ -202,7 +202,7 @@ class BarcodeAddSearch extends SearchDelegate<String> {
                                     ],
                                   ));
                         } else {
-                          if (this.popOnCallback) Navigator.of(context).pop();
+                          if (this.popOnCallback == true) Navigator.of(context).pop();
                           this.callback(snacks[i]);
                         }
                       },

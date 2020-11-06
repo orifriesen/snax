@@ -20,7 +20,7 @@ class _MakePostPageState extends State<MakePostPage> {
           setState(() {
             this.snack = returnSnack;
           });
-        }));
+        },popOnCallback: true));
   }
 
   final titleController = TextEditingController();
