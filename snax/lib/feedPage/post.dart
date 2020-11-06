@@ -31,7 +31,6 @@ class Comment {
 String dateFormatPost(DateTime time) {
   Duration difference = time.difference(DateTime.now());
   difference *= -1;
-  print(difference.inDays);
   if (difference.inMinutes <= 60)
     return difference.inMinutes.toString() +
         ((difference.inMinutes != 1) ? " minutes ago" : " minute ago");
@@ -53,7 +52,6 @@ String dateFormatPost(DateTime time) {
 String dateFormatComment(DateTime time) {
   Duration difference = time.difference(DateTime.now());
   difference *= -1;
-  print(difference.inDays);
   if (difference.inMinutes <= 60)
     return difference.inMinutes.toString() + "m";
   else if (difference.inHours <= 24)
