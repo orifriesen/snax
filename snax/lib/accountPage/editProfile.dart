@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:snax/accountPage/accountPage.dart';
+import 'package:snax/helpers.dart';
 
 class EditProfile extends StatefulWidget {
   @override
@@ -12,13 +13,15 @@ class EditProfile extends StatefulWidget {
 
 class _EditProfileState extends State<EditProfile> {
   PickedFile _imageFile;
-  final ImagePicker _imagePicker = ImagePicker();
-
+  ImagePicker _imagePicker = ImagePicker();
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: AppBar(
+        elevation: 0,
+        backgroundColor: SnaxColors.gradientStart,
         leadingWidth: 90,
         leading: FlatButton(
             child: Text(
@@ -27,7 +30,10 @@ class _EditProfileState extends State<EditProfile> {
             ),
             onPressed: () => {Navigator.pop(context)},
             shape: CircleBorder(side: BorderSide(color: Colors.transparent))),
-        title: Text('Edit Profile'),
+        title: Text(
+          'Edit Profile',
+          style: TextStyle(color: Colors.white),
+        ),
         centerTitle: true,
         actions: [
           FlatButton(
@@ -41,34 +47,51 @@ class _EditProfileState extends State<EditProfile> {
         ],
       ),
       body: Container(
+        decoration: BoxDecoration(gradient: SnaxGradients.redBigThings),
         child: ListView(
           children: [
             _profileImage(),
-            Center(
-              child: InkWell(
-                child: Text(
-                  'Change Profile Photo',
+            Padding(
+              padding: const EdgeInsets.only(bottom: 30),
+              child: Center(
+                child: InkWell(
+                  child: Text(
+                    'Change Profile Photo',
+                    style: TextStyle(fontSize: 15, color: Colors.white),
+                  ),
+                  onTap: () => {
+                    showModalBottomSheet(
+                        context: context, builder: (builder) => _imageSheet())
+                  },
                 ),
-                onTap: () => {
-                  showModalBottomSheet(
-                      context: context, builder: (builder) => _imageSheet())
-                },
               ),
             ),
-            Divider(
-              color: Colors.black,
-            ),
+            // Divider(
+            //   color: Colors.black,
+            // ),
             Container(
-              height: 200,
-              width: double.infinity,
-              margin: EdgeInsets.symmetric(horizontal: size.width * .05),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _nameTextField(),
-                  _bioTextField(),
+              height: 500,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(60),
+                boxShadow: [
+                  BoxShadow(color: Color.fromARGB(32, 0, 0, 0), blurRadius: 12)
                 ],
+                color: Colors.white,
               ),
+              child: Column(children: [
+                Container(
+                  height: 200,
+                  width: double.infinity,
+                  margin: EdgeInsets.symmetric(horizontal: size.width * .05),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _nameTextField(),
+                      _bioTextField(),
+                    ],
+                  ),
+                ),
+              ]),
             ),
           ],
         ),
@@ -79,12 +102,12 @@ class _EditProfileState extends State<EditProfile> {
   //* This allows the user to change their profile image
   Widget _profileImage() {
     return Padding(
-      padding: const EdgeInsets.all(15.0),
+      padding: const EdgeInsets.only(top: 15.0, bottom: 8),
       child: Center(
         child: Stack(
           children: [
             CircleAvatar(
-              backgroundColor: Colors.transparent,
+              backgroundColor: Colors.grey,
               radius: 80.0,
               backgroundImage: _imageFile == null
                   ? NetworkImage('https://picsum.photos/200/300?grayscale')
@@ -134,7 +157,7 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
-  void takePhoto(ImageSource source) async {
+  takePhoto(ImageSource source) async {
     final pickedFile = await _imagePicker.getImage(source: source);
     setState(() {
       _imageFile = pickedFile;
@@ -144,8 +167,8 @@ class _EditProfileState extends State<EditProfile> {
   //* This allows the user to change their name
   Widget _nameTextField() {
     return Material(
-      elevation: 4,
-      shadowColor: Colors.grey,
+      elevation: 0,
+      color: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
@@ -171,8 +194,8 @@ class _EditProfileState extends State<EditProfile> {
   //* This allows the user to change their bio
   Widget _bioTextField() {
     return Material(
-      elevation: 4,
-      shadowColor: Colors.grey,
+      elevation: 0,
+      color: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),

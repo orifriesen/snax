@@ -5,8 +5,8 @@ import 'package:snax/accountPage/followingPage.dart';
 import 'package:snax/accountPage/settingsPage.dart';
 
 import 'editProfile.dart';
-import 'tabPages/firstTab.dart';
-import 'tabPages/secondTab.dart';
+import 'accountBottomTabs/firstTab.dart';
+import 'accountBottomTabs/secondTab.dart';
 
 import 'package:snax/backend/backend.dart';
 import 'package:snax/backend/requests.dart';
@@ -55,51 +55,42 @@ class _AccountPageState extends State<AccountPage>
           )
         ],
       ),
-      body: Stack(
-        fit: StackFit.expand,
+      body: Column(
         children: [
-          ListView(
-            shrinkWrap: true,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(0.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                          color: Color.fromARGB(60, 0, 0, 0), blurRadius: 12)
-                    ],
-                    borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(40),
-                        bottomRight: Radius.circular(40)),
-                    gradient: SnaxGradients.redBigThings,
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      width: double.infinity,
-                      height: size.height * .35,
-                      child: Column(
-                        children: [
-                          _profileInfo(),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          _profileBio(),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          _profileStats(),
-                        ],
-                      ),
-                    ),
-                  ),
+          Container(
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(color: Color.fromARGB(60, 0, 0, 0), blurRadius: 12)
+              ],
+              borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(40),
+                  bottomRight: Radius.circular(40)),
+              gradient: SnaxGradients.redBigThings,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                width: double.infinity,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _profileInfo(),
+                    SizedBox(height: 10),
+                    _profileBio(),
+                    SizedBox(height: 10),
+                    _profileStats(),
+                  ],
                 ),
               ),
-              SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.only(left: 16.0, right: 16),
-                child: TabBar(
+            ),
+          ),
+          SizedBox(height: 5),
+          Padding(
+            padding: const EdgeInsets.only(left: 16.0, right: 16),
+            child: ListView(
+              shrinkWrap: true,
+              children: [
+                TabBar(
                   controller: _tabController,
                   labelColor: Colors.black,
                   unselectedLabelColor: Colors.grey,
@@ -112,13 +103,13 @@ class _AccountPageState extends State<AccountPage>
                     ),
                   ],
                 ),
-              ),
-              [
-                FirstTab(),
-                SecondTab(),
-              ][_tabController.index],
-            ],
+              ],
+            ),
           ),
+          [
+            FirstTab(),
+            SecondTab(),
+          ][_tabController.index],
         ],
       ),
     );
@@ -186,9 +177,9 @@ class _AccountPageState extends State<AccountPage>
   //* This is for the following, followers, and EP
   Widget _profileStats() {
     return Padding(
-      padding: const EdgeInsets.only(top: 16.0, right: 16.0),
+      padding: const EdgeInsets.only(right: 16.0, top: 8.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           //* Following
           Column(
@@ -214,21 +205,29 @@ class _AccountPageState extends State<AccountPage>
               )
             ],
           ),
-          Container(
-            child: RaisedButton(
-              color: Colors.transparent,
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
-                side: BorderSide(color: Colors.white, width: 2),
+          Column(
+            children: [
+              Container(
+                child: RaisedButton(
+                  color: Colors.transparent,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                    side: BorderSide(color: Colors.white, width: 2),
+                  ),
+                  onPressed: () => {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditProfile(),
+                      ),
+                    ),
+                  },
+                  child: Text('Edit Profile',
+                      style: TextStyle(color: Colors.white)),
+                ),
               ),
-              onPressed: () => {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => EditProfile())),
-              },
-              child:
-                  Text('Edit Profile', style: TextStyle(color: Colors.white)),
-            ),
+            ],
           ),
         ],
       ),
