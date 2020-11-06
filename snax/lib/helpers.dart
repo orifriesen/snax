@@ -47,7 +47,7 @@ MaterialButton SnaxButton(String title, Color color, Function tap) =>
       textColor: color.computeLuminance() > 0.5 ? Colors.black : Colors.white,
       height: 58,
       minWidth: double.infinity,
-      elevation: 0,
+      elevation: 1,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(29)),
       onPressed: tap,
       child: Text(
@@ -56,4 +56,5 @@ MaterialButton SnaxButton(String title, Color color, Function tap) =>
       ),
     );
 
-bool isDark(BuildContext context) => Theme.of(context).brightness == Brightness.dark;
+bool isDark(BuildContext context) =>
+    Theme.of(context).brightness == Brightness.dark;

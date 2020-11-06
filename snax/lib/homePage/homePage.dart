@@ -3,6 +3,7 @@ import 'package:loading/indicator/ball_pulse_indicator.dart';
 import 'package:loading/indicator/ball_spin_fade_loader_indicator.dart';
 import 'package:loading/loading.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
+import 'package:snax/barcodeScanner/barcodeAddCode.dart';
 import 'package:snax/barcodeScanner/barcodeScanner.dart';
 import 'package:snax/homePage/searchBar.dart';
 import 'package:snax/homePage/specificSnack.dart';
@@ -16,43 +17,56 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  SnackItem chosenSnack;
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
         length: 2,
         child: new Scaffold(
             body: new NestedScrollView(
-          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-            return <Widget>[
-              new SliverAppBar(
-                title: Text("SNAX"),
-                floating: true,
-                pinned: true,
-                snap: true,
-                bottom: TabBar(
-                  tabs: [Tab(text: "Trending"), Tab(text: "Top")],
-                ),
-                actions: <Widget>[
-                  IconButton(
-                      icon: const Icon(Icons.search),
-                      onPressed: () {
-                        showSearch(context: context, delegate: DataSearch());
-                      }),
-                  IconButton(
-                      icon: const Icon(Icons.qr_code_scanner),
-                      onPressed: () {
-                        //Present Widget
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                BarcodeScannerPage()));
-                      })
-                ],
-                centerTitle: true,
-              ),
-            ];
-          },
-          body: getTabBarPages(),
-        )));
+                headerSliverBuilder:
+                    (BuildContext context, bool innerBoxIsScrolled) {
+                  return <Widget>[
+                    new SliverAppBar(
+                      title: Text("SNAX"),
+                      floating: true,
+                      pinned: true,
+                      snap: true,
+                      bottom: TabBar(
+                        tabs: [Tab(text: "Trending"), Tab(text: "Top")],
+                      ),
+                      actions: <Widget>[
+                        IconButton(
+                            icon: const Icon(Icons.search),
+                            onPressed: () {
+                              /*showSearch(
+                            context: context,
+                            delegate: BarcodeAddSearch(
+                                (SnackSearchResultItem returnSnack) {
+                              chosenSnack =
+                                  SnaxBackend.getSnack(returnSnack.id);
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          ProductPage(item: chosenSnack)));
+                            }));*/
+                            }),
+                        IconButton(
+                            icon: const Icon(Icons.qr_code_scanner),
+                            onPressed: () {
+                              //Present Widget
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      BarcodeScannerPage()));
+                            })
+                      ],
+                      centerTitle: true,
+                    ),
+                  ];
+                },
+                body: getTabBarPages())));
   }
 }
 
@@ -67,7 +81,8 @@ class TrendingList extends StatefulWidget {
   _TrendingList createState() => _TrendingList();
 }
 
-class _TrendingList extends State<TrendingList> {
+class _TrendingList extends State<TrendingList>
+    with AutomaticKeepAliveClientMixin<TrendingList> {
   //_TrendingSnackItem({Key key, this.item}) : super(key: key);
   List<SnackItem> trendingSnacks;
 
@@ -91,6 +106,9 @@ class _TrendingList extends State<TrendingList> {
   Widget build(BuildContext context) {
     return getList(context, trendingSnacks);
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class TopList extends StatefulWidget {
@@ -98,7 +116,8 @@ class TopList extends StatefulWidget {
   _TopList createState() => _TopList();
 }
 
-class _TopList extends State<TopList> {
+class _TopList extends State<TopList>
+    with AutomaticKeepAliveClientMixin<TopList> {
   //_TrendingSnackItem({Key key, this.item}) : super(key: key);
   List<SnackItem> topSnacks;
 
@@ -122,10 +141,14 @@ class _TopList extends State<TopList> {
   Widget build(BuildContext context) {
     return getList(context, topSnacks);
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 Widget getList(BuildContext context, List<SnackItem> snackList) {
   final List<SnackItem> trendingSnacks = snackList;
+
   return Expanded(
       child: trendingSnacks != null
           ? ListView.builder(
@@ -193,11 +216,6 @@ Widget getList(BuildContext context, List<SnackItem> snackList) {
                 );
               })
           : Container(
-              child: Center(
-                  child: Loading(
-                indicator: BallSpinFadeLoaderIndicator(),
-                size: 50.0,
-                color: Theme.of(context).primaryColor,
-              )),
+              child: Center(child: CircularProgressIndicator()),
             ));
 }
