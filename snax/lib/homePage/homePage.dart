@@ -207,7 +207,7 @@ Widget getList(BuildContext context, List<SnackItem> snackList) {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Image.network(trendingSnacks[index].image,
-                                      width: 64, height: 64),
+                                      width: 54, height: 54),
                                   Expanded(
                                     child: Padding(
                                       padding: const EdgeInsets.only(left: 8),
@@ -222,7 +222,7 @@ Widget getList(BuildContext context, List<SnackItem> snackList) {
                                               child: Text(
                                                 trendingSnacks[index].name,
                                                 style: TextStyle(
-                                                    fontSize: 22,
+                                                    fontSize: 18,
                                                     fontWeight:
                                                         FontWeight.w600),
                                               ),
@@ -248,7 +248,7 @@ Widget getList(BuildContext context, List<SnackItem> snackList) {
                                                                   .type
                                                                   .name,
                                                               style: TextStyle(
-                                                                  fontSize: 18,
+                                                                  fontSize: 14,
                                                                   color: Colors
                                                                           .grey[
                                                                       400])),
@@ -265,7 +265,7 @@ Widget getList(BuildContext context, List<SnackItem> snackList) {
                                                                   .numberOfRatings) +
                                                               " total ratings",
                                                           style: TextStyle(
-                                                              fontSize: 18,
+                                                              fontSize: 14,
                                                               color: Colors
                                                                   .grey[400])),
                                                     ),
@@ -284,11 +284,11 @@ Widget getList(BuildContext context, List<SnackItem> snackList) {
                                                                 .toStringAsFixed(
                                                                     1),
                                                             style: TextStyle(
-                                                                fontSize: 32,
+                                                                fontSize: 20,
                                                                 color: Colors
                                                                     .grey)),
                                                         Icon(Icons.star_rounded,
-                                                            size: 28,
+                                                            size: 26,
                                                             color: SnaxColors
                                                                 .redAccent)
                                                       ],

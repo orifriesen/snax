@@ -72,7 +72,7 @@ class _ProductPageState extends State<ProductPage> {
                 padding: const EdgeInsets.fromLTRB(16.0, 8, 16, 16),
                 child: Container(
                     decoration: BoxDecoration(
-                        color: Theme.of(context).canvasColor,
+                        color: Colors.white,
                         borderRadius: BorderRadius.circular(24),
                         boxShadow: [
                           BoxShadow(
@@ -85,7 +85,7 @@ class _ProductPageState extends State<ProductPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Image.network(this.widget.item.image,
-                              width: 80, height: 80),
+                              width: 64, height: 64),
                           Padding(
                             padding: const EdgeInsets.only(left: 8),
                             child: Column(
@@ -96,7 +96,7 @@ class _ProductPageState extends State<ProductPage> {
                                   child: Text(
                                     this.widget.item.name,
                                     style: TextStyle(
-                                        fontSize: 24,
+                                        fontSize: 18,
                                         fontWeight: FontWeight.w600),
                                   ),
                                 ),
@@ -106,11 +106,11 @@ class _ProductPageState extends State<ProductPage> {
                                     children: [
                                       Text(this.widget.item.type.name,
                                           style: TextStyle(
-                                              fontSize: 18,
+                                              fontSize: 14,
                                               color: Colors.grey[400])),
                                       Icon(
                                         Icons.arrow_forward_ios_rounded,
-                                        size: 18,
+                                        size: 14,
                                         color: Colors.grey[400],
                                       )
                                     ],
@@ -125,7 +125,7 @@ class _ProductPageState extends State<ProductPage> {
                                               .numberOfRatings) +
                                           " total ratings",
                                       style: TextStyle(
-                                          fontSize: 18,
+                                          fontSize: 14,
                                           color: Colors.grey[400])),
                                 )
                               ],
@@ -174,7 +174,7 @@ class _ProductPageState extends State<ProductPage> {
           label: Container(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
-              child: Text("Rate Snack", style: TextStyle(fontSize: 18)),
+              child: Text("Rate Snack", style: TextStyle(fontSize: 16)),
             ),
           )),
     );
@@ -191,7 +191,7 @@ class _ProductPageState extends State<ProductPage> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text("Overall",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             ),
             Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -204,12 +204,12 @@ class _ProductPageState extends State<ProductPage> {
                               .overall
                               .toStringAsFixed(1) +
                           " ",
-                      style: TextStyle(fontSize: 20, color: Colors.grey)),
+                      style: TextStyle(fontSize: 16, color: Colors.grey)),
                   SmoothStarRating(
                       allowHalfRating: true,
                       starCount: 5,
                       rating: this.widget.item.averageRatings.overall,
-                      size: 24,
+                      size: 20,
                       isReadOnly: true,
                       filledIconData: Icons.star_rounded,
                       halfFilledIconData: Icons.star_half_rounded,
@@ -223,7 +223,7 @@ class _ProductPageState extends State<ProductPage> {
         Padding(
             padding: const EdgeInsets.only(left: 24.0),
             child: Text("CRITERIA",
-                style: TextStyle(fontSize: 16, color: Colors.grey[600]))),
+                style: TextStyle(fontSize: 14, color: Colors.grey[600]))),
         divider(),
         returnSpecificCriteria(
             "Snackability", this.widget.item.averageRatings.snackability, true),
@@ -267,19 +267,19 @@ class _ProductPageState extends State<ProductPage> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(title,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400)),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
         ),
         Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(children: [
               Text(snackItemData.toStringAsFixed(1) + " ",
-                  style: TextStyle(fontSize: 20, color: Colors.grey)),
+                  style: TextStyle(fontSize: 16, color: Colors.grey)),
               isStar == true
                   ? SmoothStarRating(
                       allowHalfRating: true,
                       starCount: 5,
                       rating: snackItemData,
-                      size: 24,
+                      size: 20,
                       isReadOnly: true,
                       filledIconData: Icons.star_rounded,
                       halfFilledIconData: Icons.star_half_rounded,
@@ -290,7 +290,7 @@ class _ProductPageState extends State<ProductPage> {
                   : Padding(
                       padding: const EdgeInsets.only(top: 6.0),
                       child: LinearPercentIndicator(
-                        width: 120.0,
+                        width: 100.0,
                         lineHeight: 12.0,
                         percent: snackItemData / 5,
                         progressColor: SnaxColors.redAccent,
