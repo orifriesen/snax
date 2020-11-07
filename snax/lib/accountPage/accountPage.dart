@@ -140,14 +140,14 @@ class _AccountPageState extends State<AccountPage>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Your Username',
+              '${SnaxBackend.currentUser.name}',
               style: TextStyle(fontSize: 20, color: Colors.white),
             ),
             SizedBox(
               height: 5,
             ),
             Text(
-              '@YourHandle',
+              '${SnaxBackend.currentUser.username}',
               style: TextStyle(fontSize: 15, color: Colors.grey[300]),
             ),
           ],
