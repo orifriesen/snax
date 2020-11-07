@@ -89,8 +89,8 @@ class _EditProfileState extends State<EditProfile> {
                 Container(
                   height: 200,
                   width: double.infinity,
-                  // margin: EdgeInsets.symmetric(horizontal: size.width * .05),
-                  padding: EdgeInsets.only(left: 16, bottom: 16),
+                  margin: EdgeInsets.symmetric(horizontal: size.width * .05),
+                  // padding: EdgeInsets.only(left: 16, bottom: 16),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -181,6 +181,7 @@ class _EditProfileState extends State<EditProfile> {
         borderRadius: BorderRadius.circular(20),
       ),
       child: TextFormField(
+        style: TextStyle(color: SnaxColors.subtext),
         decoration: InputDecoration(
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),
@@ -208,6 +209,7 @@ class _EditProfileState extends State<EditProfile> {
         borderRadius: BorderRadius.circular(20),
       ),
       child: TextFormField(
+        style: TextStyle(color: SnaxColors.subtext),
         minLines: 1,
         maxLines: 5,
         maxLength: 150,
