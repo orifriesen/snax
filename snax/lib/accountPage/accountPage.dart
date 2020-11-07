@@ -5,7 +5,7 @@ import 'package:snax/accountPage/followingPage.dart';
 import 'package:snax/accountPage/settingsPage.dart';
 
 import 'editProfile.dart';
-import 'accountBottomTabs/firstTab.dart';
+import 'accountBottomTabs/postTab.dart';
 import 'accountBottomTabs/secondTab.dart';
 
 import 'package:snax/backend/backend.dart';
@@ -107,7 +107,7 @@ class _AccountPageState extends State<AccountPage>
             ),
           ),
           [
-            FirstTab(),
+            PostTab(),
             SecondTab(),
           ][_tabController.index],
         ],

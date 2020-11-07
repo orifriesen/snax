@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
 import 'package:snax/backend/requests.dart';
 import 'package:snax/feedPage/demoValues.dart';
+import 'package:snax/feedPage/feedPage.dart';
 import 'package:snax/feedPage/post.dart';
 import 'package:intl/intl.dart';
+import 'package:snax/helpers.dart';
 
 class PostDetailsPage extends StatefulWidget {
   final Post post;
@@ -20,8 +22,47 @@ class _PostDetailsPage extends State<PostDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: commentLoader(context, widget.post),
+      extendBodyBehindAppBar: true,
+      // appBar: AppBar(
+      //   backgroundColor: Colors.transparent,
+      //   elevation: 0,
+      // ),
+      body: Column(children: [
+        Stack(children: [
+          Container(
+              child: SafeArea(
+                  left: false,
+                  right: false,
+                  bottom: false,
+                  child: Container(
+                    height: 160,
+                    width: double.infinity,
+                  )),
+              decoration: BoxDecoration(
+                  color: SnaxColors.redAccent,
+                  gradient: SnaxGradients.redBigThings,
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(20),
+                      bottomRight: Radius.circular(20)))),
+          Padding(
+            padding: const EdgeInsets.only(top: 28, left: 8.0),
+            child: IconButton(
+                icon: Icon(
+                  Icons.close_rounded,
+                  color: Colors.white,
+                ),
+                iconSize: 28,
+                onPressed: () {
+                  Navigator.pop(context);
+                }),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 76.0),
+            child: postWidget(context, widget.post, opensDetails: false),
+          ),
+        ]),
+        commentLoader(context, widget.post),
+      ]),
       bottomSheet: TextField(
         minLines: 1,
         maxLines: 5,
@@ -53,107 +94,64 @@ Widget commentLoader(BuildContext context, Post post) {
 }
 
 Widget getPostDetails(BuildContext context, Post post) {
-  return ListView.builder(
-    itemCount: post.comments.length + 2,
-    itemBuilder: (context, index) {
-      Comment comment;
-      (index != 0 && index != post.comments.length + 1)
-          ? comment = post.comments[index - 1]
-          : comment = null;
-      if (index == 0) {
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 4.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ListTile(
-                contentPadding: EdgeInsets.symmetric(horizontal: 0.0),
-                visualDensity: VisualDensity.comfortable,
-                leading: AspectRatio(
-                    aspectRatio: 1.0,
-                    child: Image.network(
-                      post.snack.image,
-                      scale: 4,
+  return Expanded(
+    child: ListView.builder(
+      padding: EdgeInsets.zero,
+      shrinkWrap: true,
+      itemCount: post.comments.length + 1,
+      itemBuilder: (context, index) {
+        Comment comment;
+        index < post.comments.length
+            ? comment = post.comments[index]
+            : comment = null;
+        if (index == post.comments.length) {
+          return Container(height: 200);
+        } else {
+          return Padding(
+            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                //Text(comment.user.name),
+                Row(
+                  children: [
+                    Expanded(
+                      child: RichText(
+                          text: TextSpan(
+                              style: DefaultTextStyle.of(context).style,
+                              children: [
+                            TextSpan(
+                                text: comment.user.name + "\n",
+                                style: TextStyle(height: 2)),
+                            TextSpan(text: comment.body),
+                            TextSpan(
+                                text: " " + dateFormatComment(post.time),
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: 11.5))
+                          ])),
+                    ),
+                    FittedBox(
+                        child: LikeButton(
+                      likeBuilder: (bool isLiked) {
+                        return Icon(
+                          Icons.favorite,
+                          color: isLiked
+                              ? Theme.of(context).accentColor
+                              : Colors.grey[350],
+                          size: 20.0,
+                        );
+                      },
+                      likeCount: (comment.likes > 0) ? comment.likes : null,
+                      countPostion: CountPostion.left,
                     )),
-                title: Text(post.snack.name),
-                subtitle: Text(post.user.name),
-              ),
-              Text(
-                post.title,
-                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16.0),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 2.0),
-                child: Text(post.body),
-              ),
-              ListTile(
-                contentPadding: EdgeInsets.symmetric(horizontal: 0.0),
-                leading: FittedBox(
-                    child: LikeButton(
-                  likeBuilder: (bool isLiked) {
-                    return Icon(
-                      Icons.favorite,
-                      color:
-                          isLiked ? Theme.of(context).accentColor : Colors.grey,
-                      size: 20.0,
-                    );
-                  },
-                  likeCount: post.likeCount,
-                )),
-                trailing: Text(DateFormat("MMM dd").format(post.time)),
-              ),
-              Divider(
-                thickness: 2,
-              )
-            ],
-          ),
-        );
-      } else if (index == post.comments.length + 1) {
-        return Container(height: 200);
-      } else {
-        return Padding(
-          padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              //Text(comment.user.name),
-              Row(
-                children: [
-                  Expanded(
-                    child: RichText(
-                        text: TextSpan(
-                            style: DefaultTextStyle.of(context).style,
-                            children: [
-                          TextSpan(
-                              text: comment.user.name + "\n",
-                              style: TextStyle(height: 2)),
-                          TextSpan(text: comment.body),
-                          TextSpan(
-                              text: DateFormat(" MMM dd").format(post.time),
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w300, fontSize: 11.5))
-                        ])),
-                  ),
-                  FittedBox(
-                      child: LikeButton(
-                    likeBuilder: (bool isLiked) {
-                      return Icon(
-                        Icons.favorite,
-                        color: isLiked
-                            ? Theme.of(context).accentColor
-                            : Colors.grey,
-                        size: 20.0,
-                      );
-                    },
-                    likeCount: (comment.likes > 0) ? comment.likes : null,
-                    countPostion: CountPostion.left,
-                  )),
-                ],
-              ),
-            ],
-          ),
-        );
-      }
-    },
+                  ],
+                ),
+              ],
+            ),
+          );
+        }
+      },
+    ),
   );
 }
