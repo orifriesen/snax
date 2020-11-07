@@ -87,7 +87,11 @@ Widget commentLoader(BuildContext context, Post post) {
             child: Text("Failed to load post."),
           );
         else
-          return Center(child: CircularProgressIndicator());
+          return Expanded(
+              child: Center(
+                  child: CircularProgressIndicator(
+                      valueColor: new AlwaysStoppedAnimation<Color>(
+                          SnaxColors.redAccent))));
       },
       future: SnaxBackend.search("Cheetos"),
     );
