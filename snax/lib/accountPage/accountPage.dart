@@ -163,10 +163,10 @@ class _AccountPageState extends State<AccountPage>
         padding: const EdgeInsets.only(left: 16.0),
         child: Column(
           children: [
-            Text(
+            (SnaxBackend.currentUser.bio != null) ? Text(
               '${SnaxBackend.currentUser.bio}',
               style: TextStyle(color: Colors.white, fontSize: 15),
-            ),
+            ) : Container(),
           ],
         ),
       ),

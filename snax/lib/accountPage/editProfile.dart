@@ -68,10 +68,10 @@ class _EditProfileState extends State<EditProfile> {
       body: Container(
         height: size.height,
         decoration: BoxDecoration(gradient: SnaxGradients.redBigThings),
-        child: ListView(
-          physics:
-              BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-          shrinkWrap: true,
+        child: Column(
+          //physics:
+          //    BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+          //shrinkWrap: true,
           children: [
             _profileImage(),
             Padding(
@@ -89,32 +89,33 @@ class _EditProfileState extends State<EditProfile> {
                 ),
               ),
             ),
-            Container(
-              height: double.infinity,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(60),
-                  topRight: Radius.circular(60),
-                ),
-                boxShadow: [
-                  BoxShadow(color: Color.fromARGB(32, 0, 0, 0), blurRadius: 12)
-                ],
-                color: Theme.of(context).canvasColor,
-              ),
-              child: Column(children: [
-                Container(
-                  height: 200,
-                  width: double.infinity,
-                  padding: EdgeInsets.only(left: 16, bottom: 16),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _nameTextField(),
-                      _bioTextField(),
-                    ],
+            Expanded(
+                          child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(60),
+                    topRight: Radius.circular(60),
                   ),
+                  boxShadow: [
+                    BoxShadow(color: Color.fromARGB(32, 0, 0, 0), blurRadius: 12)
+                  ],
+                  color: Theme.of(context).canvasColor,
                 ),
-              ]),
+                child: Column(children: [
+                  Container(
+                    height: 200,
+                    width: double.infinity,
+                    padding: EdgeInsets.only(left: 16, bottom: 16),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _nameTextField(),
+                        _bioTextField(),
+                      ],
+                    ),
+                  ),
+                ]),
+              ),
             ),
           ],
         ),

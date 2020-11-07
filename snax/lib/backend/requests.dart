@@ -68,7 +68,7 @@ class SnaxBackend {
         doc.id,
         SnackItemType(_snackTypes[snackTypeId], snackTypeId),
         doc.get("upc"),
-        SnackRating(
+        (doc.data()["computed"] != null) ? SnackRating(
           toDouble(doc.get("computed.score_overall")),
           toDouble(doc.get("computed.score_mouthfeel")),
           toDouble(doc.get("computed.score_accessibility")),
@@ -77,9 +77,9 @@ class SnaxBackend {
           toDouble(doc.get("computed.score_sourness")),
           toDouble(doc.get("computed.score_sweetness")),
           toDouble(doc.get("computed.score_spicyness")),
-        ),
-        doc.get("computed_ratings"),
-        doc.get("computed_trend"),
+        ) : null,
+        doc.data()["computed_ratings"],
+        doc.data()["computed_trend"],
         imgUrl);
   }
 
