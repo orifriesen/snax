@@ -39,6 +39,7 @@ dependencies:
   loading: ^1.0.2
   like_button: ^1.0.3
   image_picker: ^0.6.7+12
+  url_launcher: ^5.7.10
 
   flutter:
     sdk: flutter

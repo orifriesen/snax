@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:snax/accountPage/accountPage.dart';
@@ -19,11 +20,15 @@ class _EditProfileState extends State<EditProfile> {
 
   final nameController = TextEditingController();
   final bioController = TextEditingController();
+  final usernameController = TextEditingController();
+
+  bool maxedLines = false;
 
   @override
   void initState() {
     super.initState();
     nameController.text = SnaxBackend.currentUser.name;
+    usernameController.text = SnaxBackend.currentUser.username;
     bioController.text = SnaxBackend.currentUser.bio;
   }
 
@@ -32,6 +37,7 @@ class _EditProfileState extends State<EditProfile> {
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: SnaxColors.gradientStart,
@@ -54,6 +60,7 @@ class _EditProfileState extends State<EditProfile> {
           FlatButton(
             onPressed: () {
               SnaxBackend.currentUser.name = nameController.text;
+              SnaxBackend.currentUser.username = usernameController.text;
               SnaxBackend.currentUser.bio = bioController.text.trim();
               Navigator.pop(context);
             },
@@ -69,9 +76,6 @@ class _EditProfileState extends State<EditProfile> {
         height: size.height,
         decoration: BoxDecoration(gradient: SnaxGradients.redBigThings),
         child: Column(
-          //physics:
-          //    BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-          //shrinkWrap: true,
           children: [
             _profileImage(),
             Padding(
@@ -90,31 +94,40 @@ class _EditProfileState extends State<EditProfile> {
               ),
             ),
             Expanded(
-                          child: Container(
+              child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(60),
                     topRight: Radius.circular(60),
                   ),
                   boxShadow: [
-                    BoxShadow(color: Color.fromARGB(32, 0, 0, 0), blurRadius: 12)
+                    BoxShadow(
+                        color: Color.fromARGB(32, 0, 0, 0), blurRadius: 12)
                   ],
                   color: Theme.of(context).canvasColor,
                 ),
-                child: Column(children: [
-                  Container(
-                    height: 200,
-                    width: double.infinity,
-                    padding: EdgeInsets.only(left: 16, bottom: 16),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        _nameTextField(),
-                        _bioTextField(),
-                      ],
-                    ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          width: double.infinity,
+                          padding:
+                              EdgeInsets.only(left: 16, bottom: 16, right: 16),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              _nameTextField(),
+                              _usernameTextField(),
+                              _bioTextField(),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ]),
+                ),
               ),
             ),
           ],
@@ -216,6 +229,33 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
+  Widget _usernameTextField() {
+    return Material(
+      elevation: 0,
+      color: Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: TextFormField(
+        controller: usernameController,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: BorderSide.none,
+          ),
+          counterStyle: TextStyle(color: Colors.transparent, fontSize: 0),
+          contentPadding: EdgeInsets.only(left: 16, top: 16),
+          hintText: 'Username',
+          hintStyle: TextStyle(
+            letterSpacing: 2,
+            color: SnaxColors.subtext,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+
   //* This allows the user to change their bio
   Widget _bioTextField() {
     return Material(
@@ -225,17 +265,18 @@ class _EditProfileState extends State<EditProfile> {
         borderRadius: BorderRadius.circular(20),
       ),
       child: TextFormField(
+        inputFormatters: [
+          LengthLimitingTextInputFormatter(150),
+        ],
         controller: bioController,
         minLines: 1,
         maxLines: 5,
-        maxLength: 150,
         decoration: InputDecoration(
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),
             borderSide: BorderSide.none,
           ),
-          counterStyle: TextStyle(color: Colors.transparent, fontSize: 0),
-          contentPadding: EdgeInsets.only(left: 16, top: 16),
+          contentPadding: EdgeInsets.only(top: 16, left: 16),
           hintText: 'Bio',
           hintStyle: TextStyle(
             letterSpacing: 2,
