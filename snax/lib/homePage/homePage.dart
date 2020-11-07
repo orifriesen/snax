@@ -194,7 +194,7 @@ Widget getList(BuildContext context, List<SnackItem> snackList) {
                           },
                           child: Container(
                             decoration: BoxDecoration(
-                                color: Theme.of(context).canvasColor,
+                                color: Colors.white,
                                 borderRadius: BorderRadius.circular(18),
                                 boxShadow: [
                                   BoxShadow(
