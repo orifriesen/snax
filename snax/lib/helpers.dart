@@ -28,6 +28,8 @@ abstract class SnaxColors {
   static Color redAccent = HexColor.fromHex("FF4844");
 
   static Color subtext = HexColor.fromHex("ABABAB");
+
+  static Color settingsBackground = HexColor.fromHex("#FF4841");
 }
 
 abstract class SnaxGradients {

@@ -24,6 +24,8 @@ class _UserReviewPageState extends State<UserReviewPage> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+
     return Scaffold(
         body: Builder(
       builder: (context) => Scaffold(
@@ -182,7 +184,7 @@ class _UserReviewPageState extends State<UserReviewPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
                       child: FloatingActionButton.extended(
                         elevation: 2,
                         onPressed: () {
@@ -199,7 +201,10 @@ class _UserReviewPageState extends State<UserReviewPage> {
                                 msg: "Please rate this snack to submit!");
                           }
                         },
-                        label: Text("Submit Review"),
+                        label: Container(
+                            width: size.width * .7,
+                            alignment: Alignment.center,
+                            child: Text("Submit Review")),
                       ),
                     ),
                   ],
