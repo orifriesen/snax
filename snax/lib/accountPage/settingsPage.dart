@@ -17,10 +17,12 @@ class _SettingsPageState extends State<SettingsPage> {
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: SnaxColors.settingsBackground,
+      backgroundColor: !isDark(context)
+          ? SnaxColors.redAccent
+          : Theme.of(context).canvasColor,
       appBar: AppBar(
         elevation: 1,
-        backgroundColor: SnaxColors.settingsBackground,
+        backgroundColor: SnaxColors.redAccent,
         title: Text('Settings'),
       ),
       bottomNavigationBar: BottomAppBar(
