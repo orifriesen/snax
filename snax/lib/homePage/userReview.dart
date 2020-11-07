@@ -113,7 +113,7 @@ class _UserReviewPageState extends State<UserReviewPage> {
                     style: TextStyle(fontSize: 25),
                   ),
                   Tooltip(
-                    message: "Rate  the feeling of this item",
+                    message: "Rate the texture when eating this item",
                     child: IconButton(
                       icon: Icon(Icons.info_outline),
                       iconSize: 20.0,
@@ -140,7 +140,7 @@ class _UserReviewPageState extends State<UserReviewPage> {
                     style: TextStyle(fontSize: 25),
                   ),
                   Tooltip(
-                    message: "Rate how accessible this item is",
+                    message: "Rate how easy it is to find this item",
                     child: IconButton(
                       icon: Icon(Icons.info_outline),
                       iconSize: 20.0,
