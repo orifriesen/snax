@@ -72,7 +72,7 @@ class _ProductPageState extends State<ProductPage> {
                 padding: const EdgeInsets.fromLTRB(16.0, 8, 16, 16),
                 child: Container(
                     decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Theme.of(context).canvasColor,
                         borderRadius: BorderRadius.circular(24),
                         boxShadow: [
                           BoxShadow(
@@ -190,7 +190,7 @@ class _ProductPageState extends State<ProductPage> {
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(this.widget.item.name,
+              child: Text("Overall",
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             ),
             Padding(

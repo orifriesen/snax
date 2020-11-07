@@ -37,7 +37,7 @@ class _MainPageState extends State<MainPage> {
                               gradient: SnaxGradients.redBigThings),
                         ),*/
                       elevation: 2,
-                      backgroundColor: Colors.white,
+                      backgroundColor: Theme.of(context).canvasColor,
                       title: Text("SNAX",
                           style: TextStyle(color: SnaxColors.redAccent)),
                       floating: true,
@@ -174,130 +174,145 @@ Widget getList(BuildContext context, List<SnackItem> snackList) {
   final List<SnackItem> trendingSnacks = snackList;
   final display = createDisplay(placeholder: '0');
 
-  return Expanded(
-      child: trendingSnacks != null
-          ? ListView.builder(
-              padding: EdgeInsets.only(top: 12),
-              itemCount: trendingSnacks.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(16.0, 8, 16, 16),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  ProductPage(item: trendingSnacks[index])));
-                    },
-                    child: Container(
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(18),
-                            boxShadow: [
-                              BoxShadow(
-                                  color: Color.fromARGB(24, 0, 0, 0),
-                                  blurRadius: 8)
-                            ]),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
+  return Column(
+    children: [
+      Expanded(
+          child: trendingSnacks != null
+              ? ListView.builder(
+                  padding: EdgeInsets.only(top: 12),
+                  itemCount: trendingSnacks.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.fromLTRB(16.0, 8, 16, 16),
+                      child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ProductPage(
+                                        item: trendingSnacks[index])));
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).canvasColor,
+                                borderRadius: BorderRadius.circular(18),
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Color.fromARGB(24, 0, 0, 0),
+                                      blurRadius: 8)
+                                ]),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Image.network(trendingSnacks[index].image,
                                       width: 64, height: 64),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 8),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              bottom: 1.0),
-                                          child: Text(
-                                            trendingSnacks[index].name,
-                                            style: TextStyle(
-                                                fontSize: 22,
-                                                fontWeight: FontWeight.w600),
-                                          ),
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 8),
+                                      child: Container(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  bottom: 1.0),
+                                              child: Text(
+                                                trendingSnacks[index].name,
+                                                style: TextStyle(
+                                                    fontSize: 22,
+                                                    fontWeight:
+                                                        FontWeight.w600),
+                                              ),
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(1.0),
-                                                  child: Row(
-                                                    children: [
-                                                      Text(
-                                                          trendingSnacks[index]
-                                                              .type
-                                                              .name,
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              1.0),
+                                                      child: Row(
+                                                        children: [
+                                                          Text(
+                                                              trendingSnacks[
+                                                                      index]
+                                                                  .type
+                                                                  .name,
+                                                              style: TextStyle(
+                                                                  fontSize: 18,
+                                                                  color: Colors
+                                                                          .grey[
+                                                                      400])),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              1.0),
+                                                      child: Text(
+                                                          display(trendingSnacks[
+                                                                      index]
+                                                                  .numberOfRatings) +
+                                                              " total ratings",
                                                           style: TextStyle(
                                                               fontSize: 18,
                                                               color: Colors
                                                                   .grey[400])),
-                                                    ],
-                                                  ),
+                                                    ),
+                                                  ],
                                                 ),
                                                 Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(1.0),
-                                                  child: Text(
-                                                      display(trendingSnacks[
-                                                                  index]
-                                                              .numberOfRatings) +
-                                                          " total ratings",
-                                                      style: TextStyle(
-                                                          fontSize: 18,
-                                                          color: Colors
-                                                              .grey[400])),
-                                                ),
+                                                    padding:
+                                                        const EdgeInsets.all(8),
+                                                    child: Row(
+                                                      children: [
+                                                        Text(
+                                                            trendingSnacks[
+                                                                    index]
+                                                                .averageRatings
+                                                                .overall
+                                                                .toStringAsFixed(
+                                                                    1),
+                                                            style: TextStyle(
+                                                                fontSize: 32,
+                                                                color: Colors
+                                                                    .grey)),
+                                                        Icon(Icons.star_rounded,
+                                                            size: 28,
+                                                            color: SnaxColors
+                                                                .redAccent)
+                                                      ],
+                                                    ))
                                               ],
-                                            ),
+                                            )
                                           ],
-                                        )
-                                      ],
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ],
                               ),
-                              Padding(
-                                  padding: const EdgeInsets.all(8),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                          trendingSnacks[index]
-                                              .averageRatings
-                                              .overall
-                                              .toStringAsFixed(1),
-                                          style: TextStyle(
-                                              fontSize: 32,
-                                              color: Colors.grey)),
-                                      Icon(Icons.star_rounded,
-                                          size: 28, color: SnaxColors.redAccent)
-                                    ],
-                                  ))
-                            ],
-                          ),
-                        )),
-                  ),
-                );
-              })
-          : Container(
-              child: Center(
-                  child: CircularProgressIndicator(
-                valueColor:
-                    new AlwaysStoppedAnimation<Color>(SnaxColors.redAccent),
-              )),
-            ));
+                            ),
+                          )),
+                    );
+                  })
+              : Container(
+                  child: Center(
+                      child: CircularProgressIndicator(
+                    valueColor:
+                        new AlwaysStoppedAnimation<Color>(SnaxColors.redAccent),
+                  )),
+                )),
+    ],
+  );
 }
