@@ -47,8 +47,12 @@ class _EditProfileState extends State<EditProfile> {
         ],
       ),
       body: Container(
+        height: size.height,
         decoration: BoxDecoration(gradient: SnaxGradients.redBigThings),
         child: ListView(
+          physics:
+              BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+          shrinkWrap: true,
           children: [
             _profileImage(),
             Padding(
@@ -70,9 +74,12 @@ class _EditProfileState extends State<EditProfile> {
             //   color: Colors.black,
             // ),
             Container(
-              height: 500,
+              height: size.height / 2 + 50,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(60),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(60),
+                  topRight: Radius.circular(60),
+                ),
                 boxShadow: [
                   BoxShadow(color: Color.fromARGB(32, 0, 0, 0), blurRadius: 12)
                 ],
@@ -82,7 +89,8 @@ class _EditProfileState extends State<EditProfile> {
                 Container(
                   height: 200,
                   width: double.infinity,
-                  margin: EdgeInsets.symmetric(horizontal: size.width * .05),
+                  // margin: EdgeInsets.symmetric(horizontal: size.width * .05),
+                  padding: EdgeInsets.only(left: 16, bottom: 16),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -102,7 +110,7 @@ class _EditProfileState extends State<EditProfile> {
   //* This allows the user to change their profile image
   Widget _profileImage() {
     return Padding(
-      padding: const EdgeInsets.only(top: 15.0, bottom: 8),
+      padding: const EdgeInsets.only(top: 8.0, bottom: 8),
       child: Center(
         child: Stack(
           children: [
@@ -168,7 +176,7 @@ class _EditProfileState extends State<EditProfile> {
   Widget _nameTextField() {
     return Material(
       elevation: 0,
-      color: Colors.white,
+      color: Colors.transparent,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
@@ -195,7 +203,7 @@ class _EditProfileState extends State<EditProfile> {
   Widget _bioTextField() {
     return Material(
       elevation: 0,
-      color: Colors.white,
+      color: Colors.transparent,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),

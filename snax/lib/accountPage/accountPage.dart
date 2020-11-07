@@ -72,7 +72,6 @@ class _AccountPageState extends State<AccountPage>
               child: Container(
                 width: double.infinity,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     _profileInfo(),
                     SizedBox(height: 10),
@@ -92,7 +91,8 @@ class _AccountPageState extends State<AccountPage>
               children: [
                 TabBar(
                   controller: _tabController,
-                  labelColor: Colors.black,
+                  indicatorColor: SnaxColors.redAccent,
+                  labelColor: !isDark(context) ? Colors.black : Colors.white,
                   unselectedLabelColor: Colors.grey,
                   tabs: [
                     Tab(
