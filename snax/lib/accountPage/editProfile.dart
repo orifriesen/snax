@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:snax/accountPage/accountPage.dart';
+import 'package:snax/backend/backend.dart';
+import 'package:snax/backend/requests.dart';
 import 'package:snax/helpers.dart';
 
 class EditProfile extends StatefulWidget {
@@ -14,6 +16,17 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   PickedFile _imageFile;
   ImagePicker _imagePicker = ImagePicker();
+
+  final nameController = TextEditingController();
+  final bioController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    nameController.text = SnaxBackend.currentUser.name;
+    bioController.text = SnaxBackend.currentUser.bio;
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -28,7 +41,9 @@ class _EditProfileState extends State<EditProfile> {
               'Cancel',
               style: TextStyle(color: Colors.white),
             ),
-            onPressed: () => {Navigator.pop(context)},
+            onPressed: () {
+              Navigator.pop(context);
+            },
             shape: CircleBorder(side: BorderSide(color: Colors.transparent))),
         title: Text(
           'Edit Profile',
@@ -37,7 +52,11 @@ class _EditProfileState extends State<EditProfile> {
         centerTitle: true,
         actions: [
           FlatButton(
-            onPressed: () => {Navigator.pop(context)},
+            onPressed: () {
+              SnaxBackend.currentUser.name = nameController.text;
+              SnaxBackend.currentUser.bio = bioController.text.trim();
+              Navigator.pop(context);
+            },
             child: Text(
               'Done',
               style: TextStyle(color: Colors.white),
@@ -70,11 +89,8 @@ class _EditProfileState extends State<EditProfile> {
                 ),
               ),
             ),
-            // Divider(
-            //   color: Colors.black,
-            // ),
             Container(
-              height: size.height / 2 + 50,
+              height: double.infinity,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(60),
@@ -83,14 +99,13 @@ class _EditProfileState extends State<EditProfile> {
                 boxShadow: [
                   BoxShadow(color: Color.fromARGB(32, 0, 0, 0), blurRadius: 12)
                 ],
-                color: Colors.white,
+                color: Theme.of(context).canvasColor,
               ),
               child: Column(children: [
                 Container(
                   height: 200,
                   width: double.infinity,
-                  margin: EdgeInsets.symmetric(horizontal: size.width * .05),
-                  // padding: EdgeInsets.only(left: 16, bottom: 16),
+                  padding: EdgeInsets.only(left: 16, bottom: 16),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -181,7 +196,7 @@ class _EditProfileState extends State<EditProfile> {
         borderRadius: BorderRadius.circular(20),
       ),
       child: TextFormField(
-        style: TextStyle(color: SnaxColors.subtext),
+        controller: nameController,
         decoration: InputDecoration(
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),
@@ -192,7 +207,7 @@ class _EditProfileState extends State<EditProfile> {
           hintText: 'Name',
           hintStyle: TextStyle(
             letterSpacing: 2,
-            color: Colors.black54,
+            color: SnaxColors.subtext,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -209,7 +224,7 @@ class _EditProfileState extends State<EditProfile> {
         borderRadius: BorderRadius.circular(20),
       ),
       child: TextFormField(
-        style: TextStyle(color: SnaxColors.subtext),
+        controller: bioController,
         minLines: 1,
         maxLines: 5,
         maxLength: 150,
@@ -223,7 +238,7 @@ class _EditProfileState extends State<EditProfile> {
           hintText: 'Bio',
           hintStyle: TextStyle(
             letterSpacing: 2,
-            color: Colors.black54,
+            color: SnaxColors.subtext,
             fontWeight: FontWeight.bold,
           ),
         ),

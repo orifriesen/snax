@@ -8,7 +8,6 @@ import 'editProfile.dart';
 import 'accountBottomTabs/postTab.dart';
 import 'accountBottomTabs/secondTab.dart';
 
-import 'package:snax/backend/backend.dart';
 import 'package:snax/backend/requests.dart';
 import 'package:snax/helpers.dart';
 
@@ -75,7 +74,8 @@ class _AccountPageState extends State<AccountPage>
                   children: [
                     _profileInfo(),
                     SizedBox(height: 10),
-                    _profileBio(),
+                    Container(
+                        alignment: Alignment.centerLeft, child: _profileBio()),
                     SizedBox(height: 10),
                     _profileStats(),
                   ],
@@ -162,10 +162,9 @@ class _AccountPageState extends State<AccountPage>
       child: Padding(
         padding: const EdgeInsets.only(left: 16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'This is where the user bio will be placed. It will strictly have a character count of 150 or 160 depending on what you guys want. The style may vary. ',
+              '${SnaxBackend.currentUser.bio}',
               style: TextStyle(color: Colors.white, fontSize: 15),
             ),
           ],
