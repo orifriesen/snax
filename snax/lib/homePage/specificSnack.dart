@@ -4,14 +4,21 @@ import 'package:number_display/number_display.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 import 'package:snax/backend/backend.dart';
+import 'package:snax/backend/requests.dart';
+import 'package:snax/barcodeScanner/barcodeAddCode.dart';
 import 'package:snax/helpers.dart';
-import 'package:snax/homePage/searchBar.dart';
-import 'package:snax/homePage/ratingInfoPage.dart';
 import 'package:snax/homePage/userReview.dart';
 
-class ProductPage extends StatelessWidget {
+class ProductPage extends StatefulWidget {
   ProductPage({Key key, this.item}) : super(key: key);
   final SnackItem item;
+
+  @override
+  _ProductPageState createState() => _ProductPageState();
+}
+
+class _ProductPageState extends State<ProductPage> {
+  SnackItem chosenSnack;
 
   final display = createDisplay(placeholder: '0');
 
@@ -26,7 +33,17 @@ class ProductPage extends StatelessWidget {
           IconButton(
               icon: const Icon(Icons.search),
               onPressed: () {
-                showSearch(context: context, delegate: DataSearch());
+                showSearch(
+                    context: context,
+                    delegate: BarcodeAddSearch(
+                        (SnackSearchResultItem returnSnack) async {
+                      chosenSnack = await SnaxBackend.getSnack(returnSnack.id);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  ProductPage(item: chosenSnack)));
+                    }));
               }),
           IconButton(icon: const Icon(Icons.more_vert), onPressed: () {})
         ],
@@ -67,7 +84,8 @@ class ProductPage extends StatelessWidget {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Image.network(this.item.image, width: 80, height: 80),
+                          Image.network(this.widget.item.image,
+                              width: 80, height: 80),
                           Padding(
                             padding: const EdgeInsets.only(left: 8),
                             child: Column(
@@ -76,7 +94,7 @@ class ProductPage extends StatelessWidget {
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 1.0),
                                   child: Text(
-                                    this.item.name,
+                                    this.widget.item.name,
                                     style: TextStyle(
                                         fontSize: 24,
                                         fontWeight: FontWeight.w600),
@@ -86,7 +104,7 @@ class ProductPage extends StatelessWidget {
                                   padding: const EdgeInsets.all(1.0),
                                   child: Row(
                                     children: [
-                                      Text(this.item.type.name,
+                                      Text(this.widget.item.type.name,
                                           style: TextStyle(
                                               fontSize: 18,
                                               color: Colors.grey[400])),
@@ -101,7 +119,10 @@ class ProductPage extends StatelessWidget {
                                 Padding(
                                   padding: const EdgeInsets.all(1.0),
                                   child: Text(
-                                      display(this.item.numberOfRatings) +
+                                      display(this
+                                              .widget
+                                              .item
+                                              .numberOfRatings) +
                                           " total ratings",
                                       style: TextStyle(
                                           fontSize: 18,
@@ -117,8 +138,8 @@ class ProductPage extends StatelessWidget {
             ),
             Expanded(
               child: ListView(padding: EdgeInsets.zero, children: <Widget>[
-                this.item.numberOfRatings != 0 &&
-                        this.item.numberOfRatings != null
+                this.widget.item.numberOfRatings != 0 &&
+                        this.widget.item.numberOfRatings != null
                     ? criteriaList()
                     : Center(
                         child: Padding(
@@ -146,8 +167,8 @@ class ProductPage extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                     builder: (context) => UserReviewPage(
-                          this.item.id,
-                          this.item.name,
+                          this.widget.item.id,
+                          this.widget.item.name,
                         )));
           },
           label: Container(
@@ -169,23 +190,30 @@ class ProductPage extends StatelessWidget {
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(this.item.name,
+              child: Text(this.widget.item.name,
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             ),
             Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(children: [
                   Text(
-                      this.item.averageRatings.overall.toStringAsFixed(1) + " ",
+                      this
+                              .widget
+                              .item
+                              .averageRatings
+                              .overall
+                              .toStringAsFixed(1) +
+                          " ",
                       style: TextStyle(fontSize: 20, color: Colors.grey)),
                   SmoothStarRating(
                       allowHalfRating: true,
                       starCount: 5,
-                      rating: this.item.averageRatings.overall,
+                      rating: this.widget.item.averageRatings.overall,
                       size: 24,
                       isReadOnly: true,
-                      filledIconData: Icons.star,
-                      halfFilledIconData: Icons.star_half,
+                      filledIconData: Icons.star_rounded,
+                      halfFilledIconData: Icons.star_half_rounded,
+                      defaultIconData: Icons.star_outline_rounded,
                       color: SnaxColors.redAccent,
                       borderColor: SnaxColors.redAccent,
                       spacing: 0.0)
@@ -198,25 +226,25 @@ class ProductPage extends StatelessWidget {
                 style: TextStyle(fontSize: 16, color: Colors.grey[600]))),
         divider(),
         returnSpecificCriteria(
-            "Snackability", this.item.averageRatings.snackability, true),
+            "Snackability", this.widget.item.averageRatings.snackability, true),
         divider(),
         returnSpecificCriteria(
-            "Mouthfeel", this.item.averageRatings.mouthfeel, true),
+            "Mouthfeel", this.widget.item.averageRatings.mouthfeel, true),
+        divider(),
+        returnSpecificCriteria("Accessibility",
+            this.widget.item.averageRatings.accessibility, true),
         divider(),
         returnSpecificCriteria(
-            "Accessibility", this.item.averageRatings.accessibility, true),
+            "Sweetness", this.widget.item.averageRatings.sweetness, false),
         divider(),
         returnSpecificCriteria(
-            "Sweetness", this.item.averageRatings.sweetness, false),
+            "Saltiness", this.widget.item.averageRatings.saltiness, false),
         divider(),
         returnSpecificCriteria(
-            "Saltiness", this.item.averageRatings.saltiness, false),
+            "Sourness", this.widget.item.averageRatings.sourness, false),
         divider(),
         returnSpecificCriteria(
-            "Sourness", this.item.averageRatings.sourness, false),
-        divider(),
-        returnSpecificCriteria(
-            "Spiciness", this.item.averageRatings.spicyness, false),
+            "Spiciness", this.widget.item.averageRatings.spicyness, false),
       ],
     );
   }
@@ -253,8 +281,9 @@ class ProductPage extends StatelessWidget {
                       rating: snackItemData,
                       size: 24,
                       isReadOnly: true,
-                      filledIconData: Icons.star,
-                      halfFilledIconData: Icons.star_half,
+                      filledIconData: Icons.star_rounded,
+                      halfFilledIconData: Icons.star_half_rounded,
+                      defaultIconData: Icons.star_outline_rounded,
                       color: SnaxColors.redAccent,
                       borderColor: SnaxColors.redAccent,
                       spacing: 0.0)
