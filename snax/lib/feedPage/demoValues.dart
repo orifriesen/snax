@@ -1,3 +1,4 @@
+import 'package:snax/backend/requests.dart';
 import 'package:snax/homePage/snackList.dart';
 
 import 'post.dart';
@@ -5,8 +6,8 @@ import 'package:snax/backend/backend.dart';
 
 class DemoValues {
   static List<SnaxUser> demoUsers = [
-    SnaxUser("escherwd", "Escher", "68420"),
-    SnaxUser("JD", "JD", "271943")
+    SnaxUser("escherwd", "Escher", "68420", "${SnaxBackend.currentUser.bio}"),
+    SnaxUser("JD", "JD", "271943", "${SnaxBackend.currentUser.bio}"),
   ];
 
   static List<SnackSearchResultItem> items = [];

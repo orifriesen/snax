@@ -23,7 +23,6 @@ environment:
 dependencies:
   flappy_search_bar: 1.7.2
   smooth_star_rating: 1.1.1
-  flutter_rating_bar: ^3.0.1+1
   number_display: 2.3.0
   firebase_core: ^0.5.0+1
   firebase_auth: ^0.18.1+2
@@ -40,6 +39,7 @@ dependencies:
   loading: ^1.0.2
   like_button: ^1.0.3
   image_picker: ^0.6.7+12
+  url_launcher: ^5.7.10
 
   flutter:
     sdk: flutter

@@ -69,6 +69,13 @@ class _MakePostPageState extends State<MakePostPage> {
         body: Stack(
           children: [
             Container(
+                child: SafeArea(
+                    left: false,
+                    right: false,
+                    bottom: false,
+                    child: Container(
+                      height: 80,
+                    )),
                 height: 250,
                 decoration: BoxDecoration(
                   //color: SnaxColors.redAccent,
@@ -105,14 +112,17 @@ class _MakePostPageState extends State<MakePostPage> {
                               onTap: chooseNewSnack,
                             )
                           : ListTile(
-                              leading: ClipRRect(
-                                borderRadius: BorderRadius.circular(16),
+                              leading: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(16),
+                                    color: Colors.white),
+                                clipBehavior: Clip.hardEdge,
+                                padding: EdgeInsets.all(2),
+                                height: 64,
+                                width: 58,
                                 child: AspectRatio(
                                     aspectRatio: 1.0,
-                                    child: Image.network(
-                                      snack.image,
-                                      scale: 3,
-                                    )),
+                                    child: Image.network(snack.image)),
                               ),
                               title: Text(
                                 snack.name,
@@ -171,47 +181,6 @@ class _MakePostPageState extends State<MakePostPage> {
               ),
             )
           ],
-        )
-        //   children: [
-        //     (snack == null)
-        //         ? ListTile(
-        //             title: Text("Choose Snack"),
-        //             trailing: Icon(Icons.arrow_drop_down_rounded),
-        //             onTap: chooseNewSnack,
-        //           )
-        //         : ListTile(
-        //             leading: AspectRatio(
-        //                 aspectRatio: 1.0,
-        //                 child: Image.network(
-        //                   snack.image,
-        //                   scale: 5,
-        //                 )),
-        //             title: Text(snack.name),
-        //             subtitle: Text("Choose Other Snack"),
-        //             trailing: Icon(Icons.arrow_drop_down_outlined),
-        //             onTap: chooseNewSnack),
-        //     TextField(
-        //       decoration: InputDecoration(
-        //           border: InputBorder.none,
-        //           contentPadding: EdgeInsets.all(16.0),
-        //           hintText: 'Post Title'),
-        //       controller: titleController,
-        //       minLines: 1,
-        //       maxLines: 2,
-        //     ),
-        //     Expanded(
-        //       child: TextField(
-        //         decoration: InputDecoration(
-        //             border: InputBorder.none,
-        //             contentPadding: EdgeInsets.all(16.0),
-        //             hintText: 'What\'s your opinion on this snack?'),
-        //         controller: bodyController,
-        //         minLines: 1,
-        //         maxLines: 20,
-        //       ),
-        //     )
-        //   ],
-        // ),
-        );
+        ));
   }
 }

@@ -68,7 +68,7 @@ class SnaxBackend {
         doc.id,
         SnackItemType(_snackTypes[snackTypeId], snackTypeId),
         doc.get("upc"),
-        SnackRating(
+        (doc.data()["computed"] != null) ? SnackRating(
           toDouble(doc.get("computed.score_overall")),
           toDouble(doc.get("computed.score_mouthfeel")),
           toDouble(doc.get("computed.score_accessibility")),
@@ -77,9 +77,9 @@ class SnaxBackend {
           toDouble(doc.get("computed.score_sourness")),
           toDouble(doc.get("computed.score_sweetness")),
           toDouble(doc.get("computed.score_spicyness")),
-        ),
-        doc.get("computed_ratings"),
-        doc.get("computed_trend"),
+        ) : null,
+        doc.data()["computed_ratings"],
+        doc.data()["computed_trend"],
         imgUrl);
   }
 
@@ -216,13 +216,11 @@ class SnaxBackend {
 
     //Login
     await SnaxBackend.auth.loginIfNotAlready();
-    
+
     //Send request
     HttpsCallableResult result = await fbCloud
         .getHttpsCallable(functionName: "feedMakeComment")
-        .call({
-      "post-id"
-    });
+        .call({"post-id"});
   }
 
   //Grabs user info to link with comments
@@ -288,8 +286,11 @@ class SnaxBackend {
       if (!snackDatas.containsKey(data["snack_id"]) ||
           !userDatas.containsKey(data["uid"])) continue;
       //Create user
-      SnaxUser user = SnaxUser(userDatas[data["uid"]]["username"],
-          userDatas[data["uid"]]["name"], data["uid"]);
+      SnaxUser user = SnaxUser(
+          userDatas[data["uid"]]["username"],
+          userDatas[data["uid"]]["name"],
+          data["uid"],
+          userDatas[data["uid"]]["bio"]);
       //Get snack image
       String snackImg;
       try {
@@ -441,7 +442,15 @@ class SnaxBackend {
   }
 
   static Future<List<String>> recentSearches() async {
-    return ["Cheetos Limon","Gardettos","Goldfish","Pringles BBQ","Pringles Barbeque","Pringles Barbecue","Lays"];
+    return [
+      "Cheetos Limon",
+      "Gardettos",
+      "Goldfish",
+      "Pringles BBQ",
+      "Pringles Barbeque",
+      "Pringles Barbecue",
+      "Lays"
+    ];
   }
 
   static Future<void> postReview(String snackId, SnackRating rating) async {
@@ -533,8 +542,10 @@ class _SnaxBackendAuth {
       await prefs.setString("user_id", user.uid);
       await prefs.setString("user_username", userInDB.get("username"));
       await prefs.setString("user_name", userInDB.get("name"));
+      await prefs.setString("user_bio", userInDB.data()["bio"]);
       //Return instance
-      return SnaxUser(userInDB.get("username"), userInDB.get("name"), user.uid);
+      return SnaxUser(userInDB.get("username"), userInDB.get("name"), user.uid,
+          userInDB.data()["bio"]);
     }
   }
 
@@ -542,8 +553,11 @@ class _SnaxBackendAuth {
     print("[SnaxBackend] Resorting to local user data, server fetch failed");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.containsKey("user_id")) {
-      return SnaxUser(prefs.getString("user_username"),
-          prefs.getString("user_name"), prefs.getString("user_id"));
+      return SnaxUser(
+          prefs.getString("user_username"),
+          prefs.getString("user_name"),
+          prefs.getString("user_id"),
+          prefs.getString("user_bio"));
     } else {
       throw "No user data present";
     }
@@ -554,6 +568,7 @@ class _SnaxBackendAuth {
     await prefs.remove("user_id");
     await prefs.remove("user_username");
     await prefs.remove("user_name");
+    await prefs.remove("user_bio");
   }
 }
 

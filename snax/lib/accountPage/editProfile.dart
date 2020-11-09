@@ -1,9 +1,13 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:snax/accountPage/accountPage.dart';
+import 'package:snax/backend/backend.dart';
+import 'package:snax/backend/requests.dart';
+import 'package:snax/helpers.dart';
 
 class EditProfile extends StatefulWidget {
   @override
@@ -12,26 +16,54 @@ class EditProfile extends StatefulWidget {
 
 class _EditProfileState extends State<EditProfile> {
   PickedFile _imageFile;
-  final ImagePicker _imagePicker = ImagePicker();
+  ImagePicker _imagePicker = ImagePicker();
+
+  final nameController = TextEditingController();
+  final bioController = TextEditingController();
+  final usernameController = TextEditingController();
+
+  bool maxedLines = false;
+
+  @override
+  void initState() {
+    super.initState();
+    nameController.text = SnaxBackend.currentUser.name;
+    usernameController.text = SnaxBackend.currentUser.username;
+    bioController.text = SnaxBackend.currentUser.bio;
+  }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       appBar: AppBar(
+        elevation: 0,
+        backgroundColor: SnaxColors.gradientStart,
         leadingWidth: 90,
         leading: FlatButton(
             child: Text(
               'Cancel',
               style: TextStyle(color: Colors.white),
             ),
-            onPressed: () => {Navigator.pop(context)},
+            onPressed: () {
+              Navigator.pop(context);
+            },
             shape: CircleBorder(side: BorderSide(color: Colors.transparent))),
-        title: Text('Edit Profile'),
+        title: Text(
+          'Edit Profile',
+          style: TextStyle(color: Colors.white),
+        ),
         centerTitle: true,
         actions: [
           FlatButton(
-            onPressed: () => {Navigator.pop(context)},
+            onPressed: () {
+              SnaxBackend.currentUser.name = nameController.text;
+              SnaxBackend.currentUser.username = usernameController.text;
+              SnaxBackend.currentUser.bio = bioController.text.trim();
+              Navigator.pop(context);
+            },
             child: Text(
               'Done',
               style: TextStyle(color: Colors.white),
@@ -41,33 +73,61 @@ class _EditProfileState extends State<EditProfile> {
         ],
       ),
       body: Container(
-        child: ListView(
+        height: size.height,
+        decoration: BoxDecoration(gradient: SnaxGradients.redBigThings),
+        child: Column(
           children: [
             _profileImage(),
-            Center(
-              child: InkWell(
-                child: Text(
-                  'Change Profile Photo',
+            Padding(
+              padding: const EdgeInsets.only(bottom: 30),
+              child: Center(
+                child: InkWell(
+                  child: Text(
+                    'Change Profile Photo',
+                    style: TextStyle(fontSize: 15, color: Colors.white),
+                  ),
+                  onTap: () => {
+                    showModalBottomSheet(
+                        context: context, builder: (builder) => _imageSheet())
+                  },
                 ),
-                onTap: () => {
-                  showModalBottomSheet(
-                      context: context, builder: (builder) => _imageSheet())
-                },
               ),
             ),
-            Divider(
-              color: Colors.black,
-            ),
-            Container(
-              height: 200,
-              width: double.infinity,
-              margin: EdgeInsets.symmetric(horizontal: size.width * .05),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _nameTextField(),
-                  _bioTextField(),
-                ],
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(60),
+                    topRight: Radius.circular(60),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Color.fromARGB(32, 0, 0, 0), blurRadius: 12)
+                  ],
+                  color: Theme.of(context).canvasColor,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          width: double.infinity,
+                          padding:
+                              EdgeInsets.only(left: 16, bottom: 16, right: 16),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              _nameTextField(),
+                              _usernameTextField(),
+                              _bioTextField(),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
           ],
@@ -79,12 +139,12 @@ class _EditProfileState extends State<EditProfile> {
   //* This allows the user to change their profile image
   Widget _profileImage() {
     return Padding(
-      padding: const EdgeInsets.all(15.0),
+      padding: const EdgeInsets.only(top: 8.0, bottom: 8),
       child: Center(
         child: Stack(
           children: [
             CircleAvatar(
-              backgroundColor: Colors.transparent,
+              backgroundColor: Colors.grey,
               radius: 80.0,
               backgroundImage: _imageFile == null
                   ? NetworkImage('https://picsum.photos/200/300?grayscale')
@@ -134,7 +194,7 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
-  void takePhoto(ImageSource source) async {
+  takePhoto(ImageSource source) async {
     final pickedFile = await _imagePicker.getImage(source: source);
     setState(() {
       _imageFile = pickedFile;
@@ -144,12 +204,13 @@ class _EditProfileState extends State<EditProfile> {
   //* This allows the user to change their name
   Widget _nameTextField() {
     return Material(
-      elevation: 4,
-      shadowColor: Colors.grey,
+      elevation: 0,
+      color: Colors.transparent,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
       child: TextFormField(
+        controller: nameController,
         decoration: InputDecoration(
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),
@@ -160,7 +221,34 @@ class _EditProfileState extends State<EditProfile> {
           hintText: 'Name',
           hintStyle: TextStyle(
             letterSpacing: 2,
-            color: Colors.black54,
+            color: SnaxColors.subtext,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _usernameTextField() {
+    return Material(
+      elevation: 0,
+      color: Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: TextFormField(
+        controller: usernameController,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: BorderSide.none,
+          ),
+          counterStyle: TextStyle(color: Colors.transparent, fontSize: 0),
+          contentPadding: EdgeInsets.only(left: 16, top: 16),
+          hintText: 'Username',
+          hintStyle: TextStyle(
+            letterSpacing: 2,
+            color: SnaxColors.subtext,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -171,26 +259,28 @@ class _EditProfileState extends State<EditProfile> {
   //* This allows the user to change their bio
   Widget _bioTextField() {
     return Material(
-      elevation: 4,
-      shadowColor: Colors.grey,
+      elevation: 0,
+      color: Colors.transparent,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
       child: TextFormField(
+        inputFormatters: [
+          LengthLimitingTextInputFormatter(150),
+        ],
+        controller: bioController,
         minLines: 1,
         maxLines: 5,
-        maxLength: 150,
         decoration: InputDecoration(
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),
             borderSide: BorderSide.none,
           ),
-          counterStyle: TextStyle(color: Colors.transparent, fontSize: 0),
-          contentPadding: EdgeInsets.only(left: 16, top: 16),
+          contentPadding: EdgeInsets.only(top: 16, left: 16),
           hintText: 'Bio',
           hintStyle: TextStyle(
             letterSpacing: 2,
-            color: Colors.black54,
+            color: SnaxColors.subtext,
             fontWeight: FontWeight.bold,
           ),
         ),

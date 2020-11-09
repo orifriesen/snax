@@ -3,9 +3,9 @@ import 'package:snax/backend/requests.dart';
 import 'package:snax/feedPage/demoValues.dart';
 import 'package:snax/feedPage/makePostPage.dart';
 import 'package:snax/feedPage/post.dart';
-import 'package:intl/intl.dart';
 import 'package:like_button/like_button.dart';
 import 'package:snax/feedPage/postDetailsPage.dart';
+import 'package:snax/helpers.dart';
 
 class FeedPage extends StatefulWidget {
   @override
@@ -29,21 +29,20 @@ class _FeedPageState extends State<FeedPage> {
   @override
   void initState() {
     super.initState();
-    print("initState");
     getPosts();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).canvasColor,
         body: NestedScrollView(
             headerSliverBuilder: (BuildContext context, bool isScrolled) => [
                   SliverAppBar(
                     floating: true,
                     pinned: false,
                     snap: true,
-                    backgroundColor: Colors.white,
+                    backgroundColor: Theme.of(context).canvasColor,
                     elevation: 0,
                     centerTitle: true,
                     leadingWidth: double.infinity,
@@ -77,14 +76,12 @@ class _FeedPageState extends State<FeedPage> {
                             onChanged: (String newValue) async {
                               List<Post> newPosts;
                               if (newValue == "Top") {
-                                print("getting top posts");
                                 newPosts = await SnaxBackend.feedGetTopPosts();
                               } else
                                 newPosts = DemoValues.demoPosts;
                               setState(() {
                                 dropDownValue = newValue;
                                 posts = newPosts;
-                                print(posts.length.toString() + " posts");
                               });
                             },
                             items: [
@@ -152,14 +149,15 @@ Widget getFeed(BuildContext context, List<Post> posts) {
   );
 }
 
-Widget postWidget(BuildContext context, Post post) {
+Widget postWidget(BuildContext context, Post post, {bool opensDetails = true}) {
   return Padding(
     padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 16.0),
     child: GestureDetector(
       onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => PostDetailsPage(post: post),
-        ));
+        if (opensDetails)
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => PostDetailsPage(post: post),
+          ));
       },
       child: Container(
         decoration: BoxDecoration(
@@ -167,7 +165,17 @@ Widget postWidget(BuildContext context, Post post) {
             boxShadow: [
               BoxShadow(color: Color.fromARGB(36, 0, 0, 0), blurRadius: 12)
             ],
-            color: Colors.white),
+            gradient: isDark(context)
+                ? LinearGradient(
+                    colors: [
+                      HexColor.fromHex("3C3C3C"),
+                      HexColor.fromHex("2C2C2C")
+                    ],
+                    begin: Alignment(0, -0.2),
+                    end: Alignment(0, 1.5),
+                  )
+                : null,
+            color: isDark(context) ? null : Theme.of(context).canvasColor),
         child: Padding(
           padding: EdgeInsets.fromLTRB(16, 24, 16, 16),
           child: Column(
@@ -177,6 +185,11 @@ Widget postWidget(BuildContext context, Post post) {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        color: Colors.white),
+                    clipBehavior: Clip.hardEdge,
+                    padding: EdgeInsets.all(2),
                     height: 64,
                     width: 64,
                     child: AspectRatio(

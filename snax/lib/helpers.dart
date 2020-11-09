@@ -43,16 +43,21 @@ abstract class SnaxGradients {
       end: Alignment(1.5, 2.5),
       colors: [SnaxColors.gradientStart, SnaxColors.gradientEnd]);
 
-      //buttons and stuff, more subdued and less dramatic
+  //buttons and stuff, more subdued and less dramatic
   static LinearGradient darkGreyCard = LinearGradient(
       begin: Alignment(0, -0.2),
       end: Alignment(0, 1.5),
-      colors: [SnaxColors.darkGreyGradientStart, SnaxColors.darkGreyGradientEnd]);
+      colors: [
+        SnaxColors.darkGreyGradientStart,
+        SnaxColors.darkGreyGradientEnd
+      ]);
 }
 
 abstract class SnaxShadows {
-  static BoxShadow cardShadow = BoxShadow(color: Color.fromARGB(36, 0, 0, 0), blurRadius: 12);
-  static BoxShadow cardShadowSubtler = BoxShadow(color: Color.fromARGB(20, 0, 0, 0), blurRadius: 10);
+  static BoxShadow cardShadow =
+      BoxShadow(color: Color.fromARGB(36, 0, 0, 0), blurRadius: 12);
+  static BoxShadow cardShadowSubtler =
+      BoxShadow(color: Color.fromARGB(20, 0, 0, 0), blurRadius: 10);
 }
 
 MaterialButton SnaxButton(String title, Color color, Function tap) =>
