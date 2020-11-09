@@ -61,6 +61,7 @@ void main() {
           })
         });
     print(DemoValues.items.length);
+    SnaxBackend.feedLikePost("rlUXJBRe1MfKXI49Ux8M").then((_) {});
     SnaxBackend.feedGetComments("rlUXJBRe1MfKXI49Ux8M").then((comments) {
       for (var comment in comments) {
         print(comment.body);

@@ -53,17 +53,17 @@ class DemoValues {
   ];
 
   static List<Comment> demoComments = [
-    Comment("dd",demoUsers[0], "no <3", DateTime.now(), 69),
-    Comment("dd",demoUsers[0], "false", DateTime.now(), 420),
-    Comment("dd",demoUsers[0], "i-", DateTime.now(), 134),
-    Comment("dd",demoUsers[0], "fyp", DateTime.now(), 34209),
-    Comment("dd",demoUsers[0], "ur dumb", DateTime.now(), 78),
-    Comment("dd",demoUsers[0], "ur stupid", DateTime.now(), 1209),
-    Comment("dd",
+    Comment("dd","aa",demoUsers[0], "no <3", DateTime.now(), 69),
+    Comment("dd","aa",demoUsers[0], "false", DateTime.now(), 420),
+    Comment("dd","aa",demoUsers[0], "i-", DateTime.now(), 134),
+    Comment("dd","aa",demoUsers[0], "fyp", DateTime.now(), 34209),
+    Comment("dd","aa",demoUsers[0], "ur dumb", DateTime.now(), 78),
+    Comment("dd","aa",demoUsers[0], "ur stupid", DateTime.now(), 1209),
+    Comment("dd","aa",
         demoUsers[0],
         "ur dumb and stupid and dumb and i hate you because you are so unintelligent and dumb",
         DateTime.now(),
         39),
-    Comment("dd",demoUsers[0], "ew", DateTime.now(), 392),
+    Comment("dd","aa",demoUsers[0], "ew", DateTime.now(), 392),
   ];
 }

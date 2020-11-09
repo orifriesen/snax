@@ -180,6 +180,42 @@ class SnaxBackend {
     }
   }
 
+  static Future<void> feedLikeComment(String postId, String commentId) async {
+    if (commentId == null || postId == null) {
+      throw "Missing Data";
+    }
+
+    //Login
+    await SnaxBackend.auth.loginIfNotAlready();
+ //Get token
+    String token = await fbAuth.currentUser.getIdToken();
+
+    //Send request
+    HttpsCallableResult result = await fbCloud
+        .getHttpsCallable(functionName: "feedLike")
+        .call({"post_id": postId, "comment_id": commentId,"token":token});
+
+    if (result.data["status"] != "success") throw result.data["error"];
+  }
+
+  static Future<void> feedLikePost(String postId) async {
+    if (postId == null) {
+      throw "Missing Data";
+    }
+
+    //Login
+    await SnaxBackend.auth.loginIfNotAlready();
+ //Get token
+    String token = await fbAuth.currentUser.getIdToken();
+
+    //Send request
+    HttpsCallableResult result = await fbCloud
+        .getHttpsCallable(functionName: "feedLike")
+        .call({"post_id": postId,"token":token});
+
+    if (result.data["status"] != "success") throw result.data["error"];
+  }
+
   static Future<List<Post>> feedGetTopPosts() async {
     //Wait for firebase init
     await _waitWhile(() => (fbStore == null));
@@ -201,7 +237,7 @@ class SnaxBackend {
             .collection("comments")
             .get())
         .docs;
-    return docs.isNotEmpty ? await _feedGrabRefsComments(docs) : [];
+    return docs.isNotEmpty ? await _feedGrabRefsComments(docs,postId) : [];
   }
 
 
@@ -224,11 +260,11 @@ class SnaxBackend {
         .getHttpsCallable(functionName: "feedMakeComment")
         .call({"post_id": postId,"content": content,"token":token});
 
-    print(result.data.toString());
+    if (result.data["status"] != "success") throw result.data["error"];
   }
 
   //Grabs user info to link with comments
-  static Future<List<Comment>> _feedGrabRefsComments(List<QueryDocumentSnapshot> docs) async {
+  static Future<List<Comment>> _feedGrabRefsComments(List<QueryDocumentSnapshot> docs, String postId) async {
     //Create an empty list and add all the user ids
     List<String> userIds = [];
     docs.forEach((doc) {
@@ -251,7 +287,7 @@ class SnaxBackend {
           userDatas[data["uid"]]["name"],
           data["uid"],
           userDatas[data["uid"]]["bio"]);
-      comments.add(Comment(doc.id,user,data["content"],DateTime.fromMillisecondsSinceEpoch(data["timestamp"]),data["likes"] ?? 0));
+      comments.add(Comment(doc.id,postId,user,data["content"],DateTime.fromMillisecondsSinceEpoch(data["timestamp"]),data["likes"] ?? 0));
     }
     return comments;
   }
