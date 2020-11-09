@@ -192,6 +192,19 @@ class SnaxBackend {
     return _feedGrabRefs(docs);
   }
 
+  static Future<List<Comment>> feedGetComments(String postId) async {
+    //Wait for firebase init
+    await _waitWhile(() => (fbStore == null));
+    List<QueryDocumentSnapshot> docs = (await fbStore
+            .collection("feed")
+            .doc(postId)
+            .collection("comments")
+            .get())
+        .docs;
+    
+  }
+
+
   static Future<void> feedCommentOnPost(String postId,String content) async {
     if (content.isEmpty ||
         content == null ||
@@ -210,6 +223,29 @@ class SnaxBackend {
         .call({
       "post-id"
     });
+  }
+
+  //Grabs user info to link with comments
+  static Future<List<Comment>> _feedGrabRefsComments(List<QueryDocumentSnapshot> docs) async {
+    //Create an empty list and add all the user ids
+    List<String> userIds = [];
+    docs.forEach((doc) {
+      //Add user id
+      if (!userIds.contains(doc.data()["uid"])) userIds.add(doc.data()["uid"]);
+    });
+    //Get all the users
+    List<QueryDocumentSnapshot> userDocs = (await fbStore.collection("users").where(FieldPath.documentId, whereIn: userIds).get()).docs;
+    //Organize the data
+    Map<String, Map> userDatas = {};
+    userDocs.forEach((e) {
+      userDatas[e.id] = e.data();
+    });
+    //Create an empty list to return
+    List<Comment> comments = [];
+    for (var doc in docs) {
+      var data = doc.data();
+    }
+
   }
 
   //Grab extra info like user and snack for a given list of feed database items
