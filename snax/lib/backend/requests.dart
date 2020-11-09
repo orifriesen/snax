@@ -189,7 +189,7 @@ class SnaxBackend {
             .limit(25)
             .get())
         .docs;
-    return _feedGrabRefs(docs);
+    return docs.isNotEmpty ? await _feedGrabRefs(docs) : [];
   }
 
   static Future<List<Comment>> feedGetComments(String postId) async {
@@ -201,7 +201,7 @@ class SnaxBackend {
             .collection("comments")
             .get())
         .docs;
-    
+    return docs.isNotEmpty ? await _feedGrabRefsComments(docs) : [];
   }
 
 
@@ -216,11 +216,15 @@ class SnaxBackend {
 
     //Login
     await SnaxBackend.auth.loginIfNotAlready();
+ //Get token
+    String token = await fbAuth.currentUser.getIdToken();
 
     //Send request
     HttpsCallableResult result = await fbCloud
         .getHttpsCallable(functionName: "feedMakeComment")
-        .call({"post-id"});
+        .call({"post_id": postId,"content": content,"token":token});
+
+    print(result.data.toString());
   }
 
   //Grabs user info to link with comments
@@ -242,8 +246,14 @@ class SnaxBackend {
     List<Comment> comments = [];
     for (var doc in docs) {
       var data = doc.data();
+      SnaxUser user = SnaxUser(
+          userDatas[data["uid"]]["username"],
+          userDatas[data["uid"]]["name"],
+          data["uid"],
+          userDatas[data["uid"]]["bio"]);
+      comments.add(Comment(doc.id,user,data["content"],DateTime.fromMillisecondsSinceEpoch(data["timestamp"]),data["likes"] ?? 0));
     }
-
+    return comments;
   }
 
   //Grab extra info like user and snack for a given list of feed database items
@@ -310,6 +320,7 @@ class SnaxBackend {
           snackImg);
       //Add post
       posts.add(Post(
+          doc.id,
           user,
           snack,
           data["post_title"],
