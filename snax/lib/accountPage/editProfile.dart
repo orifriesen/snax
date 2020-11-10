@@ -61,9 +61,10 @@ class _EditProfileState extends State<EditProfile> {
         actions: [
           FlatButton(
             onPressed: () {
-              SnaxBackend.currentUser.name = nameController.text;
-              SnaxBackend.currentUser.username = usernameController.text;
-              SnaxBackend.currentUser.bio = bioController.text.trim();
+              SnaxBackend.updateProfile(
+                  name: nameController.text,
+                  username: usernameController.text,
+                  bio: bioController.text.trim());
               Navigator.pop(context);
             },
             child: Text(
@@ -146,7 +147,13 @@ class _EditProfileState extends State<EditProfile> {
             CircleAvatar(
               backgroundColor: Colors.grey,
               radius: 80.0,
-              child: this.uploadingImage ? Container(child: Center(child: CircularProgressIndicator()), decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.black54),) : null,
+              child: this.uploadingImage
+                  ? Container(
+                      child: Center(child: CircularProgressIndicator()),
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle, color: Colors.black54),
+                    )
+                  : null,
               backgroundImage: _imageFile == null
                   ? NetworkImage('https://picsum.photos/200/300?grayscale')
                   : FileImage(File(_imageFile.path)),
