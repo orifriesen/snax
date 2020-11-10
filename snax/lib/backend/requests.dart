@@ -161,7 +161,8 @@ class SnaxBackend {
 
   if (username == currentUser.username) username = null;
     if (name == currentUser.name) name = null;
-    if (bio == currentUser.bio || bio == "") bio = _undefinedBioString;
+    if (bio == currentUser.bio) bio = _undefinedBioString;
+    if (bio == "") bio = null;
 
     Map<String,String> params = {"token":token};
     if (username != null) params["username"] = username;
