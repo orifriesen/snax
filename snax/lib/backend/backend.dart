@@ -50,8 +50,9 @@ class SnaxUser {
   String name;
   String uid;
   String bio;
+  String photo;
 
-  SnaxUser(this.username, this.name, this.uid, this.bio);
+  SnaxUser(this.username, this.name, this.uid, this.bio, {this.photo});
 }
 
 class SnackSearchResultItem {
