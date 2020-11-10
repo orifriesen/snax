@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:snax/accountPage/accountPage.dart';
@@ -23,6 +24,7 @@ class _EditProfileState extends State<EditProfile> {
   final usernameController = TextEditingController();
 
   bool maxedLines = false;
+  bool uploadingImage = false;
 
   @override
   void initState() {
@@ -88,7 +90,8 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                   onTap: () => {
                     showModalBottomSheet(
-                        context: context, builder: (builder) => _imageSheet())
+                        context: context,
+                        builder: (builder) => _imageSheet(context))
                   },
                 ),
               ),
@@ -146,6 +149,7 @@ class _EditProfileState extends State<EditProfile> {
             CircleAvatar(
               backgroundColor: Colors.grey,
               radius: 80.0,
+              child: this.uploadingImage ? Container(child: Center(child: CircularProgressIndicator()), decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.black54),) : null,
               backgroundImage: _imageFile == null
                   ? NetworkImage('https://picsum.photos/200/300?grayscale')
                   : FileImage(File(_imageFile.path)),
@@ -158,7 +162,7 @@ class _EditProfileState extends State<EditProfile> {
 
   //* This is the pop up sheet that appears when the user requests to change
   //* their profile image
-  Widget _imageSheet() {
+  Widget _imageSheet(BuildContext context) {
     return Container(
       height: 100,
       width: MediaQuery.of(context).size.width,
@@ -179,12 +183,12 @@ class _EditProfileState extends State<EditProfile> {
             children: [
               FlatButton.icon(
                 icon: Icon(Icons.camera_alt_outlined),
-                onPressed: () => {takePhoto(ImageSource.camera)},
+                onPressed: () => {takePhoto(ImageSource.camera, context)},
                 label: Text('Camera'),
               ),
               FlatButton.icon(
                 icon: Icon(Icons.image_outlined),
-                onPressed: () => {takePhoto(ImageSource.gallery)},
+                onPressed: () => {takePhoto(ImageSource.gallery, context)},
                 label: Text('Gallery'),
               )
             ],
@@ -194,10 +198,22 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
-  takePhoto(ImageSource source) async {
-    final pickedFile = await _imagePicker.getImage(source: source);
+  takePhoto(ImageSource source, BuildContext context) async {
+    Navigator.of(context).pop();
     setState(() {
-      _imageFile = pickedFile;
+      this.uploadingImage = true;
+    });
+    try {
+      final pickedFile = await _imagePicker.getImage(source: source);
+      await SnaxBackend.updateProfilePhoto(pickedFile);
+      setState(() {
+        _imageFile = pickedFile;
+      });
+    } catch (error) {
+      Fluttertoast.showToast(msg: "Failed to upload profile photo");
+    }
+    setState(() {
+      this.uploadingImage = false;
     });
   }
 

@@ -40,7 +40,9 @@ dependencies:
   like_button: ^1.0.3
   image_picker: ^0.6.7+12
   url_launcher: ^5.7.10
-
+  image: ^2.1.18
+  path_provider: ^1.6.24
+  
   flutter:
     sdk: flutter
 

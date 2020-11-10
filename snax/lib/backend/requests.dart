@@ -1,10 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
+import 'dart:io' as io;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:flutter/material.dart';
-import 'package:snax/barcodeScanner/barcodeScanner.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:snax/feedPage/post.dart';
 import 'package:snax/main.dart';
 
@@ -17,9 +16,9 @@ import 'package:snax/loginPage/loginPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-import 'package:camerakit/camerakit.dart';
-import 'package:camerakit/CameraKitController.dart';
-import 'package:camerakit/CameraKitView.dart';
+import 'package:image/image.dart';
+
+import 'package:path_provider/path_provider.dart';
 
 //Cache the snack types, references aren't fetched in these requests so this map will be used.
 //Example of what it looks like: { "candy-bar": "Candy Bar", "snack-mix": "Snack Mix" }
@@ -147,6 +146,8 @@ class SnaxBackend {
     return snacks;
   }
 
+  
+
   //This random string is being used as an alternative to 'undefined' which doesnt exist in dart
   static const _undefinedBioString = "zX43XBOZ7PtzulR";
 
@@ -170,6 +171,28 @@ class SnaxBackend {
       return;
     } else {
       throw result.data["error"];
+    }
+  }
+
+  static Future<void> updateProfilePhoto(PickedFile pickedFile) async {
+    //Login
+    await SnaxBackend.auth.loginIfNotAlready();
+    //Get token
+    String token = await fbAuth.currentUser.getIdToken();
+    String uid = fbAuth.currentUser.uid;
+
+    //Resize and reformat image
+    Image image = decodeImage(await pickedFile.readAsBytes());
+    Image resized = copyResize(image, width: 400, height: 400);
+    io.Directory appDocDirectory = await getApplicationDocumentsDirectory();
+    io.File file = io.File(appDocDirectory.path+'$uid.jpg');
+    await file.writeAsBytes(encodeJpg(resized));
+
+    try {
+      await fbStorage.ref().child("user-profiles").child(uid+".jpg").putFile(file).onComplete;
+    } catch (error) {
+      print(error);
+      throw "Failed to upload";
     }
   }
 
