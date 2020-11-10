@@ -73,7 +73,6 @@ class _EditProfileState extends State<EditProfile> {
         ],
       ),
       body: Container(
-        height: size.height,
         decoration: BoxDecoration(gradient: SnaxGradients.redBigThings),
         child: Column(
           children: [
@@ -95,6 +94,7 @@ class _EditProfileState extends State<EditProfile> {
             ),
             Expanded(
               child: Container(
+                // height: size.height,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(60),
@@ -110,19 +110,16 @@ class _EditProfileState extends State<EditProfile> {
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     children: [
-                      Expanded(
-                        child: Container(
-                          width: double.infinity,
-                          padding:
-                              EdgeInsets.only(left: 16, bottom: 16, right: 16),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              _nameTextField(),
-                              _usernameTextField(),
-                              _bioTextField(),
-                            ],
-                          ),
+                      Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.only(left: 16, right: 16),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            _nameTextField(),
+                            _usernameTextField(),
+                            _bioTextField(),
+                          ],
                         ),
                       ),
                     ],
