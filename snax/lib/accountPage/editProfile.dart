@@ -107,7 +107,7 @@ class _EditProfileState extends State<EditProfile> {
                   color: Theme.of(context).canvasColor,
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(16.0),
                   child: Column(
                     children: [
                       Expanded(

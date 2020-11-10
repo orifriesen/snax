@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:smooth_star_rating/smooth_star_rating.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import 'package:snax/backend/backend.dart';
 import 'package:snax/backend/requests.dart';
+import 'package:snax/helpers.dart';
 
 class UserReviewPage extends StatefulWidget {
   UserReviewPage(this.snackID, this.item);
@@ -29,152 +30,698 @@ class _UserReviewPageState extends State<UserReviewPage> {
         body: Builder(
       builder: (context) => Scaffold(
         appBar: AppBar(
-          centerTitle: true,
-          title: Text('Review'),
-          bottom: PreferredSize(
-            preferredSize: null,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: Text(
-                '${this.widget.item}',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 15,
+          leadingWidth: 100,
+          leading: FlatButton(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Row(
+              children: [
+                Icon(
+                  Icons.arrow_back_ios_rounded,
+                  color: SnaxColors.redAccent,
                 ),
-              ),
+                Text(
+                  "Back",
+                  style: TextStyle(color: SnaxColors.redAccent, fontSize: 18),
+                )
+              ],
             ),
+          ),
+          elevation: 0,
+          backgroundColor: Theme.of(context).canvasColor,
+          centerTitle: true,
+          title: Text(
+            'Review Snack',
+            style: TextStyle(
+                color: !isDark(context) ? Colors.black : Colors.white),
           ),
         ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
           child: ListView(
-            children: <Widget>[
+            physics: BouncingScrollPhysics(),
+            children: [
               //* Overall Score
-              Container(
-                  child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Overall Score',
-                    style: TextStyle(fontSize: 25),
+              Padding(
+                padding: const EdgeInsets.only(
+                    top: 8, bottom: 16.0, left: 8, right: 8),
+                child: Container(
+                  padding: EdgeInsets.only(top: 16, right: 16, bottom: 16),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Color.fromARGB(36, 0, 0, 0), blurRadius: 6),
+                    ],
+                    gradient: isDark(context)
+                        ? LinearGradient(
+                            colors: [
+                              HexColor.fromHex("3C3C3C"),
+                              HexColor.fromHex("2C2C2C")
+                            ],
+                            begin: Alignment(0, -0.2),
+                            end: Alignment(0, 1.5),
+                          )
+                        : null,
+                    color:
+                        isDark(context) ? null : Theme.of(context).canvasColor,
                   ),
-                  Tooltip(
-                    message: "Rate the overall score of the item",
-                    child: IconButton(
-                      icon: Icon(Icons.info_outline),
-                      iconSize: 20.0,
-                      disabledColor: Colors.black,
-                      onPressed: () {},
-                    ),
+                  child: Column(
+                    children: [
+                      Container(
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  height: 64,
+                                  width: 64,
+                                  child: Icon(
+                                    Icons.analytics_outlined,
+                                    size: 30,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Overall Score",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 25),
+                                      ),
+                                      Text(
+                                        "Generally, how much do you like this snack?",
+                                        style: TextStyle(fontSize: 18),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.only(left: 8, right: 8, top: 16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              _overallScore(),
+                              ratings.overall != null
+                                  ? Text(
+                                      "${this.ratings.overall.floor()}/5",
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          color: SnaxColors.subtext),
+                                    )
+                                  : Text(
+                                      "0/5",
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          color: SnaxColors.subtext),
+                                    ),
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
                   ),
-                ],
-              )),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _overallScore(),
-                ],
+                ),
               ),
 
               //* Snackability
-              Container(
-                  child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Snackability',
-                    style: TextStyle(fontSize: 25),
+              Padding(
+                padding: const EdgeInsets.only(
+                    top: 8, bottom: 16.0, left: 8, right: 8),
+                child: Container(
+                  padding: EdgeInsets.only(top: 16, right: 16, bottom: 16),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Color.fromARGB(36, 0, 0, 0), blurRadius: 6),
+                    ],
+                    gradient: isDark(context)
+                        ? LinearGradient(
+                            colors: [
+                              HexColor.fromHex("3C3C3C"),
+                              HexColor.fromHex("2C2C2C")
+                            ],
+                            begin: Alignment(0, -0.2),
+                            end: Alignment(0, 1.5),
+                          )
+                        : null,
+                    color: Theme.of(context).canvasColor,
                   ),
-                  Tooltip(
-                    message: "Rate how snackable this item is",
-                    child: IconButton(
-                      icon: Icon(Icons.info_outline),
-                      iconSize: 20.0,
-                      disabledColor: Colors.black,
-                      onPressed: () {},
-                    ),
+                  child: Column(
+                    children: [
+                      Container(
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  height: 64,
+                                  width: 64,
+                                  child: Icon(
+                                    Icons.fastfood_outlined,
+                                    size: 30,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Snackability",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 25),
+                                      ),
+                                      Text(
+                                        "Could you see yourself snacking on these for hours?",
+                                        style: TextStyle(fontSize: 18),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.only(left: 8, right: 8, top: 16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              _snackability(),
+                              ratings.snackability != null
+                                  ? Text(
+                                      "${this.ratings.snackability.floor()}/5",
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          color: SnaxColors.subtext),
+                                    )
+                                  : Text(
+                                      "0/5",
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          color: SnaxColors.subtext),
+                                    ),
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
                   ),
-                ],
-              )),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _snackability(),
-                ],
+                ),
               ),
 
               //* Mouthfeel
-              Container(
-                  child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Mouth Feel',
-                    style: TextStyle(fontSize: 25),
+              Padding(
+                padding: const EdgeInsets.only(
+                    top: 8, bottom: 16.0, left: 8, right: 8),
+                child: Container(
+                  padding: EdgeInsets.only(top: 16, right: 16, bottom: 16),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Color.fromARGB(36, 0, 0, 0), blurRadius: 6),
+                    ],
+                    gradient: isDark(context)
+                        ? LinearGradient(
+                            colors: [
+                              HexColor.fromHex("3C3C3C"),
+                              HexColor.fromHex("2C2C2C")
+                            ],
+                            begin: Alignment(0, -0.2),
+                            end: Alignment(0, 1.5),
+                          )
+                        : null,
+                    color:
+                        isDark(context) ? null : Theme.of(context).canvasColor,
                   ),
-                  Tooltip(
-                    message: "Rate the texture when eating this item",
-                    child: IconButton(
-                      icon: Icon(Icons.info_outline),
-                      iconSize: 20.0,
-                      disabledColor: Colors.black,
-                      onPressed: () {},
-                    ),
+                  child: Column(
+                    children: [
+                      Container(
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  height: 64,
+                                  width: 64,
+                                  child: Icon(
+                                    Icons.tag_faces_outlined,
+                                    size: 30,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Mouth Feel",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 25),
+                                      ),
+                                      Text(
+                                        "Does this snack create an enjoyable eating experience?",
+                                        style: TextStyle(fontSize: 18),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.only(left: 8, right: 8, top: 16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              _mouthfeel(),
+                              ratings.mouthfeel != null
+                                  ? Text(
+                                      "${this.ratings.mouthfeel.floor()}/5",
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          color: SnaxColors.subtext),
+                                    )
+                                  : Text(
+                                      "0/5",
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          color: SnaxColors.subtext),
+                                    ),
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
                   ),
-                ],
-              )),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _mouthfeel(),
-                ],
+                ),
               ),
 
               //* Accessibility
-              Container(
-                  child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Accessibility',
-                    style: TextStyle(fontSize: 25),
+              Padding(
+                padding: const EdgeInsets.only(
+                    top: 8, bottom: 16.0, left: 8, right: 8),
+                child: Container(
+                  padding: EdgeInsets.only(top: 16, right: 16, bottom: 16),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Color.fromARGB(36, 0, 0, 0), blurRadius: 6),
+                    ],
+                    gradient: isDark(context)
+                        ? LinearGradient(
+                            colors: [
+                              HexColor.fromHex("3C3C3C"),
+                              HexColor.fromHex("2C2C2C")
+                            ],
+                            begin: Alignment(0, -0.2),
+                            end: Alignment(0, 1.5),
+                          )
+                        : null,
+                    color:
+                        isDark(context) ? null : Theme.of(context).canvasColor,
                   ),
-                  Tooltip(
-                    message: "Rate how easy it is to find this item",
-                    child: IconButton(
-                      icon: Icon(Icons.info_outline),
-                      iconSize: 20.0,
-                      disabledColor: Colors.black,
-                      onPressed: () {},
-                    ),
+                  child: Column(
+                    children: [
+                      Container(
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  height: 64,
+                                  width: 64,
+                                  child: Icon(
+                                    Icons.shopping_basket_outlined,
+                                    size: 30,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Accessibility",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 25),
+                                      ),
+                                      Text(
+                                        "Is this a product that you can purchase easily?",
+                                        style: TextStyle(fontSize: 18),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.only(left: 8, right: 8, top: 16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              _accessibility(),
+                              ratings.accessibility != null
+                                  ? Text(
+                                      "${this.ratings.accessibility.floor()}/5",
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          color: SnaxColors.subtext),
+                                    )
+                                  : Text(
+                                      "0/5",
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          color: SnaxColors.subtext),
+                                    ),
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
                   ),
-                ],
-              )),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _accessibility(),
-                ],
+                ),
               ),
 
               //* Sweetness
-              Container(
-                child: _sweetness(),
+              Padding(
+                padding: const EdgeInsets.only(
+                    top: 8, bottom: 16.0, left: 8, right: 8),
+                child: Container(
+                  padding: EdgeInsets.only(top: 16, bottom: 16),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Color.fromARGB(36, 0, 0, 0), blurRadius: 6),
+                    ],
+                    gradient: isDark(context)
+                        ? LinearGradient(
+                            colors: [
+                              HexColor.fromHex("3C3C3C"),
+                              HexColor.fromHex("2C2C2C")
+                            ],
+                            begin: Alignment(0, -0.2),
+                            end: Alignment(0, 1.5),
+                          )
+                        : null,
+                    color:
+                        isDark(context) ? null : Theme.of(context).canvasColor,
+                  ),
+                  child: Column(
+                    children: [
+                      Container(
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  height: 64,
+                                  width: 64,
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Sweetness",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 25,
+                                        ),
+                                      ),
+                                      Text(
+                                        "Would you say that this snack is sweet?",
+                                        style: TextStyle(fontSize: 18),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8, bottom: 8),
+                        child: Container(
+                          child: _sweetness(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
 
               //* Saltiness
-              Container(
-                child: _saltiness(),
+              Padding(
+                padding: const EdgeInsets.only(
+                    top: 8, bottom: 16.0, left: 8, right: 8),
+                child: Container(
+                  padding: EdgeInsets.only(top: 16, bottom: 16),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Color.fromARGB(36, 0, 0, 0), blurRadius: 6),
+                    ],
+                    gradient: isDark(context)
+                        ? LinearGradient(
+                            colors: [
+                              HexColor.fromHex("3C3C3C"),
+                              HexColor.fromHex("2C2C2C")
+                            ],
+                            begin: Alignment(0, -0.2),
+                            end: Alignment(0, 1.5),
+                          )
+                        : null,
+                    color:
+                        isDark(context) ? null : Theme.of(context).canvasColor,
+                  ),
+                  child: Column(
+                    children: [
+                      Container(
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  height: 64,
+                                  width: 64,
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Saltiness",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 25),
+                                      ),
+                                      Text(
+                                        "How much salt is this snack filled with?",
+                                        style: TextStyle(fontSize: 18),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8, bottom: 8),
+                        child: Container(
+                          child: _saltiness(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
 
               //* Sourness
-              Container(
-                child: _sourness(),
+              Padding(
+                padding: const EdgeInsets.only(
+                    top: 8, bottom: 16.0, left: 8, right: 8),
+                child: Container(
+                  padding: EdgeInsets.only(top: 16, bottom: 16),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Color.fromARGB(36, 0, 0, 0), blurRadius: 6),
+                    ],
+                    gradient: isDark(context)
+                        ? LinearGradient(
+                            colors: [
+                              HexColor.fromHex("3C3C3C"),
+                              HexColor.fromHex("2C2C2C")
+                            ],
+                            begin: Alignment(0, -0.2),
+                            end: Alignment(0, 1.5),
+                          )
+                        : null,
+                    color:
+                        isDark(context) ? null : Theme.of(context).canvasColor,
+                  ),
+                  child: Column(
+                    children: [
+                      Container(
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  height: 64,
+                                  width: 64,
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Sourness",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 25),
+                                      ),
+                                      Text(
+                                        "Is this snack sour to the point that you spit it out?",
+                                        style: TextStyle(fontSize: 18),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8, bottom: 8),
+                        child: Container(
+                          child: _sourness(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
 
               //* Spiciness
-              Container(
-                child: _spiciness(),
+              Padding(
+                padding: const EdgeInsets.only(
+                    top: 8, bottom: 16.0, left: 8, right: 8),
+                child: Container(
+                  padding: EdgeInsets.only(top: 16, bottom: 16),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Color.fromARGB(36, 0, 0, 0), blurRadius: 6),
+                    ],
+                    gradient: isDark(context)
+                        ? LinearGradient(
+                            colors: [
+                              HexColor.fromHex("3C3C3C"),
+                              HexColor.fromHex("2C2C2C")
+                            ],
+                            begin: Alignment(0, -0.2),
+                            end: Alignment(0, 1.5),
+                          )
+                        : null,
+                    color:
+                        isDark(context) ? null : Theme.of(context).canvasColor,
+                  ),
+                  child: Column(
+                    children: [
+                      Container(
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  height: 64,
+                                  width: 64,
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Spiciness",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 25),
+                                      ),
+                                      Text(
+                                        "Does this snack burn your mouth when you eat it?",
+                                        style: TextStyle(fontSize: 18),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8, bottom: 8),
+                        child: Container(
+                          child: _spiciness(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
 
               //* Submit Button
@@ -183,7 +730,7 @@ class _UserReviewPageState extends State<UserReviewPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                      padding: const EdgeInsets.only(top: 16.0, bottom: 8.0),
                       child: FloatingActionButton.extended(
                         elevation: 2,
                         onPressed: () {
@@ -196,7 +743,7 @@ class _UserReviewPageState extends State<UserReviewPage> {
                             Navigator.pop(context);
                           } else {
                             Fluttertoast.showToast(
-                                backgroundColor: Colors.red[300],
+                                backgroundColor: SnaxColors.redAccent,
                                 msg: "Please rate this snack to submit!");
                           }
                         },
@@ -217,14 +764,23 @@ class _UserReviewPageState extends State<UserReviewPage> {
   }
 
   Widget _overallScore() {
-    return SmoothStarRating(
-      rating: 0,
-      size: 35,
-      filledIconData: Icons.star,
-      allowHalfRating: false,
-      defaultIconData: Icons.star_border,
-      spacing: 8.0,
-      onRated: (rating) {
+    return RatingBar(
+      initialRating: 0,
+      itemCount: 5,
+      ratingWidget: RatingWidget(
+        full: Icon(
+          Icons.star,
+          color: SnaxColors.redAccent,
+        ),
+        empty: Icon(
+          Icons.star_outline,
+          color: SnaxColors.redAccent,
+        ),
+        half: null,
+      ),
+      itemSize: 35,
+      itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+      onRatingUpdate: (rating) {
         setState(() {
           ratings.overall = rating;
         });
@@ -233,14 +789,23 @@ class _UserReviewPageState extends State<UserReviewPage> {
   }
 
   Widget _snackability() {
-    return SmoothStarRating(
-      rating: 0,
-      size: 35,
-      filledIconData: Icons.star,
-      allowHalfRating: false,
-      defaultIconData: Icons.star_border,
-      spacing: 8.0,
-      onRated: (rating) {
+    return RatingBar(
+      initialRating: 0,
+      itemCount: 5,
+      ratingWidget: RatingWidget(
+        full: Icon(
+          Icons.star,
+          color: SnaxColors.redAccent,
+        ),
+        empty: Icon(
+          Icons.star_outline,
+          color: SnaxColors.redAccent,
+        ),
+        half: null,
+      ),
+      itemSize: 35,
+      itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+      onRatingUpdate: (rating) {
         setState(() {
           ratings.snackability = rating;
         });
@@ -249,14 +814,23 @@ class _UserReviewPageState extends State<UserReviewPage> {
   }
 
   Widget _mouthfeel() {
-    return SmoothStarRating(
-      rating: 0,
-      size: 35,
-      filledIconData: Icons.star,
-      allowHalfRating: false,
-      defaultIconData: Icons.star_border,
-      spacing: 8.0,
-      onRated: (rating) {
+    return RatingBar(
+      initialRating: 0,
+      itemCount: 5,
+      ratingWidget: RatingWidget(
+        full: Icon(
+          Icons.star,
+          color: SnaxColors.redAccent,
+        ),
+        empty: Icon(
+          Icons.star_outline,
+          color: SnaxColors.redAccent,
+        ),
+        half: null,
+      ),
+      itemSize: 35,
+      itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+      onRatingUpdate: (rating) {
         setState(() {
           ratings.mouthfeel = rating;
         });
@@ -265,14 +839,23 @@ class _UserReviewPageState extends State<UserReviewPage> {
   }
 
   Widget _accessibility() {
-    return SmoothStarRating(
-      rating: 0,
-      size: 35,
-      filledIconData: Icons.star,
-      allowHalfRating: false,
-      defaultIconData: Icons.star_border,
-      spacing: 8.0,
-      onRated: (rating) {
+    return RatingBar(
+      initialRating: 0,
+      itemCount: 5,
+      ratingWidget: RatingWidget(
+        full: Icon(
+          Icons.star,
+          color: SnaxColors.redAccent,
+        ),
+        empty: Icon(
+          Icons.star_outline,
+          color: SnaxColors.redAccent,
+        ),
+        half: null,
+      ),
+      itemSize: 35,
+      itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+      onRatingUpdate: (rating) {
         setState(() {
           ratings.accessibility = rating;
         });
@@ -281,50 +864,40 @@ class _UserReviewPageState extends State<UserReviewPage> {
   }
 
   Widget _sweetness() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Sweetness',
-                style: TextStyle(fontSize: 25),
+    return Column(
+      children: [
+        SliderTheme(
+            data: SliderThemeData(
+              showValueIndicator: ShowValueIndicator.always,
+              valueIndicatorTextStyle: TextStyle(
+                fontSize: 10.0,
+                color: !isDark(context) ? Colors.white : Colors.black,
               ),
+              overlayColor: Colors.transparent,
+              trackHeight: 10.0,
+              thumbColor: Colors.white,
+              activeTrackColor: SnaxColors.redAccent,
+              inactiveTrackColor: Colors.grey[350],
+            ),
+            child: Slider(
+                label: ratings.sweetness.floor().toString(),
+                min: minValue,
+                max: maxValue,
+                value: ratings.sweetness,
+                onChanged: (val) {
+                  setState(() => ratings.sweetness = val);
+                })),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(24, 0, 26, 0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Savory'),
+              Text('Sweet'),
             ],
           ),
-          SliderTheme(
-              data: SliderThemeData(
-                thumbColor: Colors.white,
-                showValueIndicator: ShowValueIndicator.always,
-                valueIndicatorTextStyle: TextStyle(
-                  fontSize: 10.0,
-                  color: Colors.black,
-                ),
-                overlayColor: Colors.transparent,
-                trackHeight: 10.0,
-              ),
-              child: Slider(
-                  label: ratings.sweetness.floor().toString(),
-                  min: minValue,
-                  max: maxValue,
-                  value: ratings.sweetness,
-                  onChanged: (val) {
-                    setState(() => ratings.sweetness = val);
-                  })),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(24, 0, 26, 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Savory'),
-                Text('Sweet'),
-              ],
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -333,25 +906,18 @@ class _UserReviewPageState extends State<UserReviewPage> {
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Saltiness',
-                style: TextStyle(fontSize: 25),
-              ),
-            ],
-          ),
           SliderTheme(
               data: SliderThemeData(
-                thumbColor: Colors.white,
                 showValueIndicator: ShowValueIndicator.always,
                 valueIndicatorTextStyle: TextStyle(
                   fontSize: 10.0,
-                  color: Colors.black,
+                  color: !isDark(context) ? Colors.white : Colors.black,
                 ),
                 overlayColor: Colors.transparent,
                 trackHeight: 10.0,
+                thumbColor: Colors.white,
+                activeTrackColor: SnaxColors.redAccent,
+                inactiveTrackColor: Colors.grey[350],
               ),
               child: Slider(
                   label: ratings.saltiness.floor().toString(),
@@ -381,25 +947,18 @@ class _UserReviewPageState extends State<UserReviewPage> {
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Sourness',
-                style: TextStyle(fontSize: 25),
-              ),
-            ],
-          ),
           SliderTheme(
               data: SliderThemeData(
-                thumbColor: Colors.white,
                 showValueIndicator: ShowValueIndicator.always,
                 valueIndicatorTextStyle: TextStyle(
                   fontSize: 10.0,
-                  color: Colors.black,
+                  color: !isDark(context) ? Colors.white : Colors.black,
                 ),
                 overlayColor: Colors.transparent,
                 trackHeight: 10.0,
+                thumbColor: Colors.white,
+                activeTrackColor: SnaxColors.redAccent,
+                inactiveTrackColor: Colors.grey[350],
               ),
               child: Slider(
                   label: ratings.sourness.floor().toString(),
@@ -426,28 +985,21 @@ class _UserReviewPageState extends State<UserReviewPage> {
 
   Widget _spiciness() {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8),
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Spiciness',
-                style: TextStyle(fontSize: 25),
-              ),
-            ],
-          ),
           SliderTheme(
               data: SliderThemeData(
-                thumbColor: Colors.white,
                 showValueIndicator: ShowValueIndicator.always,
                 valueIndicatorTextStyle: TextStyle(
                   fontSize: 10.0,
-                  color: Colors.black,
+                  color: !isDark(context) ? Colors.white : Colors.black,
                 ),
                 overlayColor: Colors.transparent,
                 trackHeight: 10.0,
+                thumbColor: Colors.white,
+                activeTrackColor: SnaxColors.redAccent,
+                inactiveTrackColor: Colors.grey[350],
               ),
               child: Slider(
                   label: ratings.spicyness.floor().toString(),
