@@ -72,7 +72,9 @@ class _ProductPageState extends State<ProductPage> {
                 padding: const EdgeInsets.fromLTRB(16.0, 8, 16, 16),
                 child: Container(
                     decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: isDark(context)
+                            ? SnaxColors.darkGreyGradientEnd
+                            : Colors.white,
                         borderRadius: BorderRadius.circular(24),
                         boxShadow: [
                           BoxShadow(
@@ -84,8 +86,18 @@ class _ProductPageState extends State<ProductPage> {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Image.network(this.widget.item.image,
-                              width: 64, height: 64),
+                          Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16),
+                                color: Colors.white),
+                            clipBehavior: Clip.hardEdge,
+                            padding: EdgeInsets.all(2),
+                            height: 64,
+                            width: 64,
+                            child: AspectRatio(
+                                aspectRatio: 1.0,
+                                child: Image.network(this.widget.item.image)),
+                          ),
                           Padding(
                             padding: const EdgeInsets.only(left: 8),
                             child: Column(
@@ -294,7 +306,9 @@ class _ProductPageState extends State<ProductPage> {
                         lineHeight: 12.0,
                         percent: snackItemData / 5,
                         progressColor: SnaxColors.redAccent,
-                        backgroundColor: Colors.grey[200],
+                        backgroundColor: isDark(context)
+                            ? Colors.grey[800]
+                            : Colors.grey[200],
                         animation: true,
                         animationDuration: 750,
                       ),

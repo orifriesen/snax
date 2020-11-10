@@ -25,7 +25,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-        length: 2,
+        length: 3,
         child: new Scaffold(
             body: new NestedScrollView(
                 headerSliverBuilder:
@@ -53,8 +53,9 @@ class _MainPageState extends State<MainPage> {
                             color: Colors.redAccent),
                         labelStyle: TextStyle(fontSize: 18),
                         tabs: [
-                          Container(width: 164, child: Tab(text: "Trending")),
-                          Container(width: 164, child: Tab(text: "Top"))
+                          Container(width: 80, child: Tab(text: "For You")),
+                          Container(width: 80, child: Tab(text: "Trending")),
+                          Container(width: 80, child: Tab(text: "Top"))
                         ],
                       ),
                       actions: <Widget>[
@@ -96,8 +97,42 @@ class _MainPageState extends State<MainPage> {
 
 Widget getTabBarPages() {
   return TabBarView(
-    children: [TrendingList(), TopList()],
+    children: [ForYou(), TrendingList(), TopList()],
   );
+}
+
+class ForYou extends StatefulWidget {
+  @override
+  _ForYou createState() => _ForYou();
+}
+
+class _ForYou extends State<ForYou> with AutomaticKeepAliveClientMixin<ForYou> {
+  //_TrendingSnackItem({Key key, this.item}) : super(key: key);
+  List<SnackItem> trendingSnacks;
+
+  void hasResults(value) {
+    print("got snacks");
+
+    setState(() {
+      trendingSnacks = value;
+    });
+  }
+
+  @override
+  void initState() {
+    print("getting charts");
+    SnaxBackend.chartTrending().then(hasResults);
+
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return getHorizontalList(context, trendingSnacks);
+  }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class TrendingList extends StatefulWidget {
@@ -170,6 +205,97 @@ class _TopList extends State<TopList>
   bool get wantKeepAlive => true;
 }
 
+Widget getHorizontalList(BuildContext context, List<SnackItem> snackList) {
+  final display = createDisplay(placeholder: '0');
+
+  return Column(
+    children: [
+      Text("horizontal list"),
+      Container(
+          margin: EdgeInsets.all(20.0),
+          height: 200.0,
+          child: ListView.builder(
+              itemCount: snackList.length,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, index) {
+                return Container(
+                    decoration: BoxDecoration(
+                        color: isDark(context)
+                            ? SnaxColors.darkGreyGradientEnd
+                            : Colors.white,
+                        borderRadius: BorderRadius.circular(24),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Color.fromARGB(36, 0, 0, 0),
+                              blurRadius: 12)
+                        ]),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16),
+                                color: Colors.white),
+                            clipBehavior: Clip.hardEdge,
+                            padding: EdgeInsets.all(2),
+                            height: 64,
+                            width: 64,
+                            child: AspectRatio(
+                                aspectRatio: 1.0,
+                                child: Image.network(snackList[1].image)),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 1.0),
+                                  child: Text(
+                                    snackList[1].name,
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(1.0),
+                                  child: Row(
+                                    children: [
+                                      Text(snackList[1].type.name,
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.grey[400])),
+                                      Icon(
+                                        Icons.arrow_forward_ios_rounded,
+                                        size: 14,
+                                        color: Colors.grey[400],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(1.0),
+                                  child: Text(
+                                      display(snackList[1].numberOfRatings) +
+                                          " total ratings",
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.grey[400])),
+                                )
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ));
+              }))
+    ],
+  );
+}
+
 Widget getList(BuildContext context, List<SnackItem> snackList) {
   final List<SnackItem> trendingSnacks = snackList;
   final display = createDisplay(placeholder: '0');
@@ -194,7 +320,9 @@ Widget getList(BuildContext context, List<SnackItem> snackList) {
                           },
                           child: Container(
                             decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: isDark(context)
+                                    ? SnaxColors.darkGreyGradientEnd
+                                    : Colors.white,
                                 borderRadius: BorderRadius.circular(18),
                                 boxShadow: [
                                   BoxShadow(
@@ -206,8 +334,19 @@ Widget getList(BuildContext context, List<SnackItem> snackList) {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  Image.network(trendingSnacks[index].image,
-                                      width: 54, height: 54),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(16),
+                                        color: Colors.white),
+                                    clipBehavior: Clip.hardEdge,
+                                    padding: EdgeInsets.all(2),
+                                    height: 64,
+                                    width: 64,
+                                    child: AspectRatio(
+                                        aspectRatio: 1.0,
+                                        child: Image.network(
+                                            trendingSnacks[index].image)),
+                                  ),
                                   Expanded(
                                     child: Padding(
                                       padding: const EdgeInsets.only(left: 8),
