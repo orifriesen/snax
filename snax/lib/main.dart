@@ -61,6 +61,16 @@ void main() {
           })
         });
     print(DemoValues.items.length);
+    SnaxBackend.feedLikePost("rlUXJBRe1MfKXI49Ux8M").then((_) {});
+    SnaxBackend.feedGetComments("rlUXJBRe1MfKXI49Ux8M").then((comments) {
+      for (var comment in comments) {
+        print(comment.body);
+        print(comment.user.name);
+      }
+    });
+    // SnaxBackend.feedCommentOnPost("rlUXJBRe1MfKXI49Ux8M", "fyp").then((_) {
+    //   print("made a comment");
+    // });
     // SnaxBackend.postReview("doritos-bbq-rib", SnackRating(4.0,4.0,4.0,5.0,4.0,0.0,0.0,1.0)).then((d) {
     //   print("sent review");
     // });

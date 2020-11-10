@@ -1,9 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:snax/accountPage/accountPage.dart';
+import 'package:snax/backend/backend.dart';
+import 'package:snax/backend/requests.dart';
 import 'package:snax/helpers.dart';
 
 class EditProfile extends StatefulWidget {
@@ -14,11 +17,27 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   PickedFile _imageFile;
   ImagePicker _imagePicker = ImagePicker();
+
+  final nameController = TextEditingController();
+  final bioController = TextEditingController();
+  final usernameController = TextEditingController();
+
+  bool maxedLines = false;
+
+  @override
+  void initState() {
+    super.initState();
+    nameController.text = SnaxBackend.currentUser.name;
+    usernameController.text = SnaxBackend.currentUser.username;
+    bioController.text = SnaxBackend.currentUser.bio;
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: SnaxColors.gradientStart,
@@ -28,7 +47,9 @@ class _EditProfileState extends State<EditProfile> {
               'Cancel',
               style: TextStyle(color: Colors.white),
             ),
-            onPressed: () => {Navigator.pop(context)},
+            onPressed: () {
+              Navigator.pop(context);
+            },
             shape: CircleBorder(side: BorderSide(color: Colors.transparent))),
         title: Text(
           'Edit Profile',
@@ -37,7 +58,12 @@ class _EditProfileState extends State<EditProfile> {
         centerTitle: true,
         actions: [
           FlatButton(
-            onPressed: () => {Navigator.pop(context)},
+            onPressed: () {
+              SnaxBackend.currentUser.name = nameController.text;
+              SnaxBackend.currentUser.username = usernameController.text;
+              SnaxBackend.currentUser.bio = bioController.text.trim();
+              Navigator.pop(context);
+            },
             child: Text(
               'Done',
               style: TextStyle(color: Colors.white),
@@ -49,10 +75,7 @@ class _EditProfileState extends State<EditProfile> {
       body: Container(
         height: size.height,
         decoration: BoxDecoration(gradient: SnaxGradients.redBigThings),
-        child: ListView(
-          physics:
-              BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-          shrinkWrap: true,
+        child: Column(
           children: [
             _profileImage(),
             Padding(
@@ -70,36 +93,42 @@ class _EditProfileState extends State<EditProfile> {
                 ),
               ),
             ),
-            // Divider(
-            //   color: Colors.black,
-            // ),
-            Container(
-              height: size.height / 2 + 50,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(60),
-                  topRight: Radius.circular(60),
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(60),
+                    topRight: Radius.circular(60),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Color.fromARGB(32, 0, 0, 0), blurRadius: 12)
+                  ],
+                  color: Theme.of(context).canvasColor,
                 ),
-                boxShadow: [
-                  BoxShadow(color: Color.fromARGB(32, 0, 0, 0), blurRadius: 12)
-                ],
-                color: Colors.white,
-              ),
-              child: Column(children: [
-                Container(
-                  height: 200,
-                  width: double.infinity,
-                  margin: EdgeInsets.symmetric(horizontal: size.width * .05),
-                  // padding: EdgeInsets.only(left: 16, bottom: 16),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      _nameTextField(),
-                      _bioTextField(),
+                      Expanded(
+                        child: Container(
+                          width: double.infinity,
+                          padding:
+                              EdgeInsets.only(left: 16, bottom: 16, right: 16),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              _nameTextField(),
+                              _usernameTextField(),
+                              _bioTextField(),
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
-              ]),
+              ),
             ),
           ],
         ),
@@ -181,7 +210,7 @@ class _EditProfileState extends State<EditProfile> {
         borderRadius: BorderRadius.circular(20),
       ),
       child: TextFormField(
-        style: TextStyle(color: SnaxColors.subtext),
+        controller: nameController,
         decoration: InputDecoration(
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),
@@ -192,7 +221,34 @@ class _EditProfileState extends State<EditProfile> {
           hintText: 'Name',
           hintStyle: TextStyle(
             letterSpacing: 2,
-            color: Colors.black54,
+            color: SnaxColors.subtext,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _usernameTextField() {
+    return Material(
+      elevation: 0,
+      color: Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: TextFormField(
+        controller: usernameController,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: BorderSide.none,
+          ),
+          counterStyle: TextStyle(color: Colors.transparent, fontSize: 0),
+          contentPadding: EdgeInsets.only(left: 16, top: 16),
+          hintText: 'Username',
+          hintStyle: TextStyle(
+            letterSpacing: 2,
+            color: SnaxColors.subtext,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -209,21 +265,22 @@ class _EditProfileState extends State<EditProfile> {
         borderRadius: BorderRadius.circular(20),
       ),
       child: TextFormField(
-        style: TextStyle(color: SnaxColors.subtext),
+        inputFormatters: [
+          LengthLimitingTextInputFormatter(150),
+        ],
+        controller: bioController,
         minLines: 1,
         maxLines: 5,
-        maxLength: 150,
         decoration: InputDecoration(
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),
             borderSide: BorderSide.none,
           ),
-          counterStyle: TextStyle(color: Colors.transparent, fontSize: 0),
-          contentPadding: EdgeInsets.only(left: 16, top: 16),
+          contentPadding: EdgeInsets.only(top: 16, left: 16),
           hintText: 'Bio',
           hintStyle: TextStyle(
             letterSpacing: 2,
-            color: Colors.black54,
+            color: SnaxColors.subtext,
             fontWeight: FontWeight.bold,
           ),
         ),

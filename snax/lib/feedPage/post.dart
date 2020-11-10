@@ -1,9 +1,11 @@
 import 'package:snax/backend/backend.dart';
+import 'package:snax/backend/requests.dart';
 import 'package:snax/homePage/homePage.dart';
 import 'package:snax/homePage/snackList.dart';
 import 'package:intl/intl.dart';
 
 class Post {
+  String id;
   SnaxUser user;
   SnackSearchResultItem snack;
   String title;
@@ -13,19 +15,29 @@ class Post {
   int commentCount = 0;
   List<Comment> comments = <Comment>[];
 
-  Post(this.user, this.snack, this.title, this.body, this.time, this.likeCount,
+  //Shortcuts
+  Future<void> like() => SnaxBackend.feedLikePost(id);
+  Future<void> comment(String content) => SnaxBackend.feedCommentOnPost(id,content);
+  Future<List<Comment>> getComments() => SnaxBackend.feedGetComments(id);
+
+  Post(this.id,this.user, this.snack, this.title, this.body, this.time, this.likeCount,
       this.commentCount,
       {this.comments});
 }
 
 class Comment {
+  String id;
+  String postId;
   SnaxUser user;
   String body;
   DateTime time;
   int likes = 0;
   List<Comment> comments = [];
 
-  Comment(this.user, this.body, this.time, this.likes);
+  //Shortcuts
+  Future<void> like() => SnaxBackend.feedLikeComment(postId, id);
+
+  Comment(this.id, this.postId, this.user, this.body, this.time, this.likes);
 }
 
 String dateFormatPost(DateTime time) {

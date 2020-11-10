@@ -80,7 +80,7 @@ Widget commentLoader(BuildContext context, Post post) {
     return FutureBuilder(
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          post.comments = DemoValues.demoComments; // delete once comments load
+          post.comments = snapshot.data; // delete once comments load
           return getPostDetails(context, post);
         } else if (snapshot.hasError)
           return Center(
@@ -93,7 +93,7 @@ Widget commentLoader(BuildContext context, Post post) {
                       valueColor: new AlwaysStoppedAnimation<Color>(
                           SnaxColors.redAccent))));
       },
-      future: SnaxBackend.search("Cheetos"),
+      future: post.getComments(),
     );
 }
 

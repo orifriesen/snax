@@ -68,7 +68,7 @@ class SnaxBackend {
         doc.id,
         SnackItemType(_snackTypes[snackTypeId], snackTypeId),
         doc.get("upc"),
-        SnackRating(
+        (doc.data()["computed"] != null) ? SnackRating(
           toDouble(doc.get("computed.score_overall")),
           toDouble(doc.get("computed.score_mouthfeel")),
           toDouble(doc.get("computed.score_accessibility")),
@@ -77,9 +77,9 @@ class SnaxBackend {
           toDouble(doc.get("computed.score_sourness")),
           toDouble(doc.get("computed.score_sweetness")),
           toDouble(doc.get("computed.score_spicyness")),
-        ),
-        doc.get("computed_ratings"),
-        doc.get("computed_trend"),
+        ) : null,
+        doc.data()["computed_ratings"],
+        doc.data()["computed_trend"],
         imgUrl);
   }
 
@@ -180,6 +180,42 @@ class SnaxBackend {
     }
   }
 
+  static Future<void> feedLikeComment(String postId, String commentId) async {
+    if (commentId == null || postId == null) {
+      throw "Missing Data";
+    }
+
+    //Login
+    await SnaxBackend.auth.loginIfNotAlready();
+ //Get token
+    String token = await fbAuth.currentUser.getIdToken();
+
+    //Send request
+    HttpsCallableResult result = await fbCloud
+        .getHttpsCallable(functionName: "feedLike")
+        .call({"post_id": postId, "comment_id": commentId,"token":token});
+
+    if (result.data["status"] != "success") throw result.data["error"];
+  }
+
+  static Future<void> feedLikePost(String postId) async {
+    if (postId == null) {
+      throw "Missing Data";
+    }
+
+    //Login
+    await SnaxBackend.auth.loginIfNotAlready();
+ //Get token
+    String token = await fbAuth.currentUser.getIdToken();
+
+    //Send request
+    HttpsCallableResult result = await fbCloud
+        .getHttpsCallable(functionName: "feedLike")
+        .call({"post_id": postId,"token":token});
+
+    if (result.data["status"] != "success") throw result.data["error"];
+  }
+
   static Future<List<Post>> feedGetTopPosts() async {
     //Wait for firebase init
     await _waitWhile(() => (fbStore == null));
@@ -189,8 +225,21 @@ class SnaxBackend {
             .limit(25)
             .get())
         .docs;
-    return _feedGrabRefs(docs);
+    return docs.isNotEmpty ? await _feedGrabRefs(docs) : [];
   }
+
+  static Future<List<Comment>> feedGetComments(String postId) async {
+    //Wait for firebase init
+    await _waitWhile(() => (fbStore == null));
+    List<QueryDocumentSnapshot> docs = (await fbStore
+            .collection("feed")
+            .doc(postId)
+            .collection("comments")
+            .get())
+        .docs;
+    return docs.isNotEmpty ? await _feedGrabRefsComments(docs,postId) : [];
+  }
+
 
   static Future<void> feedCommentOnPost(String postId,String content) async {
     if (content.isEmpty ||
@@ -203,13 +252,44 @@ class SnaxBackend {
 
     //Login
     await SnaxBackend.auth.loginIfNotAlready();
-    
+ //Get token
+    String token = await fbAuth.currentUser.getIdToken();
+
     //Send request
     HttpsCallableResult result = await fbCloud
         .getHttpsCallable(functionName: "feedMakeComment")
-        .call({
-      "post-id"
+        .call({"post_id": postId,"content": content,"token":token});
+
+    if (result.data["status"] != "success") throw result.data["error"];
+  }
+
+  //Grabs user info to link with comments
+  static Future<List<Comment>> _feedGrabRefsComments(List<QueryDocumentSnapshot> docs, String postId) async {
+    //Create an empty list and add all the user ids
+    List<String> userIds = [];
+    docs.forEach((doc) {
+      //Add user id
+      if (!userIds.contains(doc.data()["uid"])) userIds.add(doc.data()["uid"]);
     });
+    //Get all the users
+    List<QueryDocumentSnapshot> userDocs = (await fbStore.collection("users").where(FieldPath.documentId, whereIn: userIds).get()).docs;
+    //Organize the data
+    Map<String, Map> userDatas = {};
+    userDocs.forEach((e) {
+      userDatas[e.id] = e.data();
+    });
+    //Create an empty list to return
+    List<Comment> comments = [];
+    for (var doc in docs) {
+      var data = doc.data();
+      SnaxUser user = SnaxUser(
+          userDatas[data["uid"]]["username"],
+          userDatas[data["uid"]]["name"],
+          data["uid"],
+          userDatas[data["uid"]]["bio"]);
+      comments.add(Comment(doc.id,postId,user,data["content"],DateTime.fromMillisecondsSinceEpoch(data["timestamp"]),data["likes"] ?? 0));
+    }
+    return comments;
   }
 
   //Grab extra info like user and snack for a given list of feed database items
@@ -252,8 +332,11 @@ class SnaxBackend {
       if (!snackDatas.containsKey(data["snack_id"]) ||
           !userDatas.containsKey(data["uid"])) continue;
       //Create user
-      SnaxUser user = SnaxUser(userDatas[data["uid"]]["username"],
-          userDatas[data["uid"]]["name"], data["uid"]);
+      SnaxUser user = SnaxUser(
+          userDatas[data["uid"]]["username"],
+          userDatas[data["uid"]]["name"],
+          data["uid"],
+          userDatas[data["uid"]]["bio"]);
       //Get snack image
       String snackImg;
       try {
@@ -273,6 +356,7 @@ class SnaxBackend {
           snackImg);
       //Add post
       posts.add(Post(
+          doc.id,
           user,
           snack,
           data["post_title"],
@@ -405,7 +489,15 @@ class SnaxBackend {
   }
 
   static Future<List<String>> recentSearches() async {
-    return ["Cheetos Limon","Gardettos","Goldfish","Pringles BBQ","Pringles Barbeque","Pringles Barbecue","Lays"];
+    return [
+      "Cheetos Limon",
+      "Gardettos",
+      "Goldfish",
+      "Pringles BBQ",
+      "Pringles Barbeque",
+      "Pringles Barbecue",
+      "Lays"
+    ];
   }
 
   static Future<void> postReview(String snackId, SnackRating rating) async {
@@ -497,8 +589,10 @@ class _SnaxBackendAuth {
       await prefs.setString("user_id", user.uid);
       await prefs.setString("user_username", userInDB.get("username"));
       await prefs.setString("user_name", userInDB.get("name"));
+      await prefs.setString("user_bio", userInDB.data()["bio"]);
       //Return instance
-      return SnaxUser(userInDB.get("username"), userInDB.get("name"), user.uid);
+      return SnaxUser(userInDB.get("username"), userInDB.get("name"), user.uid,
+          userInDB.data()["bio"]);
     }
   }
 
@@ -506,8 +600,11 @@ class _SnaxBackendAuth {
     print("[SnaxBackend] Resorting to local user data, server fetch failed");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.containsKey("user_id")) {
-      return SnaxUser(prefs.getString("user_username"),
-          prefs.getString("user_name"), prefs.getString("user_id"));
+      return SnaxUser(
+          prefs.getString("user_username"),
+          prefs.getString("user_name"),
+          prefs.getString("user_id"),
+          prefs.getString("user_bio"));
     } else {
       throw "No user data present";
     }
@@ -518,6 +615,7 @@ class _SnaxBackendAuth {
     await prefs.remove("user_id");
     await prefs.remove("user_username");
     await prefs.remove("user_name");
+    await prefs.remove("user_bio");
   }
 }
 
