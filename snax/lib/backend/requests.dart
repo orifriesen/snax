@@ -68,16 +68,18 @@ class SnaxBackend {
         doc.id,
         SnackItemType(_snackTypes[snackTypeId], snackTypeId),
         doc.get("upc"),
-        (doc.data()["computed"] != null) ? SnackRating(
-          toDouble(doc.get("computed.score_overall")),
-          toDouble(doc.get("computed.score_mouthfeel")),
-          toDouble(doc.get("computed.score_accessibility")),
-          toDouble(doc.get("computed.score_snackability")),
-          toDouble(doc.get("computed.score_saltiness")),
-          toDouble(doc.get("computed.score_sourness")),
-          toDouble(doc.get("computed.score_sweetness")),
-          toDouble(doc.get("computed.score_spicyness")),
-        ) : null,
+        (doc.data()["computed"] != null)
+            ? SnackRating(
+                toDouble(doc.get("computed.score_overall")),
+                toDouble(doc.get("computed.score_mouthfeel")),
+                toDouble(doc.get("computed.score_accessibility")),
+                toDouble(doc.get("computed.score_snackability")),
+                toDouble(doc.get("computed.score_saltiness")),
+                toDouble(doc.get("computed.score_sourness")),
+                toDouble(doc.get("computed.score_sweetness")),
+                toDouble(doc.get("computed.score_spicyness")),
+              )
+            : null,
         doc.data()["computed_ratings"],
         doc.data()["computed_trend"],
         imgUrl);
@@ -187,31 +189,34 @@ class SnaxBackend {
 
     //Login
     await SnaxBackend.auth.loginIfNotAlready();
- //Get token
+    //Get token
     String token = await fbAuth.currentUser.getIdToken();
 
     //Send request
     HttpsCallableResult result = await fbCloud
         .getHttpsCallable(functionName: "feedLike")
-        .call({"post_id": postId, "comment_id": commentId,"token":token});
+        .call({"post_id": postId, "comment_id": commentId, "token": token});
 
     if (result.data["status"] != "success") throw result.data["error"];
   }
 
   static Future<void> feedLikePost(String postId) async {
+    print("like function");
+
     if (postId == null) {
       throw "Missing Data";
     }
 
     //Login
     await SnaxBackend.auth.loginIfNotAlready();
- //Get token
+    //Get token
     String token = await fbAuth.currentUser.getIdToken();
 
+    print("fart");
     //Send request
     HttpsCallableResult result = await fbCloud
         .getHttpsCallable(functionName: "feedLike")
-        .call({"post_id": postId,"token":token});
+        .call({"post_id": postId, "token": token});
 
     if (result.data["status"] != "success") throw result.data["error"];
   }
@@ -237,14 +242,11 @@ class SnaxBackend {
             .collection("comments")
             .get())
         .docs;
-    return docs.isNotEmpty ? await _feedGrabRefsComments(docs,postId) : [];
+    return docs.isNotEmpty ? await _feedGrabRefsComments(docs, postId) : [];
   }
 
-
-  static Future<void> feedCommentOnPost(String postId,String content) async {
-    if (content.isEmpty ||
-        content == null ||
-        postId == null) {
+  static Future<void> feedCommentOnPost(String postId, String content) async {
+    if (content.isEmpty || content == null || postId == null) {
       throw "Missing Data";
     } else if (content.length > 500) {
       throw "Your title or body is too long";
@@ -252,19 +254,20 @@ class SnaxBackend {
 
     //Login
     await SnaxBackend.auth.loginIfNotAlready();
- //Get token
+    //Get token
     String token = await fbAuth.currentUser.getIdToken();
 
     //Send request
     HttpsCallableResult result = await fbCloud
         .getHttpsCallable(functionName: "feedMakeComment")
-        .call({"post_id": postId,"content": content,"token":token});
+        .call({"post_id": postId, "content": content, "token": token});
 
     if (result.data["status"] != "success") throw result.data["error"];
   }
 
   //Grabs user info to link with comments
-  static Future<List<Comment>> _feedGrabRefsComments(List<QueryDocumentSnapshot> docs, String postId) async {
+  static Future<List<Comment>> _feedGrabRefsComments(
+      List<QueryDocumentSnapshot> docs, String postId) async {
     //Create an empty list and add all the user ids
     List<String> userIds = [];
     docs.forEach((doc) {
@@ -272,7 +275,11 @@ class SnaxBackend {
       if (!userIds.contains(doc.data()["uid"])) userIds.add(doc.data()["uid"]);
     });
     //Get all the users
-    List<QueryDocumentSnapshot> userDocs = (await fbStore.collection("users").where(FieldPath.documentId, whereIn: userIds).get()).docs;
+    List<QueryDocumentSnapshot> userDocs = (await fbStore
+            .collection("users")
+            .where(FieldPath.documentId, whereIn: userIds)
+            .get())
+        .docs;
     //Organize the data
     Map<String, Map> userDatas = {};
     userDocs.forEach((e) {
@@ -287,7 +294,13 @@ class SnaxBackend {
           userDatas[data["uid"]]["name"],
           data["uid"],
           userDatas[data["uid"]]["bio"]);
-      comments.add(Comment(doc.id,postId,user,data["content"],DateTime.fromMillisecondsSinceEpoch(data["timestamp"]),data["likes"] ?? 0));
+      comments.add(Comment(
+          doc.id,
+          postId,
+          user,
+          data["content"],
+          DateTime.fromMillisecondsSinceEpoch(data["timestamp"]),
+          data["likes"] ?? 0));
     }
     return comments;
   }

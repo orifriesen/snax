@@ -32,6 +32,10 @@ class _FeedPageState extends State<FeedPage> {
     getPosts();
   }
 
+  void refresh() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -119,11 +123,11 @@ class _FeedPageState extends State<FeedPage> {
                 ? Center(
                     child: CircularProgressIndicator(),
                   )
-                : getFeed(context, posts)));
+                : getFeed(context, posts, refresh)));
   }
 }
 
-Widget getFeed(BuildContext context, List<Post> posts) {
+Widget getFeed(BuildContext context, List<Post> posts, Function refresh) {
   return ListView.builder(
     itemCount: posts.length + 1,
     itemBuilder: (context, index) {
@@ -143,21 +147,27 @@ Widget getFeed(BuildContext context, List<Post> posts) {
             ));
       } else {
         post = posts[index - 1];
-        return postWidget(context, post);
+        return postWidget(context, post, refresh: refresh);
       }
     },
   );
 }
 
-Widget postWidget(BuildContext context, Post post, {bool opensDetails = true}) {
+Widget postWidget(BuildContext context, Post post,
+    {bool opensDetails = true, Function refresh}) {
   return Padding(
     padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 16.0),
     child: GestureDetector(
       onTap: () {
         if (opensDetails)
-          Navigator.of(context).push(MaterialPageRoute(
+          Navigator.of(context)
+              .push(MaterialPageRoute(
             builder: (context) => PostDetailsPage(post: post),
-          ));
+          ))
+              .whenComplete(() {
+            if (refresh != null) refresh();
+            ;
+          });
       },
       child: Container(
         decoration: BoxDecoration(
@@ -242,6 +252,7 @@ Widget postWidget(BuildContext context, Post post, {bool opensDetails = true}) {
                   children: <Widget>[
                     FittedBox(
                         child: LikeButton(
+                      isLiked: post.likedByMe ? true : false,
                       likeBuilder: (bool isLiked) {
                         return Icon(
                           Icons.favorite_rounded,
@@ -250,6 +261,11 @@ Widget postWidget(BuildContext context, Post post, {bool opensDetails = true}) {
                               : Colors.grey[350],
                           size: 26.0,
                         );
+                      },
+                      onTap: (isLiked) async {
+                        post.like(!isLiked).then((_) {});
+
+                        return !isLiked;
                       },
                       likeCount: post.likeCount,
                       likeCountPadding: EdgeInsets.only(left: 8),

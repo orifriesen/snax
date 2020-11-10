@@ -73,8 +73,7 @@ class _PostDetailsPage extends State<PostDetailsPage> {
         decoration: InputDecoration(
             hintText: "Add Comment...", contentPadding: EdgeInsets.all(16.0)),
         onEditingComplete: () {
-          SnaxBackend.feedCommentOnPost(widget.post.id, commentController.text)
-              .then((_) {
+          widget.post.comment(commentController.text).then((_) {
             print("Sent Comment");
             commentController.clear();
             FocusScope.of(context).unfocus();

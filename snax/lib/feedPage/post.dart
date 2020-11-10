@@ -13,16 +13,23 @@ class Post {
   DateTime time;
   int likeCount = 0;
   int commentCount = 0;
+  bool likedByMe = false;
   List<Comment> comments = <Comment>[];
 
   //Shortcuts
-  Future<void> like() => SnaxBackend.feedLikePost(id);
-  Future<void> comment(String content) => SnaxBackend.feedCommentOnPost(id,content);
+  Future<void> like(bool isLiked) async {
+    likedByMe = isLiked;
+    likeCount = isLiked ? likeCount + 1 : likeCount - 1;
+    await SnaxBackend.feedLikePost(id);
+  }
+
+  Future<void> comment(String content) =>
+      SnaxBackend.feedCommentOnPost(id, content);
   Future<List<Comment>> getComments() => SnaxBackend.feedGetComments(id);
 
-  Post(this.id,this.user, this.snack, this.title, this.body, this.time, this.likeCount,
-      this.commentCount,
-      {this.comments});
+  Post(this.id, this.user, this.snack, this.title, this.body, this.time,
+      this.likeCount, this.commentCount,
+      {this.comments, this.likedByMe = false});
 }
 
 class Comment {
