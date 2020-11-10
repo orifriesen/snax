@@ -1,10 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
+import 'dart:io' as io;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:flutter/material.dart';
-import 'package:snax/barcodeScanner/barcodeScanner.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:snax/feedPage/post.dart';
 import 'package:snax/main.dart';
 
@@ -17,9 +16,9 @@ import 'package:snax/loginPage/loginPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-import 'package:camerakit/camerakit.dart';
-import 'package:camerakit/CameraKitController.dart';
-import 'package:camerakit/CameraKitView.dart';
+import 'package:image/image.dart';
+
+import 'package:path_provider/path_provider.dart';
 
 //Cache the snack types, references aren't fetched in these requests so this map will be used.
 //Example of what it looks like: { "candy-bar": "Candy Bar", "snack-mix": "Snack Mix" }
@@ -68,16 +67,18 @@ class SnaxBackend {
         doc.id,
         SnackItemType(_snackTypes[snackTypeId], snackTypeId),
         doc.get("upc"),
-        (doc.data()["computed"] != null) ? SnackRating(
-          toDouble(doc.get("computed.score_overall")),
-          toDouble(doc.get("computed.score_mouthfeel")),
-          toDouble(doc.get("computed.score_accessibility")),
-          toDouble(doc.get("computed.score_snackability")),
-          toDouble(doc.get("computed.score_saltiness")),
-          toDouble(doc.get("computed.score_sourness")),
-          toDouble(doc.get("computed.score_sweetness")),
-          toDouble(doc.get("computed.score_spicyness")),
-        ) : null,
+        (doc.data()["computed"] != null)
+            ? SnackRating(
+                toDouble(doc.get("computed.score_overall")),
+                toDouble(doc.get("computed.score_mouthfeel")),
+                toDouble(doc.get("computed.score_accessibility")),
+                toDouble(doc.get("computed.score_snackability")),
+                toDouble(doc.get("computed.score_saltiness")),
+                toDouble(doc.get("computed.score_sourness")),
+                toDouble(doc.get("computed.score_sweetness")),
+                toDouble(doc.get("computed.score_spicyness")),
+              )
+            : null,
         doc.data()["computed_ratings"],
         doc.data()["computed_trend"],
         imgUrl);
@@ -145,6 +146,56 @@ class SnaxBackend {
     return snacks;
   }
 
+  
+
+  //This random string is being used as an alternative to 'undefined' which doesnt exist in dart
+  static const _undefinedBioString = "zX43XBOZ7PtzulR";
+
+  static Future<void> updateProfile({String username,String name,String bio = _undefinedBioString}) async {
+    //Login
+    await SnaxBackend.auth.loginIfNotAlready();
+    //Get token
+    String token = await fbAuth.currentUser.getIdToken();
+
+    Map<String,String> params = {"token":token};
+    if (username != null) params["username"] = username;
+    if (name != null) params["name"] = name;
+    if (bio != _undefinedBioString) params["bio"] = bio;
+
+    //Send request
+    HttpsCallableResult result = await fbCloud
+        .getHttpsCallable(functionName: "updateProfile")
+        .call(params);
+    
+    if (result.data["status"] == "success") {
+      return;
+    } else {
+      throw result.data["error"];
+    }
+  }
+
+  static Future<void> updateProfilePhoto(PickedFile pickedFile) async {
+    //Login
+    await SnaxBackend.auth.loginIfNotAlready();
+    //Get token
+    String token = await fbAuth.currentUser.getIdToken();
+    String uid = fbAuth.currentUser.uid;
+
+    //Resize and reformat image
+    Image image = decodeImage(await pickedFile.readAsBytes());
+    Image resized = copyResize(image, width: 400, height: 400);
+    io.Directory appDocDirectory = await getApplicationDocumentsDirectory();
+    io.File file = io.File(appDocDirectory.path+'$uid.jpg');
+    await file.writeAsBytes(encodeJpg(resized));
+
+    try {
+      await fbStorage.ref().child("user-profiles").child(uid+".jpg").putFile(file).onComplete;
+    } catch (error) {
+      print(error);
+      throw "Failed to upload";
+    }
+  }
+
   static Future<void> feedMakePost(
       String title, String body, String snackId) async {
     //Check all the values
@@ -180,6 +231,47 @@ class SnaxBackend {
     }
   }
 
+  static Future<void> feedLikeComment(String postId, String commentId, bool like) async {
+    if (commentId == null || postId == null) {
+      throw "Missing Data";
+    }
+
+    //Login
+    await SnaxBackend.auth.loginIfNotAlready();
+    //Get token
+    String token = await fbAuth.currentUser.getIdToken();
+
+    //Send request
+    HttpsCallableResult result = await fbCloud
+        .getHttpsCallable(functionName: "feedLike")
+        .call({"post_id": postId, "comment_id": commentId, "token": token, "unlike": !like});
+
+    if (result.data["status"] != "success") throw result.data["error"];
+  }
+
+  static Future<void> feedLikePost(String postId, bool like) async {
+    print("like function");
+
+    if (postId == null) {
+      throw "Missing Data";
+    }
+
+    //Login
+    await SnaxBackend.auth.loginIfNotAlready();
+    //Get token
+    String token = await fbAuth.currentUser.getIdToken();
+
+    print("fart");
+    //Send request
+    HttpsCallableResult result = await fbCloud
+        .getHttpsCallable(functionName: "feedLike")
+        .call({"post_id": postId, "token": token, "unlike": !like});
+
+        print(result.data);
+
+    if (result.data["status"] != "success") throw result.data["error"];
+  }
+
   static Future<List<Post>> feedGetTopPosts() async {
     //Wait for firebase init
     await _waitWhile(() => (fbStore == null));
@@ -189,10 +281,23 @@ class SnaxBackend {
             .limit(25)
             .get())
         .docs;
-    return _feedGrabRefs(docs);
+    return docs.isNotEmpty ? await _feedGrabRefs(docs) : [];
   }
 
-  static Future<void> feedCommentOnPost(String postId, String content) async {
+  static Future<List<Comment>> feedGetComments(String postId) async {
+    //Wait for firebase init
+    await _waitWhile(() => (fbStore == null));
+    List<QueryDocumentSnapshot> docs = (await fbStore
+            .collection("feed")
+            .doc(postId)
+            .collection("comments")
+            .get())
+        .docs;
+    return docs.isNotEmpty ? await _feedGrabRefsComments(docs, postId) : [];
+  }
+
+  static Future<Comment> feedCommentOnPost(
+      String postId, String content) async {
     if (content.isEmpty || content == null || postId == null) {
       throw "Missing Data";
     } else if (content.length > 500) {
@@ -201,11 +306,61 @@ class SnaxBackend {
 
     //Login
     await SnaxBackend.auth.loginIfNotAlready();
+    //Get token
+    String token = await fbAuth.currentUser.getIdToken();
 
     //Send request
     HttpsCallableResult result = await fbCloud
         .getHttpsCallable(functionName: "feedMakeComment")
-        .call({"post-id"});
+        .call({"post_id": postId, "content": content, "token": token});
+
+    if (result.data["status"] != "success") throw result.data["error"];
+
+    String commentId = result.data["id"];
+    int timestamp = result.data["timestamp"];
+
+    return Comment(commentId, postId, SnaxBackend.currentUser, content,
+        DateTime.fromMillisecondsSinceEpoch(timestamp), 0);
+  }
+
+  //Grabs user info to link with comments
+  static Future<List<Comment>> _feedGrabRefsComments(
+      List<QueryDocumentSnapshot> docs, String postId) async {
+    //Create an empty list and add all the user ids
+    List<String> userIds = [];
+    docs.forEach((doc) {
+      //Add user id
+      if (!userIds.contains(doc.data()["uid"])) userIds.add(doc.data()["uid"]);
+    });
+    //Get all the users
+    List<QueryDocumentSnapshot> userDocs = (await fbStore
+            .collection("users")
+            .where(FieldPath.documentId, whereIn: userIds)
+            .get())
+        .docs;
+    //Organize the data
+    Map<String, Map> userDatas = {};
+    userDocs.forEach((e) {
+      userDatas[e.id] = e.data();
+    });
+    //Create an empty list to return
+    List<Comment> comments = [];
+    for (var doc in docs) {
+      var data = doc.data();
+      SnaxUser user = SnaxUser(
+          userDatas[data["uid"]]["username"],
+          userDatas[data["uid"]]["name"],
+          data["uid"],
+          userDatas[data["uid"]]["bio"]);
+      comments.add(Comment(
+          doc.id,
+          postId,
+          user,
+          data["content"],
+          DateTime.fromMillisecondsSinceEpoch(data["timestamp"]),
+          data["likes"] ?? 0));
+    }
+    return comments;
   }
 
   //Grab extra info like user and snack for a given list of feed database items
@@ -272,6 +427,7 @@ class SnaxBackend {
           snackImg);
       //Add post
       posts.add(Post(
+          doc.id,
           user,
           snack,
           data["post_title"],

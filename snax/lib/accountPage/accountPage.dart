@@ -147,7 +147,7 @@ class _AccountPageState extends State<AccountPage>
               height: 5,
             ),
             Text(
-              '${SnaxBackend.currentUser.username}',
+              '@${SnaxBackend.currentUser.username}',
               style: TextStyle(fontSize: 15, color: Colors.grey[300]),
             ),
           ],

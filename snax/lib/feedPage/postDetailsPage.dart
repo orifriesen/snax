@@ -19,6 +19,8 @@ class PostDetailsPage extends StatefulWidget {
 }
 
 class _PostDetailsPage extends State<PostDetailsPage> {
+  final commentController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,10 +66,25 @@ class _PostDetailsPage extends State<PostDetailsPage> {
         commentLoader(context, widget.post),
       ]),
       bottomSheet: TextField(
+        textInputAction: TextInputAction.send,
+        controller: commentController,
         minLines: 1,
         maxLines: 5,
         decoration: InputDecoration(
             hintText: "Add Comment...", contentPadding: EdgeInsets.all(16.0)),
+        onEditingComplete: () {
+          widget.post.comment(commentController.text).then((Comment comment) {
+            setState(() {
+              widget.post.comments.add(comment);
+              widget.post.commentCount++;
+            });
+            print("Sent Comment");
+            commentController.clear();
+            FocusScope.of(context).unfocus();
+          }).catchError((error) {
+            print("Error");
+          });
+        },
       ),
     );
   }
@@ -80,16 +97,20 @@ Widget commentLoader(BuildContext context, Post post) {
     return FutureBuilder(
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          post.comments = DemoValues.demoComments; // delete once comments load
+          post.comments = snapshot.data; // delete once comments load
           return getPostDetails(context, post);
         } else if (snapshot.hasError)
           return Center(
             child: Text("Failed to load post."),
           );
         else
-          return Center(child: CircularProgressIndicator());
+          return Expanded(
+              child: Center(
+                  child: CircularProgressIndicator(
+                      valueColor: new AlwaysStoppedAnimation<Color>(
+                          SnaxColors.redAccent))));
       },
-      future: SnaxBackend.search("Cheetos"),
+      future: post.getComments(),
     );
 }
 
@@ -125,7 +146,7 @@ Widget getPostDetails(BuildContext context, Post post) {
                                 style: TextStyle(height: 2)),
                             TextSpan(text: comment.body),
                             TextSpan(
-                                text: " " + dateFormatComment(post.time),
+                                text: " " + dateFormatComment(comment.time),
                                 style: TextStyle(
                                     fontWeight: FontWeight.w300,
                                     fontSize: 11.5))
