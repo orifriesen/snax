@@ -60,8 +60,8 @@ class _EditProfileState extends State<EditProfile> {
         centerTitle: true,
         actions: [
           FlatButton(
-            onPressed: () {
-              SnaxBackend.updateProfile(
+            onPressed: () async {
+              await SnaxBackend.updateProfile(
                   name: nameController.text,
                   username: usernameController.text,
                   bio: bioController.text.trim());
