@@ -20,11 +20,13 @@ class _MakePostPageState extends State<MakePostPage> {
           setState(() {
             this.snack = returnSnack;
           });
-        },popOnCallback: true));
+        }, popOnCallback: true));
   }
 
   final titleController = TextEditingController();
   final bodyController = TextEditingController();
+
+  final prompt = postPrompt();
 
   @override
   Widget build(BuildContext context) {
@@ -173,7 +175,7 @@ class _MakePostPageState extends State<MakePostPage> {
             Padding(
               padding: const EdgeInsets.only(top: 90, left: 18),
               child: Text(
-                "Feeling Snacky?",
+                prompt,
                 style: TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: 38,
@@ -183,4 +185,9 @@ class _MakePostPageState extends State<MakePostPage> {
           ],
         ));
   }
+}
+
+String postPrompt() {
+  List<String> prompts = ["Feeling Snacky?", "Snacking?", "Got Munchies?"];
+  return (prompts..shuffle()).first;
 }
