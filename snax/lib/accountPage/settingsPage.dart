@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'settingsTabs/aboutPage.dart';
 import 'settingsTabs/helpPage.dart';
@@ -16,10 +17,12 @@ class _SettingsPageState extends State<SettingsPage> {
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: SnaxColors.settingsBackground,
+      backgroundColor: !isDark(context)
+          ? SnaxColors.redAccent
+          : Theme.of(context).canvasColor,
       appBar: AppBar(
         elevation: 1,
-        backgroundColor: SnaxColors.settingsBackground,
+        backgroundColor: SnaxColors.redAccent,
         title: Text('Settings'),
       ),
       bottomNavigationBar: BottomAppBar(
@@ -49,6 +52,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 children: [
                   helpButton("Help", Icons.help_outline_rounded),
                   aboutButton("About", Icons.info_outline_rounded),
+                  reportButton(
+                      "Report a Problem", Icons.report_problem_outlined),
                 ],
               ),
             ],
@@ -130,5 +135,48 @@ class _SettingsPageState extends State<SettingsPage> {
         ],
       ),
     );
+  }
+
+  FlatButton reportButton(String title, IconData iconData) {
+    return FlatButton(
+      onPressed: () => {
+        customLaunch(
+            "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20Problem&body=")
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Icon(
+                iconData,
+                color: Colors.white,
+              ),
+              SizedBox(width: 8),
+              Text(
+                title,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          Icon(
+            Icons.arrow_forward_ios,
+            color: Colors.white70,
+          )
+        ],
+      ),
+    );
+  }
+
+  customLaunch(command) async {
+    if (await canLaunch(command)) {
+      await launch(command);
+    } else {
+      print("Could not work");
+    }
   }
 }

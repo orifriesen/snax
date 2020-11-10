@@ -54,5 +54,7 @@
 			</array>
 		</dict>
 	</array>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Snax needs access to your photo library to upload profile photos</string>
 </dict>
 </plist>

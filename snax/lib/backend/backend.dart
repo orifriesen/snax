@@ -49,8 +49,9 @@ class SnaxUser {
   String username;
   String name;
   String uid;
+  String bio;
 
-  SnaxUser(this.username, this.name, this.uid);
+  SnaxUser(this.username, this.name, this.uid, this.bio);
 }
 
 class SnackSearchResultItem {
@@ -63,7 +64,12 @@ class SnackSearchResultItem {
   SnackSearchResultItem(this.name, this.id, this.numberOfRatings,
       this.averageRatingOverall, this.image);
 
-      static fromSnackItem(SnackItem snackItem) => SnackSearchResultItem(snackItem.name, snackItem.id, snackItem.numberOfRatings, snackItem.averageRatings.overall, snackItem.image);
+  static fromSnackItem(SnackItem snackItem) => SnackSearchResultItem(
+      snackItem.name,
+      snackItem.id,
+      snackItem.numberOfRatings,
+      snackItem.averageRatings.overall,
+      snackItem.image);
 }
 
 //A type of snack

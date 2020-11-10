@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 import 'package:snax/backend/backend.dart';
 import 'package:snax/backend/requests.dart';
@@ -18,7 +18,6 @@ class UserReviewPage extends StatefulWidget {
 class _UserReviewPageState extends State<UserReviewPage> {
   SnackRating ratings = SnackRating(null, null, null, null, 0, 0, 0, 0);
 
-  IconData _selectedIcon;
   final double minValue = 0.0;
   final double maxValue = 5.0;
 
@@ -114,7 +113,7 @@ class _UserReviewPageState extends State<UserReviewPage> {
                     style: TextStyle(fontSize: 25),
                   ),
                   Tooltip(
-                    message: "Rate  the feeling of this item",
+                    message: "Rate the texture when eating this item",
                     child: IconButton(
                       icon: Icon(Icons.info_outline),
                       iconSize: 20.0,
@@ -141,7 +140,7 @@ class _UserReviewPageState extends State<UserReviewPage> {
                     style: TextStyle(fontSize: 25),
                   ),
                   Tooltip(
-                    message: "Rate how accessible this item is",
+                    message: "Rate how easy it is to find this item",
                     child: IconButton(
                       icon: Icon(Icons.info_outline),
                       iconSize: 20.0,
@@ -218,19 +217,14 @@ class _UserReviewPageState extends State<UserReviewPage> {
   }
 
   Widget _overallScore() {
-    return RatingBar(
-      initialRating: 0,
-      minRating: 1,
-      tapOnlyMode: true,
-      unratedColor: Colors.amber.withAlpha(50),
-      itemCount: 5,
-      itemSize: 35.0,
-      itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-      itemBuilder: (context, _) => Icon(
-        _selectedIcon ?? Icons.star,
-        color: Colors.amber,
-      ),
-      onRatingUpdate: (rating) {
+    return SmoothStarRating(
+      rating: 0,
+      size: 35,
+      filledIconData: Icons.star,
+      allowHalfRating: false,
+      defaultIconData: Icons.star_border,
+      spacing: 8.0,
+      onRated: (rating) {
         setState(() {
           ratings.overall = rating;
         });
@@ -239,19 +233,14 @@ class _UserReviewPageState extends State<UserReviewPage> {
   }
 
   Widget _snackability() {
-    return RatingBar(
-      initialRating: 0,
-      minRating: 1,
-      tapOnlyMode: true,
-      unratedColor: Colors.amber.withAlpha(50),
-      itemCount: 5,
-      itemSize: 35.0,
-      itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-      itemBuilder: (context, _) => Icon(
-        _selectedIcon ?? Icons.star,
-        color: Colors.amber,
-      ),
-      onRatingUpdate: (rating) {
+    return SmoothStarRating(
+      rating: 0,
+      size: 35,
+      filledIconData: Icons.star,
+      allowHalfRating: false,
+      defaultIconData: Icons.star_border,
+      spacing: 8.0,
+      onRated: (rating) {
         setState(() {
           ratings.snackability = rating;
         });
@@ -260,19 +249,14 @@ class _UserReviewPageState extends State<UserReviewPage> {
   }
 
   Widget _mouthfeel() {
-    return RatingBar(
-      initialRating: 0,
-      minRating: 1,
-      tapOnlyMode: true,
-      unratedColor: Colors.amber.withAlpha(50),
-      itemCount: 5,
-      itemSize: 35.0,
-      itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-      itemBuilder: (context, _) => Icon(
-        _selectedIcon ?? Icons.star,
-        color: Colors.amber,
-      ),
-      onRatingUpdate: (rating) {
+    return SmoothStarRating(
+      rating: 0,
+      size: 35,
+      filledIconData: Icons.star,
+      allowHalfRating: false,
+      defaultIconData: Icons.star_border,
+      spacing: 8.0,
+      onRated: (rating) {
         setState(() {
           ratings.mouthfeel = rating;
         });
@@ -281,19 +265,14 @@ class _UserReviewPageState extends State<UserReviewPage> {
   }
 
   Widget _accessibility() {
-    return RatingBar(
-      initialRating: 0,
-      minRating: 1,
-      tapOnlyMode: true,
-      unratedColor: Colors.amber.withAlpha(50),
-      itemCount: 5,
-      itemSize: 35.0,
-      itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-      itemBuilder: (context, _) => Icon(
-        _selectedIcon ?? Icons.star,
-        color: Colors.amber,
-      ),
-      onRatingUpdate: (rating) {
+    return SmoothStarRating(
+      rating: 0,
+      size: 35,
+      filledIconData: Icons.star,
+      allowHalfRating: false,
+      defaultIconData: Icons.star_border,
+      spacing: 8.0,
+      onRated: (rating) {
         setState(() {
           ratings.accessibility = rating;
         });
@@ -319,7 +298,6 @@ class _UserReviewPageState extends State<UserReviewPage> {
               data: SliderThemeData(
                 thumbColor: Colors.white,
                 showValueIndicator: ShowValueIndicator.always,
-                valueIndicatorColor: Colors.amber,
                 valueIndicatorTextStyle: TextStyle(
                   fontSize: 10.0,
                   color: Colors.black,
@@ -368,7 +346,6 @@ class _UserReviewPageState extends State<UserReviewPage> {
               data: SliderThemeData(
                 thumbColor: Colors.white,
                 showValueIndicator: ShowValueIndicator.always,
-                valueIndicatorColor: Colors.amber,
                 valueIndicatorTextStyle: TextStyle(
                   fontSize: 10.0,
                   color: Colors.black,
@@ -417,7 +394,6 @@ class _UserReviewPageState extends State<UserReviewPage> {
               data: SliderThemeData(
                 thumbColor: Colors.white,
                 showValueIndicator: ShowValueIndicator.always,
-                valueIndicatorColor: Colors.amber,
                 valueIndicatorTextStyle: TextStyle(
                   fontSize: 10.0,
                   color: Colors.black,
@@ -466,7 +442,6 @@ class _UserReviewPageState extends State<UserReviewPage> {
               data: SliderThemeData(
                 thumbColor: Colors.white,
                 showValueIndicator: ShowValueIndicator.always,
-                valueIndicatorColor: Colors.amber,
                 valueIndicatorTextStyle: TextStyle(
                   fontSize: 10.0,
                   color: Colors.black,
