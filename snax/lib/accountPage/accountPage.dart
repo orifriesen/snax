@@ -49,7 +49,7 @@ class _AccountPageState extends State<AccountPage>
             icon: Icon(Icons.settings),
             onPressed: () => {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => SettingsPage())),
+                  MaterialPageRoute(builder: (context) => SettingsPage()))
             },
           )
         ],
@@ -163,10 +163,12 @@ class _AccountPageState extends State<AccountPage>
         padding: const EdgeInsets.only(left: 16.0),
         child: Column(
           children: [
-            (SnaxBackend.currentUser.bio != null) ? Text(
-              '${SnaxBackend.currentUser.bio}',
-              style: TextStyle(color: Colors.white, fontSize: 15),
-            ) : Container(),
+            (SnaxBackend.currentUser.bio != null)
+                ? Text(
+                    '${SnaxBackend.currentUser.bio}',
+                    style: TextStyle(color: Colors.white, fontSize: 15),
+                  )
+                : Container(),
           ],
         ),
       ),
@@ -220,6 +222,8 @@ class _AccountPageState extends State<AccountPage>
                       MaterialPageRoute(
                         builder: (context) => EditProfile(),
                       ),
+                    ).whenComplete(
+                      () => setState(() {}),
                     ),
                   },
                   child: Text('Edit Profile',
