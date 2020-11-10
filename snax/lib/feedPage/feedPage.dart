@@ -166,7 +166,6 @@ Widget postWidget(BuildContext context, Post post,
           ))
               .whenComplete(() {
             if (refresh != null) refresh();
-            ;
           });
       },
       child: Container(
