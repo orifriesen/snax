@@ -159,15 +159,15 @@ class SnaxBackend {
 
     await _waitWhile(() => (currentUser == null));
 
-  if (username == currentUser.username) username = null;
-    if (name == currentUser.name) name = null;
-    if (bio == currentUser.bio) bio = _undefinedBioString;
+  if (username == SnaxBackend.currentUser.username) username = null;
+    if (name == SnaxBackend.currentUser.name) name = null;
+    if (bio == SnaxBackend.currentUser.bio) bio = _undefinedBioString;
     if (bio == "") bio = null;
 
     Map<String,String> params = {"token":token};
-    if (username != null) { params["username"] = username; currentUser.username = username; }
-    if (name != null) { params["name"] = name; currentUser.name = name; }
-    if (bio != _undefinedBioString) { params["bio"] = bio; currentUser.bio = bio; }
+    if (username != null) { params["username"] = username; SnaxBackend.currentUser.username = username; }
+    if (name != null) { params["name"] = name; SnaxBackend.currentUser.name = name; }
+    if (bio != _undefinedBioString) { params["bio"] = bio; SnaxBackend.currentUser.bio = bio; }
 
 
     //Send request
