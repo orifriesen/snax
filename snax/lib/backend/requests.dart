@@ -402,21 +402,31 @@ class SnaxBackend {
       var data = doc.data();
       if (!snackDatas.containsKey(data["snack_id"]) ||
           !userDatas.containsKey(data["uid"])) continue;
-      //Create user
-      SnaxUser user = SnaxUser(
-          userDatas[data["uid"]]["username"],
-          userDatas[data["uid"]]["name"],
-          data["uid"],
-          userDatas[data["uid"]]["bio"]);
+      
       //Get snack image
       String snackImg;
+      String userImg;
+
       try {
         snackImg = await fbStorage
             .ref()
             .child("snacks")
             .child(data["snack_id"] + ".jpg")
             .getDownloadURL();
+        userImg = await fbStorage
+            .ref()
+            .child("user-profiles")
+            .child(data["uid"] + ".jpg")
+            .getDownloadURL();
       } catch (error) {}
+
+      //Create user
+      SnaxUser user = SnaxUser(
+          userDatas[data["uid"]]["username"],
+          userDatas[data["uid"]]["name"],
+          data["uid"],
+          userDatas[data["uid"]]["bio"], photo: userImg);
+
       //Create snack
       SnackSearchResultItem snack = SnackSearchResultItem(
           snackDatas[data["snack_id"]]["name"],
@@ -643,8 +653,18 @@ class _SnaxBackendAuth {
       throw "User not found. Please try logging in again later.";
 
     DocumentSnapshot userInDB;
+    String image;
     try {
       userInDB = await fbStore.collection("users").doc(user.uid).get();
+      try {
+        image = await fbStorage
+            .ref()
+            .child("user-profiles")
+            .child(user.uid + ".jpg")
+            .getDownloadURL();
+      } catch (error) {
+
+      }
     } catch (error) {
       //Try to get it locally
       return getUserInfoLocally();
@@ -661,9 +681,10 @@ class _SnaxBackendAuth {
       await prefs.setString("user_username", userInDB.get("username"));
       await prefs.setString("user_name", userInDB.get("name"));
       await prefs.setString("user_bio", userInDB.data()["bio"]);
+      await prefs.setString("user_image", image);
       //Return instance
       return SnaxUser(userInDB.get("username"), userInDB.get("name"), user.uid,
-          userInDB.data()["bio"]);
+          userInDB.data()["bio"], photo: image);
     }
   }
 
@@ -675,7 +696,8 @@ class _SnaxBackendAuth {
           prefs.getString("user_username"),
           prefs.getString("user_name"),
           prefs.getString("user_id"),
-          prefs.getString("user_bio"));
+          prefs.getString("user_bio"),
+          photo: prefs.getString("user_image"));
     } else {
       throw "No user data present";
     }
