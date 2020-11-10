@@ -23,7 +23,7 @@ class Post {
     await SnaxBackend.feedLikePost(id);
   }
 
-  Future<void> comment(String content) =>
+  Future<Comment> comment(String content) =>
       SnaxBackend.feedCommentOnPost(id, content);
   Future<List<Comment>> getComments() => SnaxBackend.feedGetComments(id);
 

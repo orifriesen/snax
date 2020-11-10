@@ -73,7 +73,11 @@ class _PostDetailsPage extends State<PostDetailsPage> {
         decoration: InputDecoration(
             hintText: "Add Comment...", contentPadding: EdgeInsets.all(16.0)),
         onEditingComplete: () {
-          widget.post.comment(commentController.text).then((_) {
+          widget.post.comment(commentController.text).then((Comment comment) {
+            setState(() {
+              widget.post.comments.add(comment);
+              widget.post.commentCount++;
+            });
             print("Sent Comment");
             commentController.clear();
             FocusScope.of(context).unfocus();
@@ -142,7 +146,7 @@ Widget getPostDetails(BuildContext context, Post post) {
                                 style: TextStyle(height: 2)),
                             TextSpan(text: comment.body),
                             TextSpan(
-                                text: " " + dateFormatComment(post.time),
+                                text: " " + dateFormatComment(comment.time),
                                 style: TextStyle(
                                     fontWeight: FontWeight.w300,
                                     fontSize: 11.5))
