@@ -241,7 +241,7 @@ class SnaxBackend {
   }
 
 
-  static Future<void> feedCommentOnPost(String postId,String content) async {
+  static Future<Comment> feedCommentOnPost(String postId,String content) async {
     if (content.isEmpty ||
         content == null ||
         postId == null) {
@@ -261,6 +261,11 @@ class SnaxBackend {
         .call({"post_id": postId,"content": content,"token":token});
 
     if (result.data["status"] != "success") throw result.data["error"];
+
+    String commentId = result.data["id"];
+    int timestamp = result.data["timestamp"];
+
+    return Comment(commentId, postId, SnaxBackend.currentUser, content, DateTime.fromMillisecondsSinceEpoch(timestamp), 0);
   }
 
   //Grabs user info to link with comments
