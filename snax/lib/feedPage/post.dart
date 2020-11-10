@@ -17,10 +17,10 @@ class Post {
   List<Comment> comments = <Comment>[];
 
   //Shortcuts
-  Future<void> like(bool isLiked) async {
+  Future<void> like(bool isLiked) {
     likedByMe = isLiked;
     likeCount = isLiked ? likeCount + 1 : likeCount - 1;
-    await SnaxBackend.feedLikePost(id);
+    return SnaxBackend.feedLikePost(id, isLiked);
   }
 
   Future<Comment> comment(String content) =>
@@ -39,10 +39,15 @@ class Comment {
   String body;
   DateTime time;
   int likes = 0;
+  bool likedByMe;
   List<Comment> comments = [];
 
   //Shortcuts
-  Future<void> like() => SnaxBackend.feedLikeComment(postId, id);
+  Future<void> like(bool isLiked) {
+    likedByMe = isLiked;
+    likes = isLiked ? likes + 1 : likes - 1;
+    return SnaxBackend.feedLikeComment(postId, id, isLiked);
+  }
 
   Comment(this.id, this.postId, this.user, this.body, this.time, this.likes);
 }

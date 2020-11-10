@@ -49,6 +49,7 @@ void main() {
     SnaxBackend.search("Cheet").then((value) {
       DemoValues.items = value;
     });
+    fbAuth.currentUser.getIdToken().then((token) => printWrapped("USER REQUEST TOKEN =-=-=-=-=-=-=-=-=-=-=-\n"+token+"\n=-=-=-=-=-=-=-=-=-=-=-"));
     SnaxBackend.feedGetTopPosts().then((posts) => {
           posts.forEach((post) {
             print(post.title);
@@ -60,8 +61,11 @@ void main() {
             print(post.likeCount);
           })
         });
+    // SnaxBackend.updateProfile(bio: "updated from the app!").then((_) {
+    //     print("updated my bio from the app!");
+    // });
     print(DemoValues.items.length);
-    SnaxBackend.feedLikePost("rlUXJBRe1MfKXI49Ux8M").then((_) {});
+    //SnaxBackend.feedLikePost("rlUXJBRe1MfKXI49Ux8M").then((_) {});
     SnaxBackend.feedGetComments("rlUXJBRe1MfKXI49Ux8M").then((comments) {
       for (var comment in comments) {
         print(comment.body);
@@ -99,3 +103,4 @@ void main() {
     // });
   });
 }
+

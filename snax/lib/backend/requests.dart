@@ -147,6 +147,32 @@ class SnaxBackend {
     return snacks;
   }
 
+  //This random string is being used as an alternative to 'undefined' which doesnt exist in dart
+  static const _undefinedBioString = "zX43XBOZ7PtzulR";
+
+  static Future<void> updateProfile({String username,String name,String bio = _undefinedBioString}) async {
+    //Login
+    await SnaxBackend.auth.loginIfNotAlready();
+    //Get token
+    String token = await fbAuth.currentUser.getIdToken();
+
+    Map<String,String> params = {"token":token};
+    if (username != null) params["username"] = username;
+    if (name != null) params["name"] = name;
+    if (bio != _undefinedBioString) params["bio"] = bio;
+
+    //Send request
+    HttpsCallableResult result = await fbCloud
+        .getHttpsCallable(functionName: "updateProfile")
+        .call(params);
+    
+    if (result.data["status"] == "success") {
+      return;
+    } else {
+      throw result.data["error"];
+    }
+  }
+
   static Future<void> feedMakePost(
       String title, String body, String snackId) async {
     //Check all the values
@@ -182,7 +208,7 @@ class SnaxBackend {
     }
   }
 
-  static Future<void> feedLikeComment(String postId, String commentId) async {
+  static Future<void> feedLikeComment(String postId, String commentId, bool like) async {
     if (commentId == null || postId == null) {
       throw "Missing Data";
     }
@@ -195,12 +221,12 @@ class SnaxBackend {
     //Send request
     HttpsCallableResult result = await fbCloud
         .getHttpsCallable(functionName: "feedLike")
-        .call({"post_id": postId, "comment_id": commentId, "token": token});
+        .call({"post_id": postId, "comment_id": commentId, "token": token, "unlike": !like});
 
     if (result.data["status"] != "success") throw result.data["error"];
   }
 
-  static Future<void> feedLikePost(String postId) async {
+  static Future<void> feedLikePost(String postId, bool like) async {
     print("like function");
 
     if (postId == null) {
@@ -216,7 +242,9 @@ class SnaxBackend {
     //Send request
     HttpsCallableResult result = await fbCloud
         .getHttpsCallable(functionName: "feedLike")
-        .call({"post_id": postId, "token": token});
+        .call({"post_id": postId, "token": token, "unlike": !like});
+
+        print(result.data);
 
     if (result.data["status"] != "success") throw result.data["error"];
   }
