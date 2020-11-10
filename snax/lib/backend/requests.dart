@@ -152,6 +152,15 @@ class SnaxBackend {
   static const _undefinedBioString = "zX43XBOZ7PtzulR";
 
   static Future<void> updateProfile({String username,String name,String bio = _undefinedBioString}) async {
+    if (username == SnaxBackend.currentUser.username) username = null;
+    if (name == SnaxBackend.currentUser.name) name = null;
+    if (bio == SnaxBackend.currentUser.bio) bio = _undefinedBioString;
+    if (bio == "") bio = null;
+
+    Map<String,String> params = {};
+    if (username != null) { params["username"] = username; SnaxBackend.currentUser.username = username; }
+    if (name != null) { params["name"] = name; SnaxBackend.currentUser.name = name; }
+    if (bio != _undefinedBioString) { params["bio"] = bio; SnaxBackend.currentUser.bio = bio; }
     //Login
     await SnaxBackend.auth.loginIfNotAlready();
     //Get token
@@ -159,15 +168,7 @@ class SnaxBackend {
 
     await _waitWhile(() => (currentUser == null));
 
-  if (username == SnaxBackend.currentUser.username) username = null;
-    if (name == SnaxBackend.currentUser.name) name = null;
-    if (bio == SnaxBackend.currentUser.bio) bio = _undefinedBioString;
-    if (bio == "") bio = null;
-
-    Map<String,String> params = {"token":token};
-    if (username != null) { params["username"] = username; SnaxBackend.currentUser.username = username; }
-    if (name != null) { params["name"] = name; SnaxBackend.currentUser.name = name; }
-    if (bio != _undefinedBioString) { params["bio"] = bio; SnaxBackend.currentUser.bio = bio; }
+    params["token"] = token;
 
 
     //Send request
