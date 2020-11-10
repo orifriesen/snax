@@ -61,9 +61,9 @@ void main() {
             print(post.likeCount);
           })
         });
-    // SnaxBackend.updateProfile(bio: "updated from the app!").then((_) {
-    //     print("updated my bio from the app!");
-    // });
+    SnaxBackend.updateProfile(username: "escher2",bio: "").then((_) {
+        print("updated my bio from the app!");
+    });
     print(DemoValues.items.length);
     //SnaxBackend.feedLikePost("rlUXJBRe1MfKXI49Ux8M").then((_) {});
     SnaxBackend.feedGetComments("rlUXJBRe1MfKXI49Ux8M").then((comments) {

@@ -157,10 +157,18 @@ class SnaxBackend {
     //Get token
     String token = await fbAuth.currentUser.getIdToken();
 
+    await _waitWhile(() => (currentUser == null));
+
+  if (username == currentUser.username) username = null;
+    if (name == currentUser.name) name = null;
+    if (bio == currentUser.bio || bio == "") bio = _undefinedBioString;
+
     Map<String,String> params = {"token":token};
     if (username != null) params["username"] = username;
     if (name != null) params["name"] = name;
     if (bio != _undefinedBioString) params["bio"] = bio;
+
+    
 
     //Send request
     HttpsCallableResult result = await fbCloud
