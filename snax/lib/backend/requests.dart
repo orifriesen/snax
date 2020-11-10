@@ -165,11 +165,10 @@ class SnaxBackend {
     if (bio == "") bio = null;
 
     Map<String,String> params = {"token":token};
-    if (username != null) params["username"] = username;
-    if (name != null) params["name"] = name;
-    if (bio != _undefinedBioString) params["bio"] = bio;
+    if (username != null) { params["username"] = username; currentUser.username = username; }
+    if (name != null) { params["name"] = name; currentUser.name = name; }
+    if (bio != _undefinedBioString) { params["bio"] = bio; currentUser.bio = bio; }
 
-    
 
     //Send request
     HttpsCallableResult result = await fbCloud
