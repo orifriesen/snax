@@ -19,6 +19,8 @@ class PostDetailsPage extends StatefulWidget {
 }
 
 class _PostDetailsPage extends State<PostDetailsPage> {
+  final commentController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,10 +66,22 @@ class _PostDetailsPage extends State<PostDetailsPage> {
         commentLoader(context, widget.post),
       ]),
       bottomSheet: TextField(
+        textInputAction: TextInputAction.send,
+        controller: commentController,
         minLines: 1,
         maxLines: 5,
         decoration: InputDecoration(
             hintText: "Add Comment...", contentPadding: EdgeInsets.all(16.0)),
+        onEditingComplete: () {
+          SnaxBackend.feedCommentOnPost(widget.post.id, commentController.text)
+              .then((_) {
+            print("Sent Comment");
+            commentController.clear();
+            FocusScope.of(context).unfocus();
+          }).catchError((error) {
+            print("Error");
+          });
+        },
       ),
     );
   }
