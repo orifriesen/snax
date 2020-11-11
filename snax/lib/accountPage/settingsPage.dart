@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'dart:io' show Platform;
 import 'package:url_launcher/url_launcher.dart';
 
 import 'settingsTabs/aboutPage.dart';
@@ -145,24 +146,65 @@ class _SettingsPageState extends State<SettingsPage> {
       onPressed: () => {
         showCupertinoDialog(
           context: context,
-          builder: (_) => CupertinoAlertDialog(
-            title: Text("Open Mail Application"),
-            content: Text("Do you want to open your mail application?"),
-            actions: [
-              FlatButton(
-                  child: Text("No"), onPressed: () => {Navigator.pop(context)}),
-              FlatButton(
-                child: Text("Yes"),
-                onPressed: () => {
-                  customLaunch(
-                      "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20Problem&body="),
-                  Navigator.pop(context),
-                },
-              )
-            ],
-          ),
+          builder: (_) => Platform.isIOS
+              ? CupertinoAlertDialog(
+                  title: Text("Open Mail Application"),
+                  content: Text("Do you want to open your mail application?"),
+                  actions: [
+                    FlatButton(
+                        child: Text(
+                          "No",
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        onPressed: () => {Navigator.pop(context)}),
+                    FlatButton(
+                      child: Text(
+                        "Yes",
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      onPressed: () => {
+                        customLaunch(
+                            "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20Problem&body="),
+                        Navigator.pop(context),
+                      },
+                    )
+                  ],
+                )
+              : AlertDialog(
+                  title: Text("Open Mail Application"),
+                  content: Text("Do you want to open your mail application?"),
+                  actions: [
+                    FlatButton(
+                        child: Text(
+                          "No",
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: !isDark(context)
+                                ? SnaxColors.redAccent
+                                : Colors.white,
+                          ),
+                        ),
+                        onPressed: () => {Navigator.pop(context)}),
+                    FlatButton(
+                      child: Text(
+                        "Yes",
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: !isDark(context)
+                              ? SnaxColors.redAccent
+                              : Colors.white,
+                        ),
+                      ),
+                      onPressed: () => {
+                        customLaunch(
+                            "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20Problem&body="),
+                        Navigator.pop(context),
+                      },
+                    )
+                  ],
+                ),
           barrierDismissible: true,
-        )
+        ),
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
