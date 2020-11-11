@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -54,6 +56,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   aboutButton("About", Icons.info_outline_rounded),
                   reportButton(
                       "Report a Problem", Icons.report_problem_outlined),
+                  appLibraries("Open Source Libraries", Icons.article_outlined),
                 ],
               ),
             ],
@@ -140,8 +143,69 @@ class _SettingsPageState extends State<SettingsPage> {
   FlatButton reportButton(String title, IconData iconData) {
     return FlatButton(
       onPressed: () => {
-        customLaunch(
-            "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20Problem&body=")
+        showCupertinoDialog(
+          context: context,
+          builder: (_) => CupertinoAlertDialog(
+            title: Text("Open Mail Application"),
+            content: Text("Do you want to open your mail application?"),
+            actions: [
+              FlatButton(
+                  child: Text("No"), onPressed: () => {Navigator.pop(context)}),
+              FlatButton(
+                child: Text("Yes"),
+                onPressed: () => {
+                  customLaunch(
+                      "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20Problem&body="),
+                  Navigator.pop(context),
+                },
+              )
+            ],
+          ),
+          barrierDismissible: true,
+        )
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Icon(
+                iconData,
+                color: Colors.white,
+              ),
+              SizedBox(width: 8),
+              Text(
+                title,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          Icon(
+            Icons.arrow_forward_ios,
+            color: Colors.white70,
+          )
+        ],
+      ),
+    );
+  }
+
+  FlatButton appLibraries(String title, IconData iconData) {
+    return FlatButton(
+      onPressed: () {
+        showLicensePage(
+          context: context,
+          applicationName: "Snax",
+          applicationLegalese: "Developed by Snax Co.",
+          applicationVersion: "0.0.01",
+          applicationIcon: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: FlutterLogo(size: 50),
+          ),
+        );
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
