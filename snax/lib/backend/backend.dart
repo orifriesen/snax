@@ -50,8 +50,9 @@ class SnaxUser {
   String name;
   String uid;
   String bio;
+  String photo;
 
-  SnaxUser(this.username, this.name, this.uid, this.bio);
+  SnaxUser(this.username, this.name, this.uid, this.bio, {this.photo});
 }
 
 class SnackSearchResultItem {
@@ -90,8 +91,10 @@ class SnackItem {
   int numberOfRatings;
   int numberOfRatingsThisWeek;
   String image;
+  String banner;
   SnackItem(this.name, this.id, this.type, this.upc, this.averageRatings,
-      this.numberOfRatings, this.numberOfRatingsThisWeek, this.image);
+      this.numberOfRatings, this.numberOfRatingsThisWeek, this.image,
+      {this.banner});
 }
 
 //A snack rating that is calculated, no user data is attached

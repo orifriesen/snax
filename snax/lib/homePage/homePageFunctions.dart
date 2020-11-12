@@ -58,18 +58,34 @@ Widget getHorizontalList(
                                         CrossAxisAlignment.start,
                                     children: [
                                       Container(
+                                        // padding: EdgeInsets.all(1),
                                         width: 240,
-                                        height: 120,
-                                        clipBehavior: Clip.hardEdge,
-                                        padding: EdgeInsets.all(1),
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                            color: Colors.white),
-                                        child: AspectRatio(
-                                            aspectRatio: 1,
-                                            child: Image.asset(
-                                                "assets/placeholderImage.jpg")),
+                                        height: 114,
+                                        child: Stack(
+                                          children: [
+                                            ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              child: (snackList[index].banner !=
+                                                      null)
+                                                  ? Image.network(
+                                                      snackList[index].banner)
+                                                  : Image.asset(
+                                                      "assets/placeholderImage.jpg",
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                            ),
+                                            Container(
+                                                child: Opacity(
+                                                  opacity: 0.5,
+                                                  child: Image.asset(
+                                                      'assets/snax-chip.png'),
+                                                ),
+                                                height: 21,
+                                                padding: EdgeInsets.only(
+                                                    left: 200, top: 10)),
+                                          ],
+                                        ),
                                       ),
                                       Container(height: 12),
                                       Row(

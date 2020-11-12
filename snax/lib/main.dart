@@ -61,7 +61,7 @@ void main() {
             print(post.likeCount);
           })
         });
-    // SnaxBackend.updateProfile(bio: "updated from the app!").then((_) {
+    // SnaxBackend.updateProfile(username: "escher2",bio: "").then((_) {
     //     print("updated my bio from the app!");
     // });
     print(DemoValues.items.length);

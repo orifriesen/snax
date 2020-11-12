@@ -59,6 +59,16 @@ class SnaxBackend {
     } catch (error) {
       // fetch image error
     }
+    String bannerUrl;
+    try {
+      bannerUrl = await fbStorage
+          .ref()
+          .child("snacks-banners")
+          .child(doc.id + ".png")
+          .getDownloadURL();
+    } catch (error) {
+      // fetch image error
+    }
     //Grab the id of the snack type
     String snackTypeId = (doc.get("type") as DocumentReference).id;
     //Return the snack
@@ -81,7 +91,8 @@ class SnaxBackend {
             : null,
         doc.data()["computed_ratings"],
         doc.data()["computed_trend"],
-        imgUrl);
+        imgUrl,
+        banner: bannerUrl);
   }
 
   // Private function for getting list of snacks with a sort and limit
@@ -121,6 +132,17 @@ class SnaxBackend {
       } catch (error) {
         // fetch image error
       }
+      //Get banner
+      String bannerUrl;
+      try {
+        bannerUrl = await fbStorage
+            .ref()
+            .child("snacks-banners")
+            .child(doc.id + ".png")
+            .getDownloadURL();
+      } catch (error) {
+        // fetch image error
+      }
       //Return the snack
       snacks.add(SnackItem(
           doc.get("name"),
@@ -139,34 +161,51 @@ class SnaxBackend {
           ),
           doc.get("computed_ratings"),
           doc.get("computed_trend"),
-          imgUrl));
+          imgUrl,
+          banner: bannerUrl));
     }
 
     //Return the mapped data
     return snacks;
   }
 
-  
-
   //This random string is being used as an alternative to 'undefined' which doesnt exist in dart
   static const _undefinedBioString = "zX43XBOZ7PtzulR";
 
-  static Future<void> updateProfile({String username,String name,String bio = _undefinedBioString}) async {
+  static Future<void> updateProfile(
+      {String username, String name, String bio = _undefinedBioString}) async {
+    if (username == SnaxBackend.currentUser.username) username = null;
+    if (name == SnaxBackend.currentUser.name) name = null;
+    if (bio == SnaxBackend.currentUser.bio) bio = _undefinedBioString;
+    if (bio == "") bio = null;
+
+    Map<String, String> params = {};
+    if (username != null) {
+      params["username"] = username;
+      SnaxBackend.currentUser.username = username;
+    }
+    if (name != null) {
+      params["name"] = name;
+      SnaxBackend.currentUser.name = name;
+    }
+    if (bio != _undefinedBioString) {
+      params["bio"] = bio;
+      SnaxBackend.currentUser.bio = bio;
+    }
     //Login
     await SnaxBackend.auth.loginIfNotAlready();
     //Get token
     String token = await fbAuth.currentUser.getIdToken();
 
-    Map<String,String> params = {"token":token};
-    if (username != null) params["username"] = username;
-    if (name != null) params["name"] = name;
-    if (bio != _undefinedBioString) params["bio"] = bio;
+    await _waitWhile(() => (currentUser == null));
+
+    params["token"] = token;
 
     //Send request
     HttpsCallableResult result = await fbCloud
         .getHttpsCallable(functionName: "updateProfile")
         .call(params);
-    
+
     if (result.data["status"] == "success") {
       return;
     } else {
@@ -185,11 +224,16 @@ class SnaxBackend {
     Image image = decodeImage(await pickedFile.readAsBytes());
     Image resized = copyResize(image, width: 400, height: 400);
     io.Directory appDocDirectory = await getApplicationDocumentsDirectory();
-    io.File file = io.File(appDocDirectory.path+'$uid.jpg');
+    io.File file = io.File(appDocDirectory.path + '$uid.jpg');
     await file.writeAsBytes(encodeJpg(resized));
 
     try {
-      await fbStorage.ref().child("user-profiles").child(uid+".jpg").putFile(file).onComplete;
+      await fbStorage
+          .ref()
+          .child("user-profiles")
+          .child(uid + ".jpg")
+          .putFile(file)
+          .onComplete;
     } catch (error) {
       print(error);
       throw "Failed to upload";
@@ -231,7 +275,8 @@ class SnaxBackend {
     }
   }
 
-  static Future<void> feedLikeComment(String postId, String commentId, bool like) async {
+  static Future<void> feedLikeComment(
+      String postId, String commentId, bool like) async {
     if (commentId == null || postId == null) {
       throw "Missing Data";
     }
@@ -244,7 +289,12 @@ class SnaxBackend {
     //Send request
     HttpsCallableResult result = await fbCloud
         .getHttpsCallable(functionName: "feedLike")
-        .call({"post_id": postId, "comment_id": commentId, "token": token, "unlike": !like});
+        .call({
+      "post_id": postId,
+      "comment_id": commentId,
+      "token": token,
+      "unlike": !like
+    });
 
     if (result.data["status"] != "success") throw result.data["error"];
   }
@@ -267,7 +317,7 @@ class SnaxBackend {
         .getHttpsCallable(functionName: "feedLike")
         .call({"post_id": postId, "token": token, "unlike": !like});
 
-        print(result.data);
+    print(result.data);
 
     if (result.data["status"] != "success") throw result.data["error"];
   }
@@ -402,21 +452,32 @@ class SnaxBackend {
       var data = doc.data();
       if (!snackDatas.containsKey(data["snack_id"]) ||
           !userDatas.containsKey(data["uid"])) continue;
-      //Create user
-      SnaxUser user = SnaxUser(
-          userDatas[data["uid"]]["username"],
-          userDatas[data["uid"]]["name"],
-          data["uid"],
-          userDatas[data["uid"]]["bio"]);
+
       //Get snack image
       String snackImg;
+      String userImg;
+
       try {
         snackImg = await fbStorage
             .ref()
             .child("snacks")
             .child(data["snack_id"] + ".jpg")
             .getDownloadURL();
+        userImg = await fbStorage
+            .ref()
+            .child("user-profiles")
+            .child(data["uid"] + ".jpg")
+            .getDownloadURL();
       } catch (error) {}
+
+      //Create user
+      SnaxUser user = SnaxUser(
+          userDatas[data["uid"]]["username"],
+          userDatas[data["uid"]]["name"],
+          data["uid"],
+          userDatas[data["uid"]]["bio"],
+          photo: userImg);
+
       //Create snack
       SnackSearchResultItem snack = SnackSearchResultItem(
           snackDatas[data["snack_id"]]["name"],
@@ -643,8 +704,16 @@ class _SnaxBackendAuth {
       throw "User not found. Please try logging in again later.";
 
     DocumentSnapshot userInDB;
+    String image;
     try {
       userInDB = await fbStore.collection("users").doc(user.uid).get();
+      try {
+        image = await fbStorage
+            .ref()
+            .child("user-profiles")
+            .child(user.uid + ".jpg")
+            .getDownloadURL();
+      } catch (error) {}
     } catch (error) {
       //Try to get it locally
       return getUserInfoLocally();
@@ -661,9 +730,11 @@ class _SnaxBackendAuth {
       await prefs.setString("user_username", userInDB.get("username"));
       await prefs.setString("user_name", userInDB.get("name"));
       await prefs.setString("user_bio", userInDB.data()["bio"]);
+      await prefs.setString("user_image", image);
       //Return instance
       return SnaxUser(userInDB.get("username"), userInDB.get("name"), user.uid,
-          userInDB.data()["bio"]);
+          userInDB.data()["bio"],
+          photo: image);
     }
   }
 
@@ -675,7 +746,8 @@ class _SnaxBackendAuth {
           prefs.getString("user_username"),
           prefs.getString("user_name"),
           prefs.getString("user_id"),
-          prefs.getString("user_bio"));
+          prefs.getString("user_bio"),
+          photo: prefs.getString("user_image"));
     } else {
       throw "No user data present";
     }
