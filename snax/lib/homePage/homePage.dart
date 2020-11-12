@@ -204,6 +204,7 @@ Widget forYouTab(BuildContext context, List<SnackItem> snackList) {
   return ListView(
     padding: EdgeInsets.only(top: 12),
     children: [
+      snackOfTheWeek(context, snackList),
       getHorizontalList("Trending", context, snackList),
       getHorizontalList("Top", context, snackList),
       getMiniHorizontalList("Test", context, snackList)

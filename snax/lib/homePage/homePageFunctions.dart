@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:number_display/number_display.dart';
+import 'package:palette_generator/palette_generator.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 import 'package:snax/backend/backend.dart';
 import 'package:snax/homePage/specificSnack.dart';
@@ -479,6 +481,28 @@ Widget getList(BuildContext context, List<SnackItem> snackList) {
   );
 }
 
-Widget snackOfTheWeek() {
-  return Container();
+Widget snackOfTheWeek(BuildContext context, List<SnackItem> snackList) {
+  final display = createDisplay(placeholder: '0');
+
+  return Padding(
+      padding: const EdgeInsets.fromLTRB(16.0, 8, 16, 16),
+      child: GestureDetector(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ProductPage(item: snackList[0])));
+          },
+          child: Container(
+              decoration: BoxDecoration(
+                  color:
+                      /*isDark(context)
+                    ? SnaxColors.darkGreyGradientEnd
+                    : Colors.white,*/
+                      Colors.white,
+                  borderRadius: BorderRadius.circular(18),
+                  boxShadow: [
+                    BoxShadow(color: Color.fromARGB(24, 0, 0, 0), blurRadius: 8)
+                  ]),
+              child: Image.network(snackList[0].banner, height: 120))));
 }
