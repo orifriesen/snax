@@ -32,6 +32,7 @@ Widget getHorizontalList(
             padding: const EdgeInsets.all(8.0),
             child: snackList != null
                 ? ListView.builder(
+                    padding: EdgeInsets.zero,
                     itemCount: snackList.length,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
@@ -146,6 +147,135 @@ Widget getHorizontalList(
                                           )
                                         ],
                                       ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16),
+                              color: isDark(context) ? null : Colors.white,
+                              gradient: isDark(context)
+                                  ? SnaxGradients.darkGreyCard
+                                  : null,
+                              boxShadow: [SnaxShadows.cardShadowSubtler],
+                            ),
+                          ));
+                    })
+                : Container(
+                    child: Center(
+                        child: CircularProgressIndicator(
+                      valueColor: new AlwaysStoppedAnimation<Color>(
+                          SnaxColors.redAccent),
+                    )),
+                  )),
+      )
+    ],
+  );
+}
+
+Widget getMiniHorizontalList(
+    String titleText, BuildContext context, List<SnackItem> snackList) {
+  final display = createDisplay(placeholder: '0');
+
+  return Column(
+    children: [
+      GestureDetector(
+        onTap: () {},
+        child: Padding(
+          padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(titleText,
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+              Icon(Icons.arrow_forward_ios_rounded, size: 22)
+            ],
+          ),
+        ),
+      ),
+      SizedBox(
+        height: 220,
+        child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: snackList != null
+                ? ListView.builder(
+                    padding: EdgeInsets.zero,
+                    itemCount: snackList.length,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            width: 120,
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(16),
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => ProductPage(
+                                              item: snackList[index])));
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        width: 86,
+                                        height: 86,
+                                        clipBehavior: Clip.hardEdge,
+                                        padding: EdgeInsets.all(1),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                            color: Colors.white),
+                                        child: AspectRatio(
+                                            aspectRatio: 1,
+                                            child: Image.network(
+                                                snackList[index].image)),
+                                      ),
+                                      Container(height: 12),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            snackList[index].name,
+                                            overflow: TextOverflow.fade,
+                                            softWrap: false,
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                          Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    top: 2.0),
+                                                child: Text(
+                                                    "${(snackList[index].averageRatings.overall ?? 0).toStringAsFixed(1)} ",
+                                                    style: TextStyle(
+                                                      color: SnaxColors.subtext,
+                                                    )),
+                                              ),
+                                              Icon(Icons.star_rounded,
+                                                  color: SnaxColors.redAccent,
+                                                  size: 16)
+                                            ],
+                                          ),
+                                          Container(height: 2),
+                                          Text(
+                                              "${snackList[index].numberOfRatings} Ratings",
+                                              style: TextStyle(
+                                                  color: SnaxColors.subtext))
+                                        ],
+                                      )
                                     ],
                                   ),
                                 ),

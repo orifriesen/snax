@@ -202,9 +202,11 @@ class _TopList extends State<TopList>
 
 Widget forYouTab(BuildContext context, List<SnackItem> snackList) {
   return ListView(
+    padding: EdgeInsets.only(top: 12),
     children: [
       getHorizontalList("Trending", context, snackList),
-      getHorizontalList("Top", context, snackList)
+      getHorizontalList("Top", context, snackList),
+      getMiniHorizontalList("Test", context, snackList)
     ],
   );
 }
