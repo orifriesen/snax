@@ -4,7 +4,7 @@ import 'dart:math';
 import 'dart:convert';
 import 'dart:io';
 import 'package:crypto/crypto.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+// import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:snax/backend/backend.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -56,42 +56,42 @@ String _createNonce(int length) {
   return String.fromCharCodes(charCodes);
 }
 
-Future<OAuthCredential> _createAppleOAuthCred() async {
-  final nonce = _createNonce(32);
-  final nativeAppleCred = Platform.isIOS
-      ? await SignInWithApple.getAppleIDCredential(
-          scopes: [
-            AppleIDAuthorizationScopes.email,
-            AppleIDAuthorizationScopes.fullName,
-          ],
-          nonce: sha256.convert(utf8.encode(nonce)).toString(),
-        )
-      : await SignInWithApple.getAppleIDCredential(
-          scopes: [
-            AppleIDAuthorizationScopes.email,
-            AppleIDAuthorizationScopes.fullName,
-          ],
-          webAuthenticationOptions: WebAuthenticationOptions(
-            redirectUri:
-                Uri.parse('https://snax-dde4e.firebaseapp.com/__/auth/handler'),
-            clientId: 'us.eschr.snax.service',
-          ),
-          nonce: sha256.convert(utf8.encode(nonce)).toString(),
-        );
+// Future<OAuthCredential> _createAppleOAuthCred() async {
+//   final nonce = _createNonce(32);
+//   final nativeAppleCred = Platform.isIOS
+//       ? await SignInWithApple.getAppleIDCredential(
+//           scopes: [
+//             AppleIDAuthorizationScopes.email,
+//             AppleIDAuthorizationScopes.fullName,
+//           ],
+//           nonce: sha256.convert(utf8.encode(nonce)).toString(),
+//         )
+//       : await SignInWithApple.getAppleIDCredential(
+//           scopes: [
+//             AppleIDAuthorizationScopes.email,
+//             AppleIDAuthorizationScopes.fullName,
+//           ],
+//           webAuthenticationOptions: WebAuthenticationOptions(
+//             redirectUri:
+//                 Uri.parse('https://snax-dde4e.firebaseapp.com/__/auth/handler'),
+//             clientId: 'us.eschr.snax.service',
+//           ),
+//           nonce: sha256.convert(utf8.encode(nonce)).toString(),
+//         );
 
-  return new OAuthCredential(
-    providerId: "apple.com", // MUST be "apple.com"
-    signInMethod: "oauth", // MUST be "oauth"
-    accessToken: nativeAppleCred
-        .identityToken, // propagate Apple ID token to BOTH accessToken and idToken parameters
-    idToken: nativeAppleCred.identityToken,
-    rawNonce: nonce,
-  );
-}
+//   return new OAuthCredential(
+//     providerId: "apple.com", // MUST be "apple.com"
+//     signInMethod: "oauth", // MUST be "oauth"
+//     accessToken: nativeAppleCred
+//         .identityToken, // propagate Apple ID token to BOTH accessToken and idToken parameters
+//     idToken: nativeAppleCred.identityToken,
+//     rawNonce: nonce,
+//   );
+// }
 
 Future<UserCredential> signInWithApple() async {
   //Generate the credential
-  final oauthCred = await _createAppleOAuthCred();
+  // final oauthCred = await _createAppleOAuthCred();
   //Sign in to firebase with it
-  return await FirebaseAuth.instance.signInWithCredential(oauthCred);
+  // return await FirebaseAuth.instance.signInWithCredential(oauthCred);
 }

@@ -49,7 +49,7 @@ void main() {
     SnaxBackend.search("Cheet").then((value) {
       DemoValues.items = value;
     });
-    fbAuth.currentUser.getIdToken().then((token) => printWrapped("USER REQUEST TOKEN =-=-=-=-=-=-=-=-=-=-=-\n"+token+"\n=-=-=-=-=-=-=-=-=-=-=-"));
+    if (fbAuth.currentUser != null) fbAuth.currentUser.getIdToken().then((token) => printWrapped("USER REQUEST TOKEN =-=-=-=-=-=-=-=-=-=-=-\n"+token+"\n=-=-=-=-=-=-=-=-=-=-=-"));
     SnaxBackend.feedGetTopPosts().then((posts) => {
           posts.forEach((post) {
             print(post.title);

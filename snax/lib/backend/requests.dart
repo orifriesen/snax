@@ -203,7 +203,7 @@ class SnaxBackend {
 
     //Send request
     HttpsCallableResult result = await fbCloud
-        .getHttpsCallable(functionName: "updateProfile")
+        .httpsCallable("updateProfile")
         .call(params);
 
     if (result.data["status"] == "success") {
@@ -217,7 +217,7 @@ class SnaxBackend {
     //Login
     await SnaxBackend.auth.loginIfNotAlready();
     //Get token
-    String token = await fbAuth.currentUser.getIdToken();
+    //String token = await fbAuth.currentUser.getIdToken();
     String uid = fbAuth.currentUser.uid;
 
     //Resize and reformat image
@@ -232,8 +232,7 @@ class SnaxBackend {
           .ref()
           .child("user-profiles")
           .child(uid + ".jpg")
-          .putFile(file)
-          .onComplete;
+          .putFile(file);
     } catch (error) {
       print(error);
       throw "Failed to upload";
@@ -260,7 +259,7 @@ class SnaxBackend {
 
     //Send request
     HttpsCallableResult result = await fbCloud
-        .getHttpsCallable(functionName: "feedMakePost")
+        .httpsCallable("feedMakePost")
         .call({
       "snack_id": snackId,
       "title": title,
@@ -288,7 +287,7 @@ class SnaxBackend {
 
     //Send request
     HttpsCallableResult result = await fbCloud
-        .getHttpsCallable(functionName: "feedLike")
+        .httpsCallable("feedLike")
         .call({
       "post_id": postId,
       "comment_id": commentId,
@@ -314,7 +313,7 @@ class SnaxBackend {
     print("fart");
     //Send request
     HttpsCallableResult result = await fbCloud
-        .getHttpsCallable(functionName: "feedLike")
+        .httpsCallable("feedLike")
         .call({"post_id": postId, "token": token, "unlike": !like});
 
     print(result.data);
@@ -361,7 +360,7 @@ class SnaxBackend {
 
     //Send request
     HttpsCallableResult result = await fbCloud
-        .getHttpsCallable(functionName: "feedMakeComment")
+        .httpsCallable("feedMakeComment")
         .call({"post_id": postId, "content": content, "token": token});
 
     if (result.data["status"] != "success") throw result.data["error"];
@@ -505,7 +504,7 @@ class SnaxBackend {
     await _waitWhile(() => (fbCloud == null));
     //Call search function from database
     HttpsCallableResult result = await fbCloud
-        .getHttpsCallable(functionName: "addUserUpc")
+        .httpsCallable("addUserUpc")
         .call({"upc": upc.toString(), "snack_id": snackId});
     //Parse
     if (result.data["status"] == "success") {
@@ -584,7 +583,7 @@ class SnaxBackend {
     await _waitWhile(() => (fbCloud == null));
     //Call search function from database
     HttpsCallableResult result = await fbCloud
-        .getHttpsCallable(functionName: "searchSnacks")
+        .httpsCallable("searchSnacks")
         .call({"q": query.trim()});
     //Parse
     if (result.data["status"] == "success") {
@@ -655,7 +654,7 @@ class SnaxBackend {
     };
     //Call
     HttpsCallableResult result =
-        await fbCloud.getHttpsCallable(functionName: "rateSnack").call(body);
+        await fbCloud.httpsCallable("rateSnack").call(body);
     //Parse
     if (result.data["status"] == "success") {
       //TODO: Remove toast
