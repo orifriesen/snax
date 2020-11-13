@@ -4,14 +4,21 @@ import 'package:number_display/number_display.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 import 'package:snax/backend/backend.dart';
+import 'package:snax/backend/requests.dart';
+import 'package:snax/barcodeScanner/barcodeAddCode.dart';
 import 'package:snax/helpers.dart';
-import 'package:snax/homePage/searchBar.dart';
-import 'package:snax/homePage/ratingInfoPage.dart';
 import 'package:snax/homePage/userReview.dart';
 
-class ProductPage extends StatelessWidget {
+class ProductPage extends StatefulWidget {
   ProductPage({Key key, this.item}) : super(key: key);
   final SnackItem item;
+
+  @override
+  _ProductPageState createState() => _ProductPageState();
+}
+
+class _ProductPageState extends State<ProductPage> {
+  SnackItem chosenSnack;
 
   final display = createDisplay(placeholder: '0');
 
@@ -26,7 +33,17 @@ class ProductPage extends StatelessWidget {
           IconButton(
               icon: const Icon(Icons.search),
               onPressed: () {
-                showSearch(context: context, delegate: DataSearch());
+                showSearch(
+                    context: context,
+                    delegate: BarcodeAddSearch(
+                        (SnackSearchResultItem returnSnack) async {
+                      chosenSnack = await SnaxBackend.getSnack(returnSnack.id);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  ProductPage(item: chosenSnack)));
+                    }));
               }),
           IconButton(icon: const Icon(Icons.more_vert), onPressed: () {})
         ],
@@ -55,7 +72,9 @@ class ProductPage extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(16.0, 8, 16, 16),
                 child: Container(
                     decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: isDark(context)
+                            ? SnaxColors.darkGreyGradientEnd
+                            : Colors.white,
                         borderRadius: BorderRadius.circular(24),
                         boxShadow: [
                           BoxShadow(
@@ -67,7 +86,18 @@ class ProductPage extends StatelessWidget {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Image.network(this.item.image, width: 80, height: 80),
+                          Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16),
+                                color: Colors.white),
+                            clipBehavior: Clip.hardEdge,
+                            padding: EdgeInsets.all(2),
+                            height: 64,
+                            width: 64,
+                            child: AspectRatio(
+                                aspectRatio: 1.0,
+                                child: Image.network(this.widget.item.image)),
+                          ),
                           Padding(
                             padding: const EdgeInsets.only(left: 8),
                             child: Column(
@@ -76,9 +106,9 @@ class ProductPage extends StatelessWidget {
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 1.0),
                                   child: Text(
-                                    this.item.name,
+                                    this.widget.item.name,
                                     style: TextStyle(
-                                        fontSize: 24,
+                                        fontSize: 18,
                                         fontWeight: FontWeight.w600),
                                   ),
                                 ),
@@ -86,13 +116,13 @@ class ProductPage extends StatelessWidget {
                                   padding: const EdgeInsets.all(1.0),
                                   child: Row(
                                     children: [
-                                      Text(this.item.type.name,
+                                      Text(this.widget.item.type.name,
                                           style: TextStyle(
-                                              fontSize: 18,
+                                              fontSize: 14,
                                               color: Colors.grey[400])),
                                       Icon(
                                         Icons.arrow_forward_ios_rounded,
-                                        size: 18,
+                                        size: 14,
                                         color: Colors.grey[400],
                                       )
                                     ],
@@ -101,10 +131,13 @@ class ProductPage extends StatelessWidget {
                                 Padding(
                                   padding: const EdgeInsets.all(1.0),
                                   child: Text(
-                                      display(this.item.numberOfRatings) +
+                                      display(this
+                                              .widget
+                                              .item
+                                              .numberOfRatings) +
                                           " total ratings",
                                       style: TextStyle(
-                                          fontSize: 18,
+                                          fontSize: 14,
                                           color: Colors.grey[400])),
                                 )
                               ],
@@ -117,8 +150,8 @@ class ProductPage extends StatelessWidget {
             ),
             Expanded(
               child: ListView(padding: EdgeInsets.zero, children: <Widget>[
-                this.item.numberOfRatings != 0 &&
-                        this.item.numberOfRatings != null
+                this.widget.item.numberOfRatings != 0 &&
+                        this.widget.item.numberOfRatings != null
                     ? criteriaList()
                     : Center(
                         child: Padding(
@@ -146,14 +179,14 @@ class ProductPage extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                     builder: (context) => UserReviewPage(
-                          this.item.id,
-                          this.item.name,
+                          this.widget.item.id,
+                          this.widget.item.name,
                         )));
           },
           label: Container(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
-              child: Text("Rate Snack", style: TextStyle(fontSize: 18)),
+              child: Text("Rate Snack", style: TextStyle(fontSize: 16)),
             ),
           )),
     );
@@ -169,23 +202,30 @@ class ProductPage extends StatelessWidget {
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(this.item.name,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              child: Text("Overall",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             ),
             Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(children: [
                   Text(
-                      this.item.averageRatings.overall.toStringAsFixed(1) + " ",
-                      style: TextStyle(fontSize: 20, color: Colors.grey)),
+                      this
+                              .widget
+                              .item
+                              .averageRatings
+                              .overall
+                              .toStringAsFixed(1) +
+                          " ",
+                      style: TextStyle(fontSize: 16, color: Colors.grey)),
                   SmoothStarRating(
                       allowHalfRating: true,
                       starCount: 5,
-                      rating: this.item.averageRatings.overall,
-                      size: 24,
+                      rating: this.widget.item.averageRatings.overall,
+                      size: 20,
                       isReadOnly: true,
-                      filledIconData: Icons.star,
-                      halfFilledIconData: Icons.star_half,
+                      filledIconData: Icons.star_rounded,
+                      halfFilledIconData: Icons.star_half_rounded,
+                      defaultIconData: Icons.star_outline_rounded,
                       color: SnaxColors.redAccent,
                       borderColor: SnaxColors.redAccent,
                       spacing: 0.0)
@@ -195,28 +235,28 @@ class ProductPage extends StatelessWidget {
         Padding(
             padding: const EdgeInsets.only(left: 24.0),
             child: Text("CRITERIA",
-                style: TextStyle(fontSize: 16, color: Colors.grey[600]))),
+                style: TextStyle(fontSize: 14, color: Colors.grey[600]))),
         divider(),
         returnSpecificCriteria(
-            "Snackability", this.item.averageRatings.snackability, true),
+            "Snackability", this.widget.item.averageRatings.snackability, true),
         divider(),
         returnSpecificCriteria(
-            "Mouthfeel", this.item.averageRatings.mouthfeel, true),
+            "Mouthfeel", this.widget.item.averageRatings.mouthfeel, true),
+        divider(),
+        returnSpecificCriteria("Accessibility",
+            this.widget.item.averageRatings.accessibility, true),
         divider(),
         returnSpecificCriteria(
-            "Accessibility", this.item.averageRatings.accessibility, true),
+            "Sweetness", this.widget.item.averageRatings.sweetness, false),
         divider(),
         returnSpecificCriteria(
-            "Sweetness", this.item.averageRatings.sweetness, false),
+            "Saltiness", this.widget.item.averageRatings.saltiness, false),
         divider(),
         returnSpecificCriteria(
-            "Saltiness", this.item.averageRatings.saltiness, false),
+            "Sourness", this.widget.item.averageRatings.sourness, false),
         divider(),
         returnSpecificCriteria(
-            "Sourness", this.item.averageRatings.sourness, false),
-        divider(),
-        returnSpecificCriteria(
-            "Spiciness", this.item.averageRatings.spicyness, false),
+            "Spiciness", this.widget.item.averageRatings.spicyness, false),
       ],
     );
   }
@@ -239,33 +279,36 @@ class ProductPage extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(title,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400)),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400)),
         ),
         Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(children: [
               Text(snackItemData.toStringAsFixed(1) + " ",
-                  style: TextStyle(fontSize: 20, color: Colors.grey)),
+                  style: TextStyle(fontSize: 16, color: Colors.grey)),
               isStar == true
                   ? SmoothStarRating(
                       allowHalfRating: true,
                       starCount: 5,
                       rating: snackItemData,
-                      size: 24,
+                      size: 20,
                       isReadOnly: true,
-                      filledIconData: Icons.star,
-                      halfFilledIconData: Icons.star_half,
+                      filledIconData: Icons.star_rounded,
+                      halfFilledIconData: Icons.star_half_rounded,
+                      defaultIconData: Icons.star_outline_rounded,
                       color: SnaxColors.redAccent,
                       borderColor: SnaxColors.redAccent,
                       spacing: 0.0)
                   : Padding(
                       padding: const EdgeInsets.only(top: 6.0),
                       child: LinearPercentIndicator(
-                        width: 120.0,
+                        width: 100.0,
                         lineHeight: 12.0,
                         percent: snackItemData / 5,
                         progressColor: SnaxColors.redAccent,
-                        backgroundColor: Colors.grey[200],
+                        backgroundColor: isDark(context)
+                            ? Colors.grey[800]
+                            : Colors.grey[200],
                         animation: true,
                         animationDuration: 750,
                       ),

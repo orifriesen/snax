@@ -1,18 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:loading/indicator/ball_pulse_indicator.dart';
-import 'package:loading/indicator/ball_spin_fade_loader_indicator.dart';
-import 'package:loading/loading.dart';
-import 'package:number_display/number_display.dart';
-import 'package:smooth_star_rating/smooth_star_rating.dart';
 import 'package:snax/barcodeScanner/barcodeAddCode.dart';
 import 'package:snax/barcodeScanner/barcodeScanner.dart';
-import 'package:snax/homePage/searchBar.dart';
 import 'package:snax/homePage/specificSnack.dart';
 
 import 'package:snax/backend/backend.dart';
 import 'package:snax/backend/requests.dart';
 
 import '../helpers.dart';
+import 'homePageFunctions.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -25,7 +20,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-        length: 2,
+        length: 3,
         child: new Scaffold(
             body: new NestedScrollView(
                 headerSliverBuilder:
@@ -37,7 +32,7 @@ class _MainPageState extends State<MainPage> {
                               gradient: SnaxGradients.redBigThings),
                         ),*/
                       elevation: 2,
-                      backgroundColor: Colors.white,
+                      backgroundColor: Theme.of(context).canvasColor,
                       title: Text("SNAX",
                           style: TextStyle(color: SnaxColors.redAccent)),
                       floating: true,
@@ -53,8 +48,9 @@ class _MainPageState extends State<MainPage> {
                             color: Colors.redAccent),
                         labelStyle: TextStyle(fontSize: 18),
                         tabs: [
-                          Container(width: 164, child: Tab(text: "Trending")),
-                          Container(width: 164, child: Tab(text: "Top"))
+                          Container(width: 80, child: Tab(text: "For You")),
+                          Container(width: 80, child: Tab(text: "Trending")),
+                          Container(width: 80, child: Tab(text: "Top"))
                         ],
                       ),
                       actions: <Widget>[
@@ -96,8 +92,42 @@ class _MainPageState extends State<MainPage> {
 
 Widget getTabBarPages() {
   return TabBarView(
-    children: [TrendingList(), TopList()],
+    children: [ForYou(), TrendingList(), TopList()],
   );
+}
+
+class ForYou extends StatefulWidget {
+  @override
+  _ForYou createState() => _ForYou();
+}
+
+class _ForYou extends State<ForYou> with AutomaticKeepAliveClientMixin<ForYou> {
+  //_TrendingSnackItem({Key key, this.item}) : super(key: key);
+  List<SnackItem> trendingSnacks;
+
+  void hasResults(value) {
+    print("got snacks");
+
+    setState(() {
+      trendingSnacks = value;
+    });
+  }
+
+  @override
+  void initState() {
+    print("getting charts");
+    SnaxBackend.chartTrending().then(hasResults);
+
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return forYouTab(context, trendingSnacks);
+  }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class TrendingList extends StatefulWidget {
@@ -170,85 +200,11 @@ class _TopList extends State<TopList>
   bool get wantKeepAlive => true;
 }
 
-Widget getList(BuildContext context, List<SnackItem> snackList) {
-  final List<SnackItem> trendingSnacks = snackList;
-  final display = createDisplay(placeholder: '0');
-
-  return Column(
+Widget forYouTab(BuildContext context, List<SnackItem> snackList) {
+  return ListView(
     children: [
-      Expanded(
-          child: trendingSnacks != null
-              ? ListView.builder(
-                  itemCount: trendingSnacks.length,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      padding: EdgeInsets.fromLTRB(0, 0, 0, 24),
-                      child: ListTile(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ProductPage(
-                                        item: trendingSnacks[index])));
-                          },
-                          leading: Container(
-                              padding: EdgeInsets.fromLTRB(40, 2, 8, 2),
-                              child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(15.0),
-                                  child: Container(
-                                    color: Colors.white,
-                                    child: Align(
-                                        alignment: Alignment.center,
-                                        widthFactor: .66,
-                                        heightFactor: 1.0,
-                                        child: Image.network(
-                                            trendingSnacks[index].image,
-                                            width: 80,
-                                            height: 80)),
-                                  ))),
-                          title: Text(
-                            trendingSnacks[index].name,
-                            style: TextStyle(fontSize: 16),
-                          ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(" " + trendingSnacks[index].type.name),
-                              Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    Text(
-                                        " " +
-                                            trendingSnacks[index]
-                                                .averageRatings
-                                                .overall
-                                                .toStringAsFixed(1),
-                                        style: TextStyle(fontSize: 16)),
-                                    SmoothStarRating(
-                                        allowHalfRating: true,
-                                        starCount: 5,
-                                        rating: trendingSnacks[index]
-                                            .averageRatings
-                                            .overall,
-                                        size: 20.0,
-                                        isReadOnly: true,
-                                        filledIconData: Icons.star,
-                                        halfFilledIconData: Icons.star_half,
-                                        color: Colors.amber,
-                                        borderColor: Colors.amber,
-                                        spacing: 0.0)
-                                  ]),
-                            ],
-                          )),
-                    );
-                  })
-              : Container(
-                  child: Center(
-                      child: CircularProgressIndicator(
-                    valueColor:
-                        new AlwaysStoppedAnimation<Color>(SnaxColors.redAccent),
-                  )),
-                )),
+      getHorizontalList("Trending", context, snackList),
+      getHorizontalList("Top", context, snackList)
     ],
   );
 }

@@ -14,7 +14,7 @@ FirebaseApp fbApp;
 FirebaseAuth fbAuth;
 FirebaseFirestore fbStore;
 FirebaseStorage fbStorage;
-CloudFunctions fbCloud;
+FirebaseFunctions fbCloud;
 
 Future<void> initializeFirebase() async {
   print("Initializing Firebase");
@@ -22,7 +22,7 @@ Future<void> initializeFirebase() async {
   fbApp = await Firebase.initializeApp();
   fbAuth = FirebaseAuth.instance;
   fbStore = FirebaseFirestore.instance;
-  fbCloud = CloudFunctions.instance;
+  fbCloud = FirebaseFunctions.instance;
   fbStorage = FirebaseStorage.instance;
   //Add listeners
   fbAuth.authStateChanges().listen((User user) async {
@@ -91,8 +91,10 @@ class SnackItem {
   int numberOfRatings;
   int numberOfRatingsThisWeek;
   String image;
+  String banner;
   SnackItem(this.name, this.id, this.type, this.upc, this.averageRatings,
-      this.numberOfRatings, this.numberOfRatingsThisWeek, this.image);
+      this.numberOfRatings, this.numberOfRatingsThisWeek, this.image,
+      {this.banner});
 }
 
 //A snack rating that is calculated, no user data is attached

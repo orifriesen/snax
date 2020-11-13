@@ -106,16 +106,16 @@ class BarcodeAddSearch extends SearchDelegate<String> {
                   if (snapshot.hasData) {
                     List<String> searches = snapshot.data;
                     return ListView.separated(
-                      physics: NeverScrollableScrollPhysics(),
+                        physics: NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         itemCount: searches.length,
                         separatorBuilder: (context, i) => Divider(),
                         itemBuilder: (context, i) => ListTile(
-                          dense: true,
+                            dense: true,
                             title: Text(
                               searches[i],
                               style: TextStyle(
-                                fontSize: 15,
+                                  fontSize: 15,
                                   color: Theme.of(context).accentColor),
                             ),
                             onTap: () {
@@ -202,7 +202,8 @@ class BarcodeAddSearch extends SearchDelegate<String> {
                                     ],
                                   ));
                         } else {
-                          if (this.popOnCallback == true) Navigator.of(context).pop();
+                          if (this.popOnCallback == true)
+                            Navigator.of(context).pop();
                           this.callback(snacks[i]);
                         }
                       },
@@ -310,10 +311,11 @@ Widget searchPageLilCard(
                               rating: snack.averageRatings.overall ?? 0,
                               size: 17,
                               isReadOnly: true,
-                              filledIconData: Icons.star,
-                              halfFilledIconData: Icons.star_half,
-                              color: SnaxColors.subtext,
-                              borderColor: SnaxColors.subtext,
+                              defaultIconData: Icons.star_border_rounded,
+                              filledIconData: Icons.star_rounded,
+                              halfFilledIconData: Icons.star_half_rounded,
+                              color: SnaxColors.redAccent,
+                              borderColor: SnaxColors.redAccent,
                               spacing: 0.0),
                         ],
                       ),
