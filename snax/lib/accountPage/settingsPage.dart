@@ -178,11 +178,10 @@ class _SettingsPageState extends State<SettingsPage> {
                         child: Text(
                           "No",
                           style: TextStyle(
-                            fontSize: 18,
-                            color: !isDark(context)
-                                ? SnaxColors.redAccent
-                                : Colors.white,
-                          ),
+                              fontSize: 18,
+                              color: !isDark(context)
+                                  ? Colors.black
+                                  : Colors.white),
                         ),
                         onPressed: () => {Navigator.pop(context)}),
                     FlatButton(
@@ -190,9 +189,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         "Yes",
                         style: TextStyle(
                           fontSize: 18,
-                          color: !isDark(context)
-                              ? SnaxColors.redAccent
-                              : Colors.white,
+                          color: !isDark(context) ? Colors.black : Colors.white,
                         ),
                       ),
                       onPressed: () => {
