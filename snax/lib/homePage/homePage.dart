@@ -14,7 +14,8 @@ class MainPage extends StatefulWidget {
   _MainPageState createState() => _MainPageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _MainPageState extends State<MainPage>
+    with AutomaticKeepAliveClientMixin<MainPage> {
   SnackItem chosenSnack;
 
   @override
@@ -88,6 +89,9 @@ class _MainPageState extends State<MainPage> {
                 },
                 body: getTabBarPages())));
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 Widget getTabBarPages() {
@@ -201,13 +205,20 @@ class _TopList extends State<TopList>
 }
 
 Widget forYouTab(BuildContext context, List<SnackItem> snackList) {
-  return ListView(
-    padding: EdgeInsets.only(top: 12),
-    children: [
-      snackOfTheWeek(context, snackList),
-      getHorizontalList("Trending", context, snackList),
-      getHorizontalList("Top", context, snackList),
-      getMiniHorizontalList("Test", context, snackList)
-    ],
-  );
+  return snackList != null
+      ? ListView(
+          padding: EdgeInsets.only(top: 12),
+          children: [
+            snackOfTheWeek(context, snackList[0]),
+            getHorizontalList("Trending", context, snackList),
+            getHorizontalList("Top", context, snackList),
+            getMiniHorizontalList("Test", context, snackList)
+          ],
+        )
+      : Container(
+          child: Center(
+              child: CircularProgressIndicator(
+            valueColor: new AlwaysStoppedAnimation<Color>(SnaxColors.redAccent),
+          )),
+        );
 }

@@ -41,10 +41,25 @@ class _AppTabsState extends State<AppTabs> {
         ),
         body: [
           DefaultTabController(length: 2, child: MainPage()),
-          FeedPage(),
+          Feed(),
           AccountPage()
         ][_currentIndex],
       ),
     );
   }
+}
+
+class Feed extends StatefulWidget {
+  @override
+  _FeedState createState() => _FeedState();
+}
+
+class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin<Feed> {
+  @override
+  Widget build(BuildContext context) {
+    return FeedPage();
+  }
+
+  @override
+  bool get wantKeepAlive => true;
 }

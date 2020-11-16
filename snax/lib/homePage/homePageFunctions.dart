@@ -481,7 +481,7 @@ Widget getList(BuildContext context, List<SnackItem> snackList) {
   );
 }
 
-Widget snackOfTheWeek(BuildContext context, List<SnackItem> snackList) {
+Widget snackOfTheWeek(BuildContext context, SnackItem snackItem) {
   final display = createDisplay(placeholder: '0');
 
   return Padding(
@@ -491,18 +491,50 @@ Widget snackOfTheWeek(BuildContext context, List<SnackItem> snackList) {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => ProductPage(item: snackList[0])));
+                    builder: (context) => ProductPage(item: snackItem)));
           },
-          child: Container(
-              decoration: BoxDecoration(
-                  color:
-                      /*isDark(context)
-                    ? SnaxColors.darkGreyGradientEnd
-                    : Colors.white,*/
-                      Colors.white,
-                  borderRadius: BorderRadius.circular(18),
-                  boxShadow: [
-                    BoxShadow(color: Color.fromARGB(24, 0, 0, 0), blurRadius: 8)
-                  ]),
-              child: Image.network(snackList[0].banner, height: 120))));
+          child: Stack(children: [
+            Container(
+                decoration: BoxDecoration(
+                    color:
+                        /*isDark(context)
+                      ? SnaxColors.darkGreyGradientEnd
+                      : Colors.white,*/
+                        Colors.white,
+                    borderRadius: BorderRadius.circular(18),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Color.fromARGB(24, 0, 0, 0), blurRadius: 8)
+                    ]),
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(18),
+                    child: Image.network(snackItem.banner))),
+            Padding(
+              padding: EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Snack of the Week:",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                  Container(height: 2),
+                  Text(snackItem.name + "!",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
+                  Container(height: 2),
+                  Row(
+                    children: [
+                      Text(snackItem.averageRatings.overall.toStringAsFixed(1),
+                          style: TextStyle(fontSize: 20)),
+                      Icon(
+                        Icons.star_rounded,
+                        color: SnaxColors.redAccent,
+                        size: 28,
+                      )
+                    ],
+                  )
+                ],
+              ),
+            )
+          ])));
 }
