@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:snax/backend/requests.dart';
 import 'dart:io' show Platform;
 import 'package:url_launcher/url_launcher.dart';
 
 import 'settingsTabs/aboutPage.dart';
 import 'settingsTabs/helpPage.dart';
+import 'package:snax/homePage/homePage.dart';
 
 import 'package:snax/helpers.dart';
 
@@ -35,7 +36,11 @@ class _SettingsPageState extends State<SettingsPage> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             FlatButton(
-              onPressed: () => {},
+              onPressed: () => {
+                SnaxBackend.currentUser = null,
+                SnaxBackend.auth.deleteUserInfoLocally(),
+                Navigator.pop(context),
+              },
               child: Text(
                 "Log Out",
                 style: TextStyle(color: Colors.white, fontSize: 18),
