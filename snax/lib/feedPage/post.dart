@@ -49,7 +49,7 @@ class Comment {
     return SnaxBackend.feedLikeComment(postId, id, isLiked);
   }
 
-  Comment(this.id, this.postId, this.user, this.body, this.time, this.likes);
+  Comment(this.id, this.postId, this.user, this.body, this.time, this.likes, { this.likedByMe = false });
 }
 
 String dateFormatPost(DateTime time) {

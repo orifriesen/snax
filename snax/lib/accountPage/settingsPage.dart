@@ -1,12 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:snax/backend/requests.dart';
-import 'dart:io' show Platform;
 import 'package:url_launcher/url_launcher.dart';
 
 import 'settingsTabs/aboutPage.dart';
 import 'settingsTabs/helpPage.dart';
-import 'package:snax/homePage/homePage.dart';
 
 import 'package:snax/helpers.dart';
 
@@ -36,14 +37,26 @@ class _SettingsPageState extends State<SettingsPage> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             FlatButton(
-              onPressed: () => {
-                SnaxBackend.currentUser = null,
-                SnaxBackend.auth.deleteUserInfoLocally(),
-                Navigator.pop(context),
+              onPressed: () async {
+                try {
+                  await SnaxBackend.auth.logOut(context: context);
+                  Navigator.of(context).pop();
+                } catch (error) {
+                  print(error);
+                  Fluttertoast.showToast(msg: "Failed to Log Out!");
+                }
               },
-              child: Text(
-                "Log Out",
-                style: TextStyle(color: Colors.white, fontSize: 18),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.logout,
+                    color: Colors.white,
+                  ),
+                  Text(
+                    " Log Out",
+                    style: TextStyle(color: Colors.white, fontSize: 18),
+                  ),
+                ],
               ),
             ),
           ],

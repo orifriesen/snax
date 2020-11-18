@@ -6,36 +6,42 @@ import 'package:snax/tabs.dart';
 import 'backend/backend.dart';
 import 'backend/requests.dart';
 import 'package:snax/helpers.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 
 //Navigator key allows for background tasks to present views without context (used for Firebase listeners)
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
+BuildContext globalContext;
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      navigatorKey: navigatorKey,
-      routes: {
-        //Route the app will stay in most of the time
-        "/": (context) => AppTabs(),
-        //Top-level route to present login screen w/ navigatorKey
-        "/login": (context) => LoginPage()
-      },
-      initialRoute: "/",
-      darkTheme: ThemeData(
-          canvasColor: HexColor.fromHex("252525"),
-          primaryColor: SnaxColors.redAccent,
-          accentColor: SnaxColors.redAccent,
-          cursorColor: SnaxColors.redAccent,
-          brightness: ThemeData.dark().brightness,
-          cupertinoOverrideTheme:
-              CupertinoThemeData(primaryColor: SnaxColors.redAccent)),
-      theme: ThemeData(
-          primaryColor: SnaxColors.redAccent,
-          accentColor: SnaxColors.redAccent,
-          cupertinoOverrideTheme:
-              CupertinoThemeData(primaryColor: SnaxColors.redAccent),
-          appBarTheme: AppBarTheme(brightness: Brightness.light)),
+    globalContext = context;
+    return Phoenix(
+          child: MaterialApp(
+        navigatorKey: navigatorKey,
+        routes: {
+          //Route the app will stay in most of the time
+          "/": (context) => AppTabs(),
+          //Top-level route to present login screen w/ navigatorKey
+          "/login": (context) => LoginPage()
+        },
+        initialRoute: "/",
+        darkTheme: ThemeData(
+            canvasColor: HexColor.fromHex("252525"),
+            primaryColor: SnaxColors.redAccent,
+            accentColor: SnaxColors.redAccent,
+            cursorColor: SnaxColors.redAccent,
+            brightness: ThemeData.dark().brightness,
+            cupertinoOverrideTheme:
+                CupertinoThemeData(primaryColor: SnaxColors.redAccent)),
+        theme: ThemeData(
+            primaryColor: SnaxColors.redAccent,
+            accentColor: SnaxColors.redAccent,
+            cupertinoOverrideTheme:
+                CupertinoThemeData(primaryColor: SnaxColors.redAccent),
+            appBarTheme: AppBarTheme(brightness: Brightness.light)),
+      ),
     );
   }
 }
@@ -72,6 +78,7 @@ void main() {
         print(comment.user.name);
       }
     });
+    //SnaxBackend.auth.logOut(restartApp: false).then((_) { print("logged out"); });
     // SnaxBackend.feedCommentOnPost("rlUXJBRe1MfKXI49Ux8M", "fyp").then((_) {
     //   print("made a comment");
     // });
