@@ -43,7 +43,7 @@ class _AccountPageState extends State<AccountPage>
       appBar: AppBar(
         elevation: 0,
         backgroundColor: burningOrangeEnd,
-        title: Text("My Account"),
+        title: Text("My Profile"),
         actions: [
           IconButton(
             icon: Icon(Icons.settings),
@@ -59,7 +59,10 @@ class _AccountPageState extends State<AccountPage>
               child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text("Ready to Start Sharing?\n",style: TextStyle(fontSize: 17),),
+                Text(
+                  "Ready to Start Sharing?\n",
+                  style: TextStyle(fontSize: 17),
+                ),
                 MaterialButton(
                   child: Padding(
                     padding: const EdgeInsets.all(12.0),

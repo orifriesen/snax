@@ -88,9 +88,42 @@ class _SettingsPageState extends State<SettingsPage> {
   FlatButton helpButton(String title, IconData iconData) {
     return FlatButton(
       onPressed: () => {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => HelpPage()),
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => HelpPage()),
+        showCupertinoDialog(
+          context: context,
+          builder: (_) => Platform.isIOS
+              ? CupertinoAlertDialog(
+                  title: Text("Nothing To See Here"),
+                  content: RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                            text: "This page is currently under construction "),
+                        WidgetSpan(
+                          child: Icon(Icons.construction),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              : AlertDialog(
+                  title: Text("Nothing To See Here"),
+                  content: RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                            text: "This page is currently under construction "),
+                        WidgetSpan(
+                          child: Icon(Icons.construction),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+          barrierDismissible: true,
         ),
       },
       child: Row(

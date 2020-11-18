@@ -66,23 +66,23 @@ class _AboutPageState extends State<AboutPage> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  _teamAccounts(
-                      'Team Account',
+                  _teamSocials(
+                      'Snax',
                       () => customLaunch(
                           "https://www.instagram.com/snaxappofficial/")),
-                  _teamAccounts(
+                  _teamSocials(
                       'Ori',
                       () => customLaunch(
                           "https://www.instagram.com/orifriesen/")),
-                  _teamAccounts(
+                  _teamSocials(
                       'Escher',
                       () =>
                           customLaunch("https://www.instagram.com/escherwd/")),
-                  _teamAccounts(
+                  _teamSocials(
                       'Walt',
                       () => customLaunch(
                           "https://www.instagram.com/waltbringenberg/")),
-                  _teamAccounts(
+                  _teamSocials(
                       'Brandon',
                       () => customLaunch(
                           "https://www.instagram.com/ramirez.brrandon/")),
@@ -95,7 +95,7 @@ class _AboutPageState extends State<AboutPage> {
     );
   }
 
-  Widget _teamAccounts(String name, customLaunch()) {
+  Widget _teamSocials(String name, customLaunch()) {
     return Padding(
       padding: const EdgeInsets.only(left: 8, top: 16, bottom: 16, right: 8),
       child: Container(
@@ -133,7 +133,7 @@ class _AboutPageState extends State<AboutPage> {
     if (await canLaunch(command)) {
       await launch(command);
     } else {
-      print("Could not work");
+      print("Command did not work");
     }
   }
 }
