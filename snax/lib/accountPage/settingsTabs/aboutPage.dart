@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'package:snax/accountPage/accountPage.dart';
-import 'package:snax/helpers.dart';
-
 class AboutPage extends StatefulWidget {
   @override
   _AboutPageState createState() => _AboutPageState();
@@ -21,12 +18,14 @@ class _AboutPageState extends State<AboutPage> {
         children: [
           //* Top Container
           Container(
-            height: 250,
+            height: 200,
             width: double.infinity,
             decoration: BoxDecoration(
               // gradient: SnaxGradients.redBigThings,
               image: DecorationImage(
-                image: NetworkImage("https://picsum.photos/400/250"),
+                image: AssetImage("assets/Artboard.jpeg") != null
+                    ? AssetImage("assets/Artboard.jpeg")
+                    : NetworkImage("https://picsum.photos/400/250"),
                 fit: BoxFit.cover,
               ),
             ),
