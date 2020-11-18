@@ -32,17 +32,47 @@ import 'package:hive/hive.dart';
 //Example of what it looks like: { "candy-bar": "Candy Bar", "snack-mix": "Snack Mix" }
 Map _snackTypes = {};
 
+enum SnackListSort {
+  top,
+  trending
+}
+
+extension SortRawStrings on SnackListSort {
+  String get raw {
+    switch(this) {
+      case SnackListSort.top: return "computed.score_overall";
+      case SnackListSort.top: return "computed_trend";
+      default: return null;
+    }
+  }
+}
+
 class SnaxBackend {
   static SnaxUser currentUser;
 
   // Top rated snacks of all time
-  static Future<List<SnackItem>> chartTop({int limit = 25}) {
-    return SnaxBackend._queryAllSnacks("computed.score_overall", true, limit);
+  static Future<List<SnackItem>> chartTop({int limit = 25}) async {
+    //Wait for the firebase to be initiated
+    await _waitWhile(() => (fbStore == null));
+    return await SnaxBackend._queryAllSnacks(fbStore.collection("snacks").orderBy("computed.score_overall", descending: true).limit(limit));
   }
 
   // Snacks with most reviews in the last week
-  static Future<List<SnackItem>> chartTrending({int limit = 25}) {
-    return SnaxBackend._queryAllSnacks("computed_trend", true, limit);
+  static Future<List<SnackItem>> chartTrending({int limit = 25}) async {
+    //Wait for the firebase to be initiated
+    await _waitWhile(() => (fbStore == null));
+    return await SnaxBackend._queryAllSnacks(fbStore.collection("snacks").orderBy("computed_trend", descending: true).limit(limit));
+  }
+
+  static Future<List<SnackItem>> getSnacksInCategory(String catId, SnackListSort sort, {int limit = 25}) async {
+     //Wait for the firebase to be initiated
+    await _waitWhile(() => (fbStore == null));
+    return await SnaxBackend._queryAllSnacks(
+      fbStore
+      .collection("snacks")
+      .where("type",isEqualTo: fbStore.collection("snack-types").doc(catId))
+      .orderBy(sort.raw, descending: true)
+      .limit(limit));
   }
 
   static Future<SnackItem> getSnack(String id) async {
@@ -105,16 +135,12 @@ class SnaxBackend {
 
   // Private function for getting list of snacks with a sort and limit
   static Future<List<SnackItem>> _queryAllSnacks(
-      String sort, bool desc, int limit) async {
+    Query query) async {
+     // String sort, bool desc, int limit) async {
     //Wait for the firebase to be initiated
     await _waitWhile(() => (fbStore == null));
     //Get the results, ordered by overall score, with an optional limit.
-    List<QueryDocumentSnapshot> results = (await fbStore
-            .collection("snacks")
-            .orderBy(sort, descending: desc)
-            .limit(limit)
-            .get())
-        .docs;
+    List<QueryDocumentSnapshot> results = (await query.get()).docs;
     //Fetch the snack types (if they don't already exist)
     if (_snackTypes.keys.length == 0) {
       (await fbStore.collection("snack-types").get()).docs.forEach((d) {
@@ -157,18 +183,20 @@ class SnaxBackend {
           doc.id,
           SnackItemType(_snackTypes[snackTypeId], snackTypeId),
           doc.get("upc"),
-          SnackRating(
-            toDouble(doc.get("computed.score_overall")),
-            toDouble(doc.get("computed.score_mouthfeel")),
-            toDouble(doc.get("computed.score_accessibility")),
-            toDouble(doc.get("computed.score_snackability")),
-            toDouble(doc.get("computed.score_saltiness")),
-            toDouble(doc.get("computed.score_sourness")),
-            toDouble(doc.get("computed.score_sweetness")),
-            toDouble(doc.get("computed.score_spicyness")),
-          ),
-          doc.get("computed_ratings"),
-          doc.get("computed_trend"),
+          (doc.data()["computed"] != null)
+            ? SnackRating(
+                toDouble(doc.get("computed.score_overall")),
+                toDouble(doc.get("computed.score_mouthfeel")),
+                toDouble(doc.get("computed.score_accessibility")),
+                toDouble(doc.get("computed.score_snackability")),
+                toDouble(doc.get("computed.score_saltiness")),
+                toDouble(doc.get("computed.score_sourness")),
+                toDouble(doc.get("computed.score_sweetness")),
+                toDouble(doc.get("computed.score_spicyness")),
+              )
+            : null,
+          doc.data()["computed_ratings"],
+          doc.data()["computed_trend"],
           imgUrl,
           banner: bannerUrl));
     }

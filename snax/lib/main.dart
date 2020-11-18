@@ -56,28 +56,17 @@ void main() {
       DemoValues.items = value;
     });
     if (fbAuth.currentUser != null) fbAuth.currentUser.getIdToken().then((token) => printWrapped("USER REQUEST TOKEN =-=-=-=-=-=-=-=-=-=-=-\n"+token+"\n=-=-=-=-=-=-=-=-=-=-=-"));
-    SnaxBackend.feedGetTopPosts().then((posts) => {
-          posts.forEach((post) {
-            print(post.title);
-            print(post.body);
-            print(post.snack.name);
-            print(post.user.name);
-            print(post.user.username);
-            print(post.time);
-            print(post.likeCount);
-          })
-        });
+    
     // SnaxBackend.updateProfile(username: "escher2",bio: "").then((_) {
     //     print("updated my bio from the app!");
     // });
-    print(DemoValues.items.length);
+
     //SnaxBackend.feedLikePost("rlUXJBRe1MfKXI49Ux8M").then((_) {});
-    SnaxBackend.feedGetComments("rlUXJBRe1MfKXI49Ux8M").then((comments) {
-      for (var comment in comments) {
-        print(comment.body);
-        print(comment.user.name);
-      }
-    });
+    
+    // SnaxBackend.getSnacksInCategory("chip", SnackListSort.top).then((snacks) {
+    //   print("GOT SNACKS FROM CATEGORY!");
+    //   snacks.forEach((snack) { print(snack.name); });
+    // });
     //SnaxBackend.auth.logOut(restartApp: false).then((_) { print("logged out"); });
     // SnaxBackend.feedCommentOnPost("rlUXJBRe1MfKXI49Ux8M", "fyp").then((_) {
     //   print("made a comment");
