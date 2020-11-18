@@ -1,11 +1,17 @@
 import 'dart:async';
 import 'dart:io' as io;
 
+import 'package:flutter/material.dart' as material;
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:snax/feedPage/post.dart';
 import 'package:snax/main.dart';
+
+import 'package:snax/main.dart';
+import 'package:snax/tabs.dart';
 
 import 'backend.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -19,6 +25,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image/image.dart';
 
 import 'package:path_provider/path_provider.dart';
+
+import 'package:hive/hive.dart';
 
 //Cache the snack types, references aren't fetched in these requests so this map will be used.
 //Example of what it looks like: { "candy-bar": "Candy Bar", "snack-mix": "Snack Mix" }
@@ -296,6 +304,11 @@ class SnaxBackend {
     });
 
     if (result.data["status"] != "success") throw result.data["error"];
+
+    //Add to local database
+    var likeBox = await Hive.openBox('user_likes');
+    like ? likeBox.put(postId+"."+commentId, true) : likeBox.delete(postId+"."+commentId);
+    await Hive.close();
   }
 
   static Future<void> feedLikePost(String postId, bool like) async {
@@ -319,6 +332,11 @@ class SnaxBackend {
     print(result.data);
 
     if (result.data["status"] != "success") throw result.data["error"];
+
+    //Add to local database
+    var likeBox = await Hive.openBox('user_likes');
+    like ? likeBox.put(postId, true) : likeBox.delete(postId);
+    await Hive.close();
   }
 
   static Future<List<Post>> feedGetTopPosts() async {
@@ -375,6 +393,8 @@ class SnaxBackend {
   //Grabs user info to link with comments
   static Future<List<Comment>> _feedGrabRefsComments(
       List<QueryDocumentSnapshot> docs, String postId) async {
+        //Get local list of likes
+    var likeBox = await Hive.openBox('user_likes');
     //Create an empty list and add all the user ids
     List<String> userIds = [];
     docs.forEach((doc) {
@@ -407,7 +427,7 @@ class SnaxBackend {
           user,
           data["content"],
           DateTime.fromMillisecondsSinceEpoch(data["timestamp"]),
-          data["likes"] ?? 0));
+          data["likes"] ?? 0,likedByMe: likeBox.containsKey(postId+"."+doc.id)));
     }
     return comments;
   }
@@ -415,6 +435,8 @@ class SnaxBackend {
   //Grab extra info like user and snack for a given list of feed database items
   static Future<List<Post>> _feedGrabRefs(
       List<QueryDocumentSnapshot> docs) async {
+    //Get local list of likes
+    var likeBox = await Hive.openBox('user_likes');
     //Prepare to grab all the snack and user ids
     List<String> userIds = [];
     List<String> snackIds = [];
@@ -494,8 +516,9 @@ class SnaxBackend {
           data["post_body"],
           DateTime.fromMillisecondsSinceEpoch(data["timestamp"]),
           data["likes"],
-          data["comments"]));
+          data["comments"],likedByMe: likeBox.containsKey(doc.id)));
     }
+    await Hive.close();
     return posts;
   }
 
@@ -730,6 +753,13 @@ class _SnaxBackendAuth {
       await prefs.setString("user_name", userInDB.get("name"));
       await prefs.setString("user_bio", userInDB.data()["bio"]);
       await prefs.setString("user_image", image);
+      //Update the likes
+      //Get local list of likes
+      var likeBox = await Hive.openBox('user_likes');
+      List<dynamic> likes = userInDB.get("likes");
+      Map<String,bool> likeMap = {};
+      likes.forEach((id) { likeMap[id] = true; });
+      await likeBox.putAll(likeMap);
       //Return instance
       return SnaxUser(userInDB.get("username"), userInDB.get("name"), user.uid,
           userInDB.data()["bio"],
@@ -758,6 +788,14 @@ class _SnaxBackendAuth {
     await prefs.remove("user_username");
     await prefs.remove("user_name");
     await prefs.remove("user_bio");
+    try { await Hive.deleteBoxFromDisk("user_likes"); } catch (error) {}
+  }
+
+  Future<void> logOut({restartApp = true, material.BuildContext context}) async {
+    await fbAuth.signOut();
+    SnaxBackend.currentUser = null;
+    await this.deleteUserInfoLocally();
+    //if (restartApp) Phoenix.rebirth(context ?? globalContext);
   }
 }
 

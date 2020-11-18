@@ -1,5 +1,7 @@
 import 'dart:ffi';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:snax/backend/auth.dart';
 import 'package:snax/backend/requests.dart';
 import 'package:snax/main.dart';
@@ -39,7 +41,7 @@ Future<void> initializeFirebase() async {
       print("got current user," + SnaxBackend.currentUser.username);
     }
   });
-
+  await Hive.initFlutter();
   //uncomment to show login screen on startup
   //navigatorKey.currentState.pushNamed("/login");
 }

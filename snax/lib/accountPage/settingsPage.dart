@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:snax/backend/requests.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'settingsTabs/aboutPage.dart';
@@ -32,10 +34,23 @@ class _SettingsPageState extends State<SettingsPage> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             FlatButton(
-              onPressed: () => {},
-              child: Text(
-                "Log Out",
-                style: TextStyle(color: Colors.white, fontSize: 18),
+              onPressed: () async {
+                try {
+                await SnaxBackend.auth.logOut(context: context);
+                Navigator.of(context).pop();
+                } catch (error) {
+                  print(error);
+                  Fluttertoast.showToast(msg: "Failed to Log Out!");
+                }
+              },
+              child: Row(
+                children: [
+                  Icon(Icons.logout,color: Colors.white,),
+                  Text(
+                    " Log Out",
+                    style: TextStyle(color: Colors.white, fontSize: 18),
+                  ),
+                ],
               ),
             ),
           ],
