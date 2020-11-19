@@ -4,7 +4,8 @@ import 'package:snax/backend/backend.dart';
 import 'package:snax/backend/requests.dart';
 import 'package:snax/barcodeScanner/barcodeAddCode.dart';
 import 'package:snax/homePage/specificSnack.dart';
-import 'package:scan_preview/scan_preview_widget.dart';
+import 'package:camerakit/CameraKitController.dart';
+import 'package:camerakit/CameraKitView.dart';
 
 class BarcodeScannerPage extends StatefulWidget {
   @override
@@ -14,7 +15,8 @@ class BarcodeScannerPage extends StatefulWidget {
 class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
   bool searching = false;
 
-  //bool flashEnabled = false;
+  bool flashEnabled = false;
+  CameraKitController cameraKitController = CameraKitController();
 
   // A list of upc's that should not be searched again
   List<int> blacklist = [];
@@ -103,45 +105,50 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
     return Scaffold(
         appBar: AppBar(
           title: Text("Scan Barcode"),
-          // actions: [
-          //   IconButton(
-          //       icon: Icon(flashEnabled ? Icons.flash_on : Icons.flash_off),
-          //       onPressed: () {
-          //         setState(() {
-          //           this.cameraKitController.changeFlashMode(flashEnabled
-          //               ? CameraFlashMode.off
-          //               : CameraFlashMode.on);
-          //           this.flashEnabled = !this.flashEnabled;
-          //         });
-          //       })
-          // ],
+          actions: [
+            IconButton(
+                icon: Icon(flashEnabled ? Icons.flash_on : Icons.flash_off),
+                onPressed: () {
+                  setState(() {
+                    this.cameraKitController.changeFlashMode(flashEnabled
+                        ? CameraFlashMode.off
+                        : CameraFlashMode.on);
+                    this.flashEnabled = !this.flashEnabled;
+                  });
+                })
+          ],
         ),
         body: Stack(
           children: <Widget>[
-            SizedBox(
-              width: double.infinity,
-              height: double.infinity,
-              child: ScanPreviewWidget(
-                onScanResult: (code) {
-                  this._barcodeScan(int.parse(code));
-                },
-              ),
-            )
-                // CameraKitView(
-                //   cameraKitController: cameraKitController,
-                //   hasBarcodeReader: true,
-                //   barcodeFormat: BarcodeFormats.FORMAT_UPC_A,
-                //   scaleType: ScaleTypeMode.fill,
-                //   previewFlashMode: CameraFlashMode.off,
-                //   onPermissionDenied: () {
-                //     print("Camera permission is denied.");
-                //     //ToDo on permission denied by user
-                //     //this.widget.callback(-1);
-                //   },
-                //   onBarcodeRead: (code) {
-                //     this._barcodeScan(int.parse(code));
-                //   },
-                // ),
+            // SizedBox(
+            //   width: double.infinity,
+            //   height: double.infinity,
+            //   child: ScanPreviewWidget(
+            //     onScanResult: (code) {
+            //       this._barcodeScan(int.parse(code));
+            //     },
+            //   ),
+            // )
+                CameraKitView(
+                  cameraKitController: cameraKitController,
+                  hasBarcodeReader: true,
+                  barcodeFormat: BarcodeFormats.FORMAT_ALL_FORMATS,
+                  scaleType: ScaleTypeMode.fill,
+                  previewFlashMode: CameraFlashMode.off,
+                  onPermissionDenied: () {
+                    print("Camera permission is denied.");
+                    //ToDo on permission denied by user
+                    //this.widget.callback(-1);
+                  },
+                  onBarcodeRead: (String code) {
+                    if (code.length == 12 && int.tryParse(code) != null) {
+                      this._barcodeScan(int.parse(code));
+                    } else {
+                      print("not a bardcode");
+                      print(code);
+                    }
+                  },
+                ),
               ] +
               ((this.searching)
                   ? [
