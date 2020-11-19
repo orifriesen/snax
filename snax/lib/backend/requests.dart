@@ -32,17 +32,54 @@ import 'package:hive/hive.dart';
 //Example of what it looks like: { "candy-bar": "Candy Bar", "snack-mix": "Snack Mix" }
 Map _snackTypes = {};
 
+enum SnackListSort { top, trending }
+
+extension SortRawStrings on SnackListSort {
+  String get raw {
+    switch (this) {
+      case SnackListSort.top:
+        return "computed.score_overall";
+      case SnackListSort.top:
+        return "computed_trend";
+      default:
+        return null;
+    }
+  }
+}
+
 class SnaxBackend {
   static SnaxUser currentUser;
 
   // Top rated snacks of all time
-  static Future<List<SnackItem>> chartTop({int limit = 25}) {
-    return SnaxBackend._queryAllSnacks("computed.score_overall", true, limit);
+  static Future<List<SnackItem>> chartTop({int limit = 25}) async {
+    //Wait for the firebase to be initiated
+    await _waitWhile(() => (fbStore == null));
+    return await SnaxBackend._queryAllSnacks(fbStore
+        .collection("snacks")
+        .orderBy("computed.score_overall", descending: true)
+        .limit(limit));
   }
 
   // Snacks with most reviews in the last week
-  static Future<List<SnackItem>> chartTrending({int limit = 25}) {
-    return SnaxBackend._queryAllSnacks("computed_trend", true, limit);
+  static Future<List<SnackItem>> chartTrending({int limit = 25}) async {
+    //Wait for the firebase to be initiated
+    await _waitWhile(() => (fbStore == null));
+    return await SnaxBackend._queryAllSnacks(fbStore
+        .collection("snacks")
+        .orderBy("computed_trend", descending: true)
+        .limit(limit));
+  }
+
+  static Future<List<SnackItem>> getSnacksInCategory(
+      String catId, SnackListSort sort,
+      {int limit = 25}) async {
+    //Wait for the firebase to be initiated
+    await _waitWhile(() => (fbStore == null));
+    return await SnaxBackend._queryAllSnacks(fbStore
+        .collection("snacks")
+        .where("type", isEqualTo: fbStore.collection("snack-types").doc(catId))
+        .orderBy(sort.raw, descending: true)
+        .limit(limit));
   }
 
   static Future<SnackItem> getSnack(String id) async {
@@ -104,17 +141,12 @@ class SnaxBackend {
   }
 
   // Private function for getting list of snacks with a sort and limit
-  static Future<List<SnackItem>> _queryAllSnacks(
-      String sort, bool desc, int limit) async {
+  static Future<List<SnackItem>> _queryAllSnacks(Query query) async {
+    // String sort, bool desc, int limit) async {
     //Wait for the firebase to be initiated
     await _waitWhile(() => (fbStore == null));
     //Get the results, ordered by overall score, with an optional limit.
-    List<QueryDocumentSnapshot> results = (await fbStore
-            .collection("snacks")
-            .orderBy(sort, descending: desc)
-            .limit(limit)
-            .get())
-        .docs;
+    List<QueryDocumentSnapshot> results = (await query.get()).docs;
     //Fetch the snack types (if they don't already exist)
     if (_snackTypes.keys.length == 0) {
       (await fbStore.collection("snack-types").get()).docs.forEach((d) {
@@ -157,18 +189,20 @@ class SnaxBackend {
           doc.id,
           SnackItemType(_snackTypes[snackTypeId], snackTypeId),
           doc.get("upc"),
-          SnackRating(
-            toDouble(doc.get("computed.score_overall")),
-            toDouble(doc.get("computed.score_mouthfeel")),
-            toDouble(doc.get("computed.score_accessibility")),
-            toDouble(doc.get("computed.score_snackability")),
-            toDouble(doc.get("computed.score_saltiness")),
-            toDouble(doc.get("computed.score_sourness")),
-            toDouble(doc.get("computed.score_sweetness")),
-            toDouble(doc.get("computed.score_spicyness")),
-          ),
-          doc.get("computed_ratings"),
-          doc.get("computed_trend"),
+          (doc.data()["computed"] != null)
+              ? SnackRating(
+                  toDouble(doc.get("computed.score_overall")),
+                  toDouble(doc.get("computed.score_mouthfeel")),
+                  toDouble(doc.get("computed.score_accessibility")),
+                  toDouble(doc.get("computed.score_snackability")),
+                  toDouble(doc.get("computed.score_saltiness")),
+                  toDouble(doc.get("computed.score_sourness")),
+                  toDouble(doc.get("computed.score_sweetness")),
+                  toDouble(doc.get("computed.score_spicyness")),
+                )
+              : null,
+          doc.data()["computed_ratings"],
+          doc.data()["computed_trend"],
           imgUrl,
           banner: bannerUrl));
     }
@@ -210,9 +244,8 @@ class SnaxBackend {
     params["token"] = token;
 
     //Send request
-    HttpsCallableResult result = await fbCloud
-        .httpsCallable("updateProfile")
-        .call(params);
+    HttpsCallableResult result =
+        await fbCloud.httpsCallable("updateProfile").call(params);
 
     if (result.data["status"] == "success") {
       return;
@@ -245,6 +278,94 @@ class SnaxBackend {
       print(error);
       throw "Failed to upload";
     }
+  }
+
+  static Future<void> followUser(String uid) async {
+    //Login
+    await SnaxBackend.auth.loginIfNotAlready();
+    //Get token
+    String token = await fbAuth.currentUser.getIdToken();
+
+    HttpsCallableResult result = await fbCloud.httpsCallable("followUser").call({
+      "token": token,
+      "uid": uid
+    });
+
+    if (result.data["status"] != "success") throw result.data["error"];
+
+    //Add to local database
+    var followingBox = await Hive.openBox('user_following');
+    followingBox.put(uid, true);
+    await Hive.close();
+  }
+
+  static Future<void> unfollowUser(String uid) async {
+    //Login
+    await SnaxBackend.auth.loginIfNotAlready();
+    //Get token
+    String token = await fbAuth.currentUser.getIdToken();
+
+    HttpsCallableResult result = await fbCloud.httpsCallable("unfollowUser").call({
+      "token": token,
+      "uid": uid
+    });
+
+    if (result.data["status"] != "success") throw result.data["error"];
+
+    //Remove from local database
+    var followingBox = await Hive.openBox('user_following');
+    followingBox.delete(uid);
+    await Hive.close();
+  }
+
+  static Future<List<SnaxUser>> getFollowers(String uid) async {
+    //Wait for the firebase to be initiated
+    await _waitWhile(() => (fbStore == null));
+    //Get the list of ids
+    List<String> userIds = (await fbStore.collection("users").doc(uid).collection("followers").get()).docs.map((e) => e.id).toList();
+    List<QueryDocumentSnapshot> userDocs = (await fbStore.collection("users").where(FieldPath.documentId, whereIn: userIds).get()).docs;
+    //Open the box
+    var followingBox = await Hive.openBox('user_following');
+    //Make the list
+    List<SnaxUser> users = [];
+    for (var doc in userDocs) {
+        var userImg;
+        try {
+          userImg = await fbStorage
+            .ref()
+            .child("user-profiles")
+            .child(doc.id + ".jpg")
+            .getDownloadURL();
+        } catch (_) {}
+        users.add(SnaxUser(doc.get("username"), doc.get("name"), doc.id, doc.data()["bio"], doc.get("followerCount"), doc.get("followerCount"), photo: userImg, userIsFollowing: followingBox.containsKey(doc.id)));
+    }
+    await Hive.close();
+    return users;
+  }
+
+  static Future<List<SnaxUser>> getFollowing(String uid) async {
+    //Wait for the firebase to be initiated
+    await _waitWhile(() => (fbStore == null));
+    //Get the list of ids
+    List<String> userIds = (await fbStore.collection("users").doc(uid).collection("following").get()).docs.map((e) => e.id).toList();
+    List<QueryDocumentSnapshot> userDocs = (await fbStore.collection("users").where(FieldPath.documentId, whereIn: userIds).get()).docs;
+    //Open the box
+    var followingBox = await Hive.openBox('user_following');
+    //Make the list
+    List<SnaxUser> users = [];
+    for (var doc in userDocs) {
+        var userImg;
+        try {
+          userImg = await fbStorage
+            .ref()
+            .child("user-profiles")
+            .child(doc.id + ".jpg")
+            .getDownloadURL();
+        } catch (_) {}
+        users.add(SnaxUser(doc.get("username"), doc.get("name"), doc.id, doc.data()["bio"], doc.get("followerCount"), doc.get("followerCount"), photo: userImg, userIsFollowing: followingBox.containsKey(doc.id)));
+    }
+    await Hive.close();
+    return users;
   }
 
   static Future<void> feedMakePost(
@@ -294,9 +415,7 @@ class SnaxBackend {
     String token = await fbAuth.currentUser.getIdToken();
 
     //Send request
-    HttpsCallableResult result = await fbCloud
-        .httpsCallable("feedLike")
-        .call({
+    HttpsCallableResult result = await fbCloud.httpsCallable("feedLike").call({
       "post_id": postId,
       "comment_id": commentId,
       "token": token,
@@ -307,7 +426,9 @@ class SnaxBackend {
 
     //Add to local database
     var likeBox = await Hive.openBox('user_likes');
-    like ? likeBox.put(postId+"."+commentId, true) : likeBox.delete(postId+"."+commentId);
+    like
+        ? likeBox.put(postId + "." + commentId, true)
+        : likeBox.delete(postId + "." + commentId);
     await Hive.close();
   }
 
@@ -393,8 +514,9 @@ class SnaxBackend {
   //Grabs user info to link with comments
   static Future<List<Comment>> _feedGrabRefsComments(
       List<QueryDocumentSnapshot> docs, String postId) async {
-        //Get local list of likes
+    //Get local list of likes
     var likeBox = await Hive.openBox('user_likes');
+    var followingBox = await Hive.openBox('user_following');
     //Create an empty list and add all the user ids
     List<String> userIds = [];
     docs.forEach((doc) {
@@ -412,23 +534,38 @@ class SnaxBackend {
     userDocs.forEach((e) {
       userDatas[e.id] = e.data();
     });
+
     //Create an empty list to return
     List<Comment> comments = [];
     for (var doc in docs) {
       var data = doc.data();
+      //Grab photo of user
+      String userImg;
+      try {
+        userImg = await fbStorage
+            .ref()
+            .child("user-profiles")
+            .child(data["uid"] + ".jpg")
+            .getDownloadURL();
+      } catch (error) {}
+
       SnaxUser user = SnaxUser(
           userDatas[data["uid"]]["username"],
           userDatas[data["uid"]]["name"],
           data["uid"],
-          userDatas[data["uid"]]["bio"]);
+          userDatas[data["uid"]]["bio"],
+          userDatas[data["uid"]]["followerCount"],
+          userDatas[data["uid"]]["followingCount"], photo: userImg, userIsFollowing: followingBox.containsKey(data["uid"]));
       comments.add(Comment(
           doc.id,
           postId,
           user,
           data["content"],
           DateTime.fromMillisecondsSinceEpoch(data["timestamp"]),
-          data["likes"] ?? 0,likedByMe: likeBox.containsKey(postId+"."+doc.id)));
+          data["likes"] ?? 0,
+          likedByMe: likeBox.containsKey(postId + "." + doc.id)));
     }
+    await Hive.close();
     return comments;
   }
 
@@ -437,6 +574,7 @@ class SnaxBackend {
       List<QueryDocumentSnapshot> docs) async {
     //Get local list of likes
     var likeBox = await Hive.openBox('user_likes');
+    var followingBox = await Hive.openBox('user_following');
     //Prepare to grab all the snack and user ids
     List<String> userIds = [];
     List<String> snackIds = [];
@@ -497,7 +635,9 @@ class SnaxBackend {
           userDatas[data["uid"]]["name"],
           data["uid"],
           userDatas[data["uid"]]["bio"],
-          photo: userImg);
+          userDatas[data["uid"]]["followerCount"],
+          userDatas[data["uid"]]["followingCount"],
+          photo: userImg, userIsFollowing: followingBox.containsKey(data["uid"]));
 
       //Create snack
       SnackSearchResultItem snack = SnackSearchResultItem(
@@ -516,7 +656,8 @@ class SnaxBackend {
           data["post_body"],
           DateTime.fromMillisecondsSinceEpoch(data["timestamp"]),
           data["likes"],
-          data["comments"],likedByMe: likeBox.containsKey(doc.id)));
+          data["comments"],
+          likedByMe: likeBox.containsKey(doc.id)));
     }
     await Hive.close();
     return posts;
@@ -605,9 +746,8 @@ class SnaxBackend {
     //Wait for the cloud functions client to be initiated
     await _waitWhile(() => (fbCloud == null));
     //Call search function from database
-    HttpsCallableResult result = await fbCloud
-        .httpsCallable("searchSnacks")
-        .call({"q": query.trim()});
+    HttpsCallableResult result =
+        await fbCloud.httpsCallable("searchSnacks").call({"q": query.trim()});
     //Parse
     if (result.data["status"] == "success") {
       //Create the results list and an empty classed list
@@ -752,17 +892,21 @@ class _SnaxBackendAuth {
       await prefs.setString("user_username", userInDB.get("username"));
       await prefs.setString("user_name", userInDB.get("name"));
       await prefs.setString("user_bio", userInDB.data()["bio"]);
+      await prefs.setString("user_followerCount", userInDB.get("followerCount").toString());
+      await prefs.setString("user_followingCount", userInDB.get("followingCount").toString());
       await prefs.setString("user_image", image);
       //Update the likes
       //Get local list of likes
       var likeBox = await Hive.openBox('user_likes');
       List<dynamic> likes = userInDB.get("likes");
-      Map<String,bool> likeMap = {};
-      likes.forEach((id) { likeMap[id] = true; });
+      Map<String, bool> likeMap = {};
+      likes.forEach((id) {
+        likeMap[id] = true;
+      });
       await likeBox.putAll(likeMap);
       //Return instance
       return SnaxUser(userInDB.get("username"), userInDB.get("name"), user.uid,
-          userInDB.data()["bio"],
+          userInDB.data()["bio"],userInDB.get("followerCount"),userInDB.get("followingCount"),
           photo: image);
     }
   }
@@ -776,6 +920,8 @@ class _SnaxBackendAuth {
           prefs.getString("user_name"),
           prefs.getString("user_id"),
           prefs.getString("user_bio"),
+          int.parse(prefs.getString("user_followerCount")),
+          int.parse(prefs.getString("user_followingCount")),
           photo: prefs.getString("user_image"));
     } else {
       throw "No user data present";
@@ -788,10 +934,13 @@ class _SnaxBackendAuth {
     await prefs.remove("user_username");
     await prefs.remove("user_name");
     await prefs.remove("user_bio");
-    try { await Hive.deleteBoxFromDisk("user_likes"); } catch (error) {}
+    try {
+      await Hive.deleteBoxFromDisk("user_likes");
+    } catch (error) {}
   }
 
-  Future<void> logOut({restartApp = true, material.BuildContext context}) async {
+  Future<void> logOut(
+      {restartApp = true, material.BuildContext context}) async {
     await fbAuth.signOut();
     SnaxBackend.currentUser = null;
     await this.deleteUserInfoLocally();
