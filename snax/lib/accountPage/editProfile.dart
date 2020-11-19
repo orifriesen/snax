@@ -25,6 +25,7 @@ class _EditProfileState extends State<EditProfile> {
 
   bool maxedLines = false;
   bool uploadingImage = false;
+  bool error = false;
 
   @override
   void initState() {
@@ -39,6 +40,7 @@ class _EditProfileState extends State<EditProfile> {
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         elevation: 0,
@@ -61,9 +63,10 @@ class _EditProfileState extends State<EditProfile> {
         actions: [
           FlatButton(
             onPressed: () {
-              SnaxBackend.currentUser.name = nameController.text;
-              SnaxBackend.currentUser.username = usernameController.text;
-              SnaxBackend.currentUser.bio = bioController.text.trim();
+              SnaxBackend.updateProfile(
+                  name: nameController.text,
+                  username: usernameController.text,
+                  bio: bioController.text.trim());
               Navigator.pop(context);
             },
             child: Text(
@@ -74,66 +77,76 @@ class _EditProfileState extends State<EditProfile> {
           ),
         ],
       ),
-      body: Container(
-        height: size.height,
-        decoration: BoxDecoration(gradient: SnaxGradients.redBigThings),
-        child: Column(
-          children: [
-            _profileImage(),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 30),
-              child: Center(
-                child: InkWell(
-                  child: Text(
-                    'Change Profile Photo',
-                    style: TextStyle(fontSize: 15, color: Colors.white),
+      body: GestureDetector(
+        onTap: () {
+          FocusScopeNode currentFocus = FocusScope.of(context);
+
+          if (!currentFocus.hasPrimaryFocus) {
+            currentFocus.unfocus();
+          }
+        },
+        child: Container(
+          decoration: BoxDecoration(gradient: SnaxGradients.redBigThings),
+          child: Column(
+            children: [
+              _profileImage(),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 30),
+                child: Center(
+                  child: InkWell(
+                    child: Text(
+                      'Change Profile Photo',
+                      style: TextStyle(fontSize: 15, color: Colors.white),
+                    ),
+                    onTap: () => {
+                      showModalBottomSheet(
+                          context: context,
+                          builder: (builder) => _imageSheet(context))
+                    },
                   ),
-                  onTap: () => {
-                    showModalBottomSheet(
-                        context: context,
-                        builder: (builder) => _imageSheet(context))
-                  },
                 ),
               ),
-            ),
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(60),
-                    topRight: Radius.circular(60),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Color.fromARGB(32, 0, 0, 0), blurRadius: 12)
-                  ],
-                  color: Theme.of(context).canvasColor,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          width: double.infinity,
-                          padding:
-                              EdgeInsets.only(left: 16, bottom: 16, right: 16),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              _nameTextField(),
-                              _usernameTextField(),
-                              _bioTextField(),
-                            ],
-                          ),
-                        ),
-                      ),
+              Expanded(
+                child: Container(
+                  // height: size.height,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(60),
+                      topRight: Radius.circular(60),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Color.fromARGB(32, 0, 0, 0), blurRadius: 12)
                     ],
+                    color: Theme.of(context).canvasColor,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          Container(
+                            // color: Colors.blue,
+                            height: 250,
+                            width: double.infinity,
+                            padding: EdgeInsets.only(left: 16, right: 16),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                _nameTextField(),
+                                _usernameTextField(),
+                                _bioTextField(),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -149,7 +162,13 @@ class _EditProfileState extends State<EditProfile> {
             CircleAvatar(
               backgroundColor: Colors.grey,
               radius: 80.0,
-              child: this.uploadingImage ? Container(child: Center(child: CircularProgressIndicator()), decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.black54),) : null,
+              child: this.uploadingImage
+                  ? Container(
+                      child: Center(child: CircularProgressIndicator()),
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle, color: Colors.black54),
+                    )
+                  : null,
               backgroundImage: _imageFile == null
                   ? NetworkImage('https://picsum.photos/200/300?grayscale')
                   : FileImage(File(_imageFile.path)),
@@ -285,8 +304,9 @@ class _EditProfileState extends State<EditProfile> {
           LengthLimitingTextInputFormatter(150),
         ],
         controller: bioController,
-        minLines: 1,
-        maxLines: 5,
+        minLines: 4,
+        maxLines: 4,
+        scrollPhysics: BouncingScrollPhysics(),
         decoration: InputDecoration(
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),

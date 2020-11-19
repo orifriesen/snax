@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:snax/accountPage/accountPage.dart';
+import 'package:snax/backend/requests.dart';
 import 'package:snax/feedPage/FeedPage.dart';
 import 'package:snax/homePage/homePage.dart';
 
@@ -11,10 +12,14 @@ class AppTabs extends StatefulWidget {
 class _AppTabsState extends State<AppTabs> {
   int _currentIndex = 0;
 
-  void onTabTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
+  void onTabTapped(int index) async {
+    try {
+      if (index == 2) await SnaxBackend.auth.loginIfNotAlready();
+
+      setState(() {
+        _currentIndex = index;
+      });
+    } catch (error) {}
   }
 
   @override
@@ -27,22 +32,30 @@ class _AppTabsState extends State<AppTabs> {
           currentIndex: _currentIndex,
           items: [
             new BottomNavigationBarItem(
-              icon: Icon(Icons.home_rounded),
+              icon: _currentIndex == 0
+                  ? Icon(Icons.home_rounded)
+                  : Icon(Icons.home_outlined),
               label: "Home",
             ),
             new BottomNavigationBarItem(
-              icon: Icon(Icons.chat_rounded),
+              icon: _currentIndex == 1
+                  ? Icon(Icons.chat_rounded)
+                  : Icon(Icons.chat_outlined),
               label: "Feed",
             ),
             new BottomNavigationBarItem(
-                icon: Icon(Icons.person), label: "Profile")
+              icon: _currentIndex == 2
+                  ? Icon(Icons.person)
+                  : Icon(Icons.person_outline),
+              label: "Profile",
+            )
           ],
           showUnselectedLabels: false,
         ),
         body: [
           DefaultTabController(length: 2, child: MainPage()),
           FeedPage(),
-          AccountPage()
+          AccountPage(),
         ][_currentIndex],
       ),
     );
