@@ -11,12 +11,12 @@ import 'accountBottomTabs/secondTab.dart';
 import 'package:snax/backend/requests.dart';
 import 'package:snax/helpers.dart';
 
-class AccountPage extends StatefulWidget {
+class GlobalAccountPage extends StatefulWidget {
   @override
-  _AccountPageState createState() => _AccountPageState();
+  _GlobalAccountPageState createState() => _GlobalAccountPageState();
 }
 
-class _AccountPageState extends State<AccountPage>
+class _GlobalAccountPageState extends State<GlobalAccountPage>
     with TickerProviderStateMixin {
   Color burningOrangeStart = const Color.fromRGBO(255, 65, 108, 1.0);
   Color burningOrangeEnd = const Color.fromRGBO(255, 75, 43, 1.0);
@@ -254,17 +254,9 @@ class _AccountPageState extends State<AccountPage>
                     side: BorderSide(color: Colors.white, width: 2),
                   ),
                   onPressed: () => {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => EditProfile(),
-                      ),
-                    ).whenComplete(
-                      () => setState(() {}),
-                    ),
+                    // Follow/Unfollow stuff goes here
                   },
-                  child: Text('Edit Profile',
-                      style: TextStyle(color: Colors.white)),
+                  child: Text('Follow', style: TextStyle(color: Colors.white)),
                 ),
               ),
             ],
