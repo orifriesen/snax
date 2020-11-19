@@ -9,6 +9,7 @@ import 'accountBottomTabs/postTab.dart';
 import 'accountBottomTabs/secondTab.dart';
 
 import 'package:snax/backend/requests.dart';
+import 'package:snax/backend/backend.dart';
 import 'package:snax/helpers.dart';
 
 class AccountPage extends StatefulWidget {

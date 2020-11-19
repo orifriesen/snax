@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:snax/accountPage/accountPage.dart';
+import 'package:snax/accountPage/globalAccountPage.dart';
 import 'package:snax/backend/requests.dart';
 import 'package:snax/feedPage/FeedPage.dart';
 import 'package:snax/homePage/homePage.dart';
@@ -55,7 +56,7 @@ class _AppTabsState extends State<AppTabs> {
         body: [
           DefaultTabController(length: 2, child: MainPage()),
           FeedPage(),
-          AccountPage(),
+          AccountPage()
         ][_currentIndex],
       ),
     );

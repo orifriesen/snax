@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:snax/accountPage/followersPage.dart';
 import 'package:snax/accountPage/followingPage.dart';
 import 'package:snax/accountPage/settingsPage.dart';
+import 'package:snax/backend/backend.dart';
 
 import 'editProfile.dart';
 import 'accountBottomTabs/postTab.dart';
@@ -20,6 +21,8 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
     with TickerProviderStateMixin {
   Color burningOrangeStart = const Color.fromRGBO(255, 65, 108, 1.0);
   Color burningOrangeEnd = const Color.fromRGBO(255, 75, 43, 1.0);
+
+  SnaxUser user;
 
   TabController _tabController;
   @override
@@ -242,7 +245,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
               )
             ],
           ),
-          //* Edit Profile
+          //* Following/Unfollowing Profile
           Column(
             children: [
               Container(
@@ -256,7 +259,15 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                   onPressed: () => {
                     // Follow/Unfollow stuff goes here
                   },
-                  child: Text('Follow', style: TextStyle(color: Colors.white)),
+                  child: user.userIsFollowing == true
+                      ? Text(
+                          "Unfollow",
+                          style: TextStyle(color: Colors.white),
+                        )
+                      : Text(
+                          "Follow",
+                          style: TextStyle(color: Colors.white),
+                        ),
                 ),
               ),
             ],
