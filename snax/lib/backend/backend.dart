@@ -1,5 +1,7 @@
 import 'dart:ffi';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:snax/backend/auth.dart';
 import 'package:snax/backend/requests.dart';
 import 'package:snax/main.dart';
@@ -14,7 +16,7 @@ FirebaseApp fbApp;
 FirebaseAuth fbAuth;
 FirebaseFirestore fbStore;
 FirebaseStorage fbStorage;
-CloudFunctions fbCloud;
+FirebaseFunctions fbCloud;
 
 Future<void> initializeFirebase() async {
   print("Initializing Firebase");
@@ -22,7 +24,7 @@ Future<void> initializeFirebase() async {
   fbApp = await Firebase.initializeApp();
   fbAuth = FirebaseAuth.instance;
   fbStore = FirebaseFirestore.instance;
-  fbCloud = CloudFunctions.instance;
+  fbCloud = FirebaseFunctions.instance;
   fbStorage = FirebaseStorage.instance;
   //Add listeners
   fbAuth.authStateChanges().listen((User user) async {
@@ -39,7 +41,7 @@ Future<void> initializeFirebase() async {
       print("got current user," + SnaxBackend.currentUser.username);
     }
   });
-
+  await Hive.initFlutter();
   //uncomment to show login screen on startup
   //navigatorKey.currentState.pushNamed("/login");
 }

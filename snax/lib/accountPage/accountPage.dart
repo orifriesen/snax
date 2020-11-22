@@ -54,64 +54,97 @@ class _AccountPageState extends State<AccountPage>
           )
         ],
       ),
-      body: Column(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(color: Color.fromARGB(60, 0, 0, 0), blurRadius: 12)
-              ],
-              borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(40),
-                  bottomRight: Radius.circular(40)),
-              gradient: SnaxGradients.redBigThings,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                width: double.infinity,
-                child: Column(
-                  children: [
-                    _profileInfo(),
-                    SizedBox(height: 10),
-                    Container(
-                        alignment: Alignment.centerLeft, child: _profileBio()),
-                    SizedBox(height: 10),
-                    _profileStats(),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          SizedBox(height: 5),
-          Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 16),
-            child: ListView(
-              shrinkWrap: true,
+      body: (SnaxBackend.currentUser == null)
+          ? Center(
+              child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                TabBar(
-                  controller: _tabController,
-                  indicatorColor: SnaxColors.redAccent,
-                  labelColor: !isDark(context) ? Colors.black : Colors.white,
-                  unselectedLabelColor: Colors.grey,
-                  tabs: [
-                    Tab(
-                      text: 'Posts',
+                Text("Ready to Start Sharing?\n",style: TextStyle(fontSize: 17),),
+                MaterialButton(
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.login, color: Colors.white),
+                        Padding(padding: EdgeInsets.only(left: 16)),
+                        Text("Sign In",
+                            style: TextStyle(fontSize: 15, color: Colors.white))
+                      ],
                     ),
-                    Tab(
-                      text: 'Reviewed',
+                  ),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(32)),
+                  color: SnaxColors.redAccent,
+                  onPressed: () {
+                    SnaxBackend.auth.loginIfNotAlready().then((_) {
+                      setState(() {});
+                    }).catchError((err) {});
+                  },
+                )
+              ],
+            ))
+          : Column(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                          color: Color.fromARGB(60, 0, 0, 0), blurRadius: 12)
+                    ],
+                    borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(40),
+                        bottomRight: Radius.circular(40)),
+                    gradient: SnaxGradients.redBigThings,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      width: double.infinity,
+                      child: Column(
+                        children: [
+                          _profileInfo(),
+                          SizedBox(height: 10),
+                          Container(
+                              alignment: Alignment.centerLeft,
+                              child: _profileBio()),
+                          SizedBox(height: 10),
+                          _profileStats(),
+                        ],
+                      ),
                     ),
-                  ],
+                  ),
                 ),
+                SizedBox(height: 5),
+                Padding(
+                  padding: const EdgeInsets.only(left: 16.0, right: 16),
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: [
+                      TabBar(
+                        controller: _tabController,
+                        indicatorColor: SnaxColors.redAccent,
+                        labelColor:
+                            !isDark(context) ? Colors.black : Colors.white,
+                        unselectedLabelColor: Colors.grey,
+                        tabs: [
+                          Tab(
+                            text: 'Posts',
+                          ),
+                          Tab(
+                            text: 'Reviewed',
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                [
+                  PostTab(),
+                  SecondTab(),
+                ][_tabController.index],
               ],
             ),
-          ),
-          [
-            PostTab(),
-            SecondTab(),
-          ][_tabController.index],
-        ],
-      ),
     );
   }
 
@@ -163,10 +196,12 @@ class _AccountPageState extends State<AccountPage>
         padding: const EdgeInsets.only(left: 16.0),
         child: Column(
           children: [
-            (SnaxBackend.currentUser.bio != null) ? Text(
-              '${SnaxBackend.currentUser.bio}',
-              style: TextStyle(color: Colors.white, fontSize: 15),
-            ) : Container(),
+            (SnaxBackend.currentUser.bio != null)
+                ? Text(
+                    '${SnaxBackend.currentUser.bio}',
+                    style: TextStyle(color: Colors.white, fontSize: 15),
+                  )
+                : Container(),
           ],
         ),
       ),
