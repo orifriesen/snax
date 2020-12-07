@@ -7,7 +7,6 @@ import 'package:snax/backend/requests.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'settingsTabs/aboutPage.dart';
-import 'settingsTabs/helpPage.dart';
 
 import 'package:snax/helpers.dart';
 

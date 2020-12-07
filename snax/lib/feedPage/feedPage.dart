@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:snax/accountPage/globalAccountPage.dart';
 import 'package:snax/backend/requests.dart';
 import 'package:snax/feedPage/demoValues.dart';
 import 'package:snax/feedPage/makePostPage.dart';
@@ -222,7 +223,6 @@ Widget postWidget(BuildContext context, Post post,
                           style: TextStyle(
                               fontWeight: FontWeight.w600, fontSize: 18),
                         ),
-                        //TODO Gesture detector (for brandon)
                         Padding(
                           padding: const EdgeInsets.only(top: 2.0),
                           child: GestureDetector(
@@ -232,6 +232,15 @@ Widget postWidget(BuildContext context, Post post,
                                   fontSize: 14,
                                   color: Color.fromARGB(255, 255, 75, 43)),
                             ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      GlobalAccountPage(post.user),
+                                ),
+                              );
+                            },
                           ),
                         )
                       ],

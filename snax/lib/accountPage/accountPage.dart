@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:readmore/readmore.dart';
 
 import 'package:snax/accountPage/followersPage.dart';
 import 'package:snax/accountPage/followingPage.dart';
@@ -50,7 +49,7 @@ class _AccountPageState extends State<AccountPage>
         title: Text("My Profile"),
         actions: [
           IconButton(
-            icon: Icon(Icons.settings),
+            icon: Icon(Icons.more_horiz_rounded),
             onPressed: () => {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => SettingsPage()))

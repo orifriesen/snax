@@ -1,11 +1,12 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:snax/accountPage/followersPage.dart';
 import 'package:snax/accountPage/followingPage.dart';
-import 'package:snax/accountPage/settingsPage.dart';
 import 'package:snax/backend/backend.dart';
 
-import 'editProfile.dart';
 import 'accountBottomTabs/postTab.dart';
 import 'accountBottomTabs/secondTab.dart';
 
@@ -13,6 +14,8 @@ import 'package:snax/backend/requests.dart';
 import 'package:snax/helpers.dart';
 
 class GlobalAccountPage extends StatefulWidget {
+  GlobalAccountPage(this.user);
+  SnaxUser user;
   @override
   _GlobalAccountPageState createState() => _GlobalAccountPageState();
 }
@@ -22,9 +25,10 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
   Color burningOrangeStart = const Color.fromRGBO(255, 65, 108, 1.0);
   Color burningOrangeEnd = const Color.fromRGBO(255, 75, 43, 1.0);
 
-  SnaxUser user;
+  bool bioShowTextFlag = true;
 
   TabController _tabController;
+
   @override
   void initState() {
     super.initState();
@@ -46,15 +50,10 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
       appBar: AppBar(
         elevation: 0,
         backgroundColor: burningOrangeEnd,
-        title: Text("My Profile"),
+        title: Text("${this.widget.user.name}\'s Profile"),
         actions: [
-          IconButton(
-            icon: Icon(Icons.settings),
-            onPressed: () => {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => SettingsPage()))
-            },
-          )
+          //* Calls the settings pop up
+          _globalSettings(),
         ],
       ),
       body: (SnaxBackend.currentUser == null)
@@ -154,7 +153,15 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
     );
   }
 
-//* This is the users profile picture, username, and handle
+  //* Settings when viewing someone else's profile
+  Widget _globalSettings() {
+    return IconButton(
+      icon: Icon(Icons.more_horiz_rounded),
+      onPressed: () => {},
+    );
+  }
+
+  //* This is the users profile picture, username, and handle
   Widget _profileInfo() {
     return Row(
       children: [
@@ -179,14 +186,14 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              SnaxBackend.currentUser.name,
+              this.widget.user.name,
               style: TextStyle(fontSize: 20, color: Colors.white),
             ),
             SizedBox(
               height: 5,
             ),
             Text(
-              SnaxBackend.currentUser.username,
+              this.widget.user.username,
               style: TextStyle(fontSize: 15, color: Colors.grey[300]),
             ),
           ],
@@ -197,15 +204,49 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
 
 //* This displays the users bio
   Widget _profileBio() {
+    final bioText = "${this.widget.user.bio}";
+    final numLines = '\n'.allMatches(bioText).length + 1;
+    var _maxLines = bioShowTextFlag ? 4 : 8;
     return Container(
       child: Padding(
-        padding: const EdgeInsets.only(left: 16.0),
+        padding: const EdgeInsets.only(left: 16.0, right: 16),
         child: Column(
           children: [
             (SnaxBackend.currentUser.bio != null)
-                ? Text(
-                    '${SnaxBackend.currentUser.bio}',
-                    style: TextStyle(color: Colors.white, fontSize: 15),
+                ? Container(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          bioText,
+                          style: TextStyle(color: Colors.white, fontSize: 15),
+                          maxLines: _maxLines,
+                        ),
+                        numLines >= 4
+                            ? InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    bioShowTextFlag = !bioShowTextFlag;
+                                  });
+                                  print(numLines);
+                                },
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    bioShowTextFlag
+                                        ? Text(
+                                            "more",
+                                            style: TextStyle(
+                                              color: Colors.white70,
+                                            ),
+                                          )
+                                        : Container(),
+                                  ],
+                                ),
+                              )
+                            : Container(),
+                      ],
+                    ),
                   )
                 : Container(),
           ],
@@ -258,14 +299,18 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                   ),
                   onPressed: () => {
                     // Follow/Unfollow stuff goes here
-                    if (user.userIsFollowing)
+                    if (this.widget.user.userIsFollowing)
                       {
-                        user.unfollow(),
+                        this.widget.user.unfollow(),
+                        print("unfollowed"),
                       }
                     else
-                      {user.follow()}
+                      {
+                        this.widget.user.follow(),
+                        print("followed"),
+                      }
                   },
-                  child: user.userIsFollowing == true
+                  child: this.widget.user.userIsFollowing == true
                       ? Text(
                           "Unfollow",
                           style: TextStyle(color: Colors.white),
