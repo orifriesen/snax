@@ -127,7 +127,7 @@ class _EditProfileState extends State<EditProfile> {
                         children: [
                           Container(
                             // color: Colors.blue,
-                            height: 250,
+                            height: 400,
                             width: double.infinity,
                             padding: EdgeInsets.only(left: 16, right: 16),
                             child: Column(
@@ -295,7 +295,7 @@ class _EditProfileState extends State<EditProfile> {
   Widget _bioTextField() {
     return Material(
       elevation: 0,
-      color: Colors.transparent,
+      // color: Colors.blue,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
@@ -304,8 +304,8 @@ class _EditProfileState extends State<EditProfile> {
           LengthLimitingTextInputFormatter(150),
         ],
         controller: bioController,
-        minLines: 4,
-        maxLines: 4,
+        minLines: 1,
+        maxLines: 10,
         scrollPhysics: BouncingScrollPhysics(),
         decoration: InputDecoration(
           border: OutlineInputBorder(

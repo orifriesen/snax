@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:readmore/readmore.dart';
 
 import 'package:snax/accountPage/followersPage.dart';
 import 'package:snax/accountPage/followingPage.dart';
@@ -21,6 +22,8 @@ class _AccountPageState extends State<AccountPage>
     with TickerProviderStateMixin {
   Color burningOrangeStart = const Color.fromRGBO(255, 65, 108, 1.0);
   Color burningOrangeEnd = const Color.fromRGBO(255, 75, 43, 1.0);
+
+  bool bioShowTextFlag = true;
 
   TabController _tabController;
   @override
@@ -195,16 +198,58 @@ class _AccountPageState extends State<AccountPage>
 
 //* This displays the users bio
   Widget _profileBio() {
+    var _maxLines = bioShowTextFlag ? 4 : 8;
     return Container(
       child: Padding(
-        padding: const EdgeInsets.only(left: 16.0),
+        padding: const EdgeInsets.only(left: 16.0, right: 16),
         child: Column(
           children: [
             (SnaxBackend.currentUser.bio != null)
-                ? Text(
-                    '${SnaxBackend.currentUser.bio}',
-                    style: TextStyle(color: Colors.white, fontSize: 15),
+                ? Container(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${SnaxBackend.currentUser.bio}',
+                          style: TextStyle(color: Colors.white, fontSize: 15),
+                          maxLines: _maxLines,
+                        ),
+                        _maxLines == 4
+                            ? InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    bioShowTextFlag = !bioShowTextFlag;
+                                  });
+                                  print(_maxLines);
+                                },
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    bioShowTextFlag
+                                        ? Text(
+                                            "more",
+                                            style: TextStyle(
+                                              color: Colors.white70,
+                                            ),
+                                          )
+                                        : Container(),
+                                  ],
+                                ),
+                              )
+                            : Container(),
+                      ],
+                    ),
                   )
+                // ReadMoreText(
+                //     "${SnaxBackend.currentUser.bio}",
+                //     delimiter: null,
+                //     trimLines: 4,
+                //     trimMode: TrimMode.Line,
+                //     trimCollapsedText: '   more',
+                //     trimExpandedText: '',
+                //     moreStyle: TextStyle(fontSize: 15, color: Colors.white70),
+                //   )
+
                 : Container(),
           ],
         ),
