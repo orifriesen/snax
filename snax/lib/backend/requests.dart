@@ -501,7 +501,7 @@ class SnaxBackend {
     await _waitWhile(() => (fbStore == null));
     await auth.loginIfNotAlready();
     var followingBox = await Hive.openBox('user_following');
-    if (followingBox.keys.toList() == []) return [];
+    if (followingBox.keys.isEmpty) return [];
     List<QueryDocumentSnapshot> docs = (await fbStore
             .collection("feed")
             .where("uid", whereIn: followingBox.keys.toList())
