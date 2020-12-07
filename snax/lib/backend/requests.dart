@@ -286,10 +286,9 @@ class SnaxBackend {
     //Get token
     String token = await fbAuth.currentUser.getIdToken();
 
-    HttpsCallableResult result = await fbCloud.httpsCallable("followUser").call({
-      "token": token,
-      "uid": uid
-    });
+    HttpsCallableResult result = await fbCloud
+        .httpsCallable("followUser")
+        .call({"token": token, "uid": uid});
 
     if (result.data["status"] != "success") throw result.data["error"];
 
@@ -305,10 +304,9 @@ class SnaxBackend {
     //Get token
     String token = await fbAuth.currentUser.getIdToken();
 
-    HttpsCallableResult result = await fbCloud.httpsCallable("unfollowUser").call({
-      "token": token,
-      "uid": uid
-    });
+    HttpsCallableResult result = await fbCloud
+        .httpsCallable("unfollowUser")
+        .call({"token": token, "uid": uid});
 
     if (result.data["status"] != "success") throw result.data["error"];
 
@@ -322,22 +320,35 @@ class SnaxBackend {
     //Wait for the firebase to be initiated
     await _waitWhile(() => (fbStore == null));
     //Get the list of ids
-    List<String> userIds = (await fbStore.collection("users").doc(uid).collection("followers").get()).docs.map((e) => e.id).toList();
-    List<QueryDocumentSnapshot> userDocs = (await fbStore.collection("users").where(FieldPath.documentId, whereIn: userIds).get()).docs;
+    List<String> userIds = (await fbStore
+            .collection("users")
+            .doc(uid)
+            .collection("followers")
+            .get())
+        .docs
+        .map((e) => e.id)
+        .toList();
+    List<QueryDocumentSnapshot> userDocs = (await fbStore
+            .collection("users")
+            .where(FieldPath.documentId, whereIn: userIds)
+            .get())
+        .docs;
     //Open the box
     var followingBox = await Hive.openBox('user_following');
     //Make the list
     List<SnaxUser> users = [];
     for (var doc in userDocs) {
-        var userImg;
-        try {
-          userImg = await fbStorage
+      var userImg;
+      try {
+        userImg = await fbStorage
             .ref()
             .child("user-profiles")
             .child(doc.id + ".jpg")
             .getDownloadURL();
-        } catch (_) {}
-        users.add(SnaxUser(doc.get("username"), doc.get("name"), doc.id, doc.data()["bio"], doc.get("followerCount"), doc.get("followerCount"), photo: userImg, userIsFollowing: followingBox.containsKey(doc.id)));
+      } catch (_) {}
+      users.add(SnaxUser(doc.get("username"), doc.get("name"), doc.id,
+          doc.data()["bio"], doc.get("followerCount"), doc.get("followerCount"),
+          photo: userImg, userIsFollowing: followingBox.containsKey(doc.id)));
     }
     await Hive.close();
     return users;
@@ -347,22 +358,35 @@ class SnaxBackend {
     //Wait for the firebase to be initiated
     await _waitWhile(() => (fbStore == null));
     //Get the list of ids
-    List<String> userIds = (await fbStore.collection("users").doc(uid).collection("following").get()).docs.map((e) => e.id).toList();
-    List<QueryDocumentSnapshot> userDocs = (await fbStore.collection("users").where(FieldPath.documentId, whereIn: userIds).get()).docs;
+    List<String> userIds = (await fbStore
+            .collection("users")
+            .doc(uid)
+            .collection("following")
+            .get())
+        .docs
+        .map((e) => e.id)
+        .toList();
+    List<QueryDocumentSnapshot> userDocs = (await fbStore
+            .collection("users")
+            .where(FieldPath.documentId, whereIn: userIds)
+            .get())
+        .docs;
     //Open the box
     var followingBox = await Hive.openBox('user_following');
     //Make the list
     List<SnaxUser> users = [];
     for (var doc in userDocs) {
-        var userImg;
-        try {
-          userImg = await fbStorage
+      var userImg;
+      try {
+        userImg = await fbStorage
             .ref()
             .child("user-profiles")
             .child(doc.id + ".jpg")
             .getDownloadURL();
-        } catch (_) {}
-        users.add(SnaxUser(doc.get("username"), doc.get("name"), doc.id, doc.data()["bio"], doc.get("followerCount"), doc.get("followerCount"), photo: userImg, userIsFollowing: followingBox.containsKey(doc.id)));
+      } catch (_) {}
+      users.add(SnaxUser(doc.get("username"), doc.get("name"), doc.id,
+          doc.data()["bio"], doc.get("followerCount"), doc.get("followerCount"),
+          photo: userImg, userIsFollowing: followingBox.containsKey(doc.id)));
     }
     await Hive.close();
     return users;
@@ -472,14 +496,15 @@ class SnaxBackend {
     return docs.isNotEmpty ? await _feedGrabRefs(docs) : [];
   }
 
-   static Future<List<Post>> feedGetRecentFriendPosts() async {
+  static Future<List<Post>> feedGetRecentFriendPosts() async {
     //Wait for firebase init
     await _waitWhile(() => (fbStore == null));
     await auth.loginIfNotAlready();
     var followingBox = await Hive.openBox('user_following');
+    if (followingBox.keys.toList() == []) return [];
     List<QueryDocumentSnapshot> docs = (await fbStore
             .collection("feed")
-            .where("uid",whereIn: followingBox.keys.toList())
+            .where("uid", whereIn: followingBox.keys.toList())
             .orderBy("timestamp", descending: true)
             .limit(25)
             .get())
@@ -503,7 +528,7 @@ class SnaxBackend {
     await _waitWhile(() => (fbStore == null));
     List<QueryDocumentSnapshot> docs = (await fbStore
             .collection("feed")
-            .where("snack_id",isEqualTo: snackId)
+            .where("snack_id", isEqualTo: snackId)
             .orderBy("likes", descending: true)
             .limit(25)
             .get())
@@ -515,7 +540,7 @@ class SnaxBackend {
     await _waitWhile(() => (fbStore == null));
     List<QueryDocumentSnapshot> docs = (await fbStore
             .collection("feed")
-            .where("uid",isEqualTo: uid)
+            .where("uid", isEqualTo: uid)
             .orderBy("timestamp", descending: true)
             .limit(25)
             .get())
@@ -606,7 +631,9 @@ class SnaxBackend {
           data["uid"],
           userDatas[data["uid"]]["bio"],
           userDatas[data["uid"]]["followerCount"],
-          userDatas[data["uid"]]["followingCount"], photo: userImg, userIsFollowing: followingBox.containsKey(data["uid"]));
+          userDatas[data["uid"]]["followingCount"],
+          photo: userImg,
+          userIsFollowing: followingBox.containsKey(data["uid"]));
       comments.add(Comment(
           doc.id,
           postId,
@@ -688,7 +715,8 @@ class SnaxBackend {
           userDatas[data["uid"]]["bio"],
           userDatas[data["uid"]]["followerCount"],
           userDatas[data["uid"]]["followingCount"],
-          photo: userImg, userIsFollowing: followingBox.containsKey(data["uid"]));
+          photo: userImg,
+          userIsFollowing: followingBox.containsKey(data["uid"]));
 
       //Create snack
       SnackSearchResultItem snack = SnackSearchResultItem(
@@ -943,8 +971,10 @@ class _SnaxBackendAuth {
       await prefs.setString("user_username", userInDB.get("username"));
       await prefs.setString("user_name", userInDB.get("name"));
       await prefs.setString("user_bio", userInDB.data()["bio"]);
-      await prefs.setString("user_followerCount", userInDB.get("followerCount").toString());
-      await prefs.setString("user_followingCount", userInDB.get("followingCount").toString());
+      await prefs.setString(
+          "user_followerCount", userInDB.get("followerCount").toString());
+      await prefs.setString(
+          "user_followingCount", userInDB.get("followingCount").toString());
       await prefs.setString("user_image", image);
       //Update the likes
       //Get local list of likes
@@ -956,8 +986,13 @@ class _SnaxBackendAuth {
       });
       await likeBox.putAll(likeMap);
       //Return instance
-      return SnaxUser(userInDB.get("username"), userInDB.get("name"), user.uid,
-          userInDB.data()["bio"],userInDB.get("followerCount"),userInDB.get("followingCount"),
+      return SnaxUser(
+          userInDB.get("username"),
+          userInDB.get("name"),
+          user.uid,
+          userInDB.data()["bio"],
+          userInDB.get("followerCount"),
+          userInDB.get("followingCount"),
           photo: image);
     }
   }
