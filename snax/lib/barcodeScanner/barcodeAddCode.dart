@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
 import 'package:snax/backend/backend.dart';
 import 'package:snax/backend/requests.dart';
@@ -8,8 +9,12 @@ class BarcodeAddSearch extends SearchDelegate<String> {
   Function callback;
   bool confirmDialog = false;
   bool popOnCallback = true;
+  bool showCards = true;
 
-  BarcodeAddSearch(this.callback, {this.confirmDialog, this.popOnCallback});
+  BarcodeAddSearch(this.callback,
+      {this.confirmDialog = false,
+      this.popOnCallback = true,
+      this.showCards = true});
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -43,10 +48,14 @@ class BarcodeAddSearch extends SearchDelegate<String> {
       return SingleChildScrollView(
           child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-              {'label': "Trending Snacks", 'func': SnaxBackend.chartTrending()},
-              {'label': "Top Snacks", 'func': SnaxBackend.chartTop()}
-            ]
+        children: this.showCards
+            ? [
+                {
+                  'label': "Trending Snacks",
+                  'func': SnaxBackend.chartTrending()
+                },
+                {'label': "Top Snacks", 'func': SnaxBackend.chartTop()}
+              ]
                 .map((e) => Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
@@ -92,48 +101,64 @@ class BarcodeAddSearch extends SearchDelegate<String> {
                         ),
                       ],
                     ) as Widget)
-                .toList() +
-            <Widget>[
-              Padding(
-                padding:
-                    const EdgeInsets.only(left: 16.0, top: 24.0, bottom: 16),
-                child: Text("Recent Searches"),
-              ),
-            ] +
-            [
-              FutureBuilder(
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    List<String> searches = snapshot.data;
-                    return ListView.separated(
-                        physics: NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: searches.length,
-                        separatorBuilder: (context, i) => Divider(),
-                        itemBuilder: (context, i) => ListTile(
-                            dense: true,
-                            title: Text(
-                              searches[i],
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  color: Theme.of(context).accentColor),
+                .toList()
+            : <Widget>[] +
+                <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 16.0, top: 24.0, bottom: 16, right: 16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("Recent Searches"),
+                        FlatButton.icon(
+                            icon: Icon(
+                              Icons.delete_outline,
+                              size: 16,
                             ),
-                            onTap: () {
-                              this.query = searches[i];
-                            },
-                            trailing: Icon(
-                              Icons.arrow_right,
-                              color: Theme.of(context).accentColor,
-                            )));
-                  } else {
-                    return SizedBox(
-                        height: 120,
-                        child: Center(child: CircularProgressIndicator()));
-                  }
-                },
-                future: SnaxBackend.recentSearches(),
-              )
-            ],
+                            onPressed: () {},
+                            label: Text("CLEAR",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                ))),
+                      ],
+                    ),
+                  ),
+                ] +
+                [
+                  FutureBuilder(
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        List<String> searches = snapshot.data;
+                        return ListView.separated(
+                            physics: NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: searches.length,
+                            separatorBuilder: (context, i) => Divider(),
+                            itemBuilder: (context, i) => ListTile(
+                                dense: true,
+                                title: Text(
+                                  searches[i],
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      color: Theme.of(context).accentColor),
+                                ),
+                                onTap: () {
+                                  this.query = searches[i];
+                                },
+                                trailing: Icon(
+                                  Icons.arrow_right,
+                                  color: Theme.of(context).accentColor,
+                                )));
+                      } else {
+                        return SizedBox(
+                            height: 120,
+                            child: Center(child: CircularProgressIndicator()));
+                      }
+                    },
+                    future: _getSearchHistory(),
+                  )
+                ],
       ));
 
     return StatefulBuilder(
@@ -155,6 +180,9 @@ class BarcodeAddSearch extends SearchDelegate<String> {
                       onTap: () {
                         print("tapped");
                         BuildContext _context = context;
+
+                        //Add to recent searches
+                        _addSearchToHistory(query);
 
                         if (this.confirmDialog == true) {
                           showDialog(
@@ -338,4 +366,32 @@ Widget searchPageLilCard(
       boxShadow: [SnaxShadows.cardShadowSubtler],
     ),
   );
+}
+
+Future<List<String>> _getSearchHistory() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  List<String> queries = [];
+  for (var i = 0; i < 10; i++) {
+    var q = prefs.getString('search_history_$i');
+    if (q != null) queries.add(q);
+  }
+  return queries;
+}
+
+void _clearSearchHistory() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  for (var i = 0; i < 10; i++) {
+    prefs.remove('search_history_$i');
+  }
+}
+
+void _addSearchToHistory(String query) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  //Push the rest back
+  for (var i = 9; i > 0; i--) {
+    prefs.setString(
+        'search_history_$i', prefs.getString('search_history_${i - 1}'));
+  }
+  //Put the new one in front
+  prefs.setString('search_history_0', query);
 }

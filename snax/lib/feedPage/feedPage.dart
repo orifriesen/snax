@@ -13,16 +13,36 @@ class FeedPage extends StatefulWidget {
 }
 
 class _FeedPageState extends State<FeedPage> {
-  List<String> options = ["Trending", "New", "Top"];
-  String dropDownValue = "Top";
+  List<Map<String, dynamic>> options = [
+    {
+      "title": "Friends",
+      "value": "friends",
+      "func": SnaxBackend.feedGetRecentFriendPosts
+    },
+    {
+      "title": "Trending",
+      "value": "trending",
+      "func": SnaxBackend.feedGetTrendingPosts
+    },
+    {"title": "Top", "value": "top", "func": SnaxBackend.feedGetTopPosts}
+  ];
+  String dropDownValue = "friends";
 
   List<Post> posts;
 
-  void getPosts() {
-    SnaxBackend.feedGetTopPosts().then((newPosts) {
-      setState(() {
-        this.posts = newPosts;
-      });
+  void getPosts() async {
+    //make the posts null to show the loading animation
+    setState(() {
+      this.posts = null;
+    });
+
+    List<Post> newPosts = await this
+        .options
+        .where((e) => e['value'] == dropDownValue)
+        .first['func']();
+
+    setState(() {
+      this.posts = newPosts;
     });
   }
 
@@ -65,10 +85,10 @@ class _FeedPageState extends State<FeedPage> {
                                 fontWeight: FontWeight.w600,
                                 fontSize: 16.0),
                             selectedItemBuilder: (BuildContext context) {
-                              return options.map((String value) {
+                              return options.map((Map value) {
                                 return Padding(
                                   padding: const EdgeInsets.only(top: 14),
-                                  child: Text(dropDownValue,
+                                  child: Text(value['title'],
                                       style: TextStyle(
                                           color:
                                               Color.fromARGB(255, 255, 75, 43),
@@ -77,31 +97,17 @@ class _FeedPageState extends State<FeedPage> {
                                 );
                               }).toList();
                             },
-                            onChanged: (String newValue) async {
-                              List<Post> newPosts;
-                              if (newValue == "Top") {
-                                newPosts = await SnaxBackend.feedGetTopPosts();
-                              } else
-                                newPosts = DemoValues.demoPosts;
+                            onChanged: (dynamic newValue) {
                               setState(() {
                                 dropDownValue = newValue;
-                                posts = newPosts;
                               });
+                              this.getPosts();
                             },
-                            items: [
-                              DropdownMenuItem(
-                                child: Text("Trending"),
-                                value: "Trending",
-                              ),
-                              DropdownMenuItem(
-                                child: Text("New"),
-                                value: "New",
-                              ),
-                              DropdownMenuItem(
-                                child: Text("Top"),
-                                value: "Top",
-                              )
-                            ]),
+                            items: this
+                                .options
+                                .map((e) => DropdownMenuItem(
+                                    child: Text(e['title']), value: e['value']))
+                                .toList()),
                       ),
                     ),
                     actions: [

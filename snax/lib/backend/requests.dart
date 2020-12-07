@@ -472,6 +472,57 @@ class SnaxBackend {
     return docs.isNotEmpty ? await _feedGrabRefs(docs) : [];
   }
 
+   static Future<List<Post>> feedGetRecentFriendPosts() async {
+    //Wait for firebase init
+    await _waitWhile(() => (fbStore == null));
+    await auth.loginIfNotAlready();
+    var followingBox = await Hive.openBox('user_following');
+    List<QueryDocumentSnapshot> docs = (await fbStore
+            .collection("feed")
+            .where("uid",whereIn: followingBox.keys.toList())
+            .orderBy("timestamp", descending: true)
+            .limit(25)
+            .get())
+        .docs;
+    return docs.isNotEmpty ? await _feedGrabRefs(docs) : [];
+  }
+
+  static Future<List<Post>> feedGetTrendingPosts() async {
+    //Wait for firebase init
+    await _waitWhile(() => (fbStore == null));
+    List<QueryDocumentSnapshot> docs = (await fbStore
+            .collection("feed")
+            .orderBy("trend", descending: true)
+            .limit(25)
+            .get())
+        .docs;
+    return docs.isNotEmpty ? await _feedGrabRefs(docs) : [];
+  }
+
+  static Future<List<Post>> feedGetTopPostsForSnack(String snackId) async {
+    await _waitWhile(() => (fbStore == null));
+    List<QueryDocumentSnapshot> docs = (await fbStore
+            .collection("feed")
+            .where("snack_id",isEqualTo: snackId)
+            .orderBy("likes", descending: true)
+            .limit(25)
+            .get())
+        .docs;
+    return docs.isNotEmpty ? await _feedGrabRefs(docs) : [];
+  }
+
+  static Future<List<Post>> feedGetRecentPostsForUser(String uid) async {
+    await _waitWhile(() => (fbStore == null));
+    List<QueryDocumentSnapshot> docs = (await fbStore
+            .collection("feed")
+            .where("uid",isEqualTo: uid)
+            .orderBy("timestamp", descending: true)
+            .limit(25)
+            .get())
+        .docs;
+    return docs.isNotEmpty ? await _feedGrabRefs(docs) : [];
+  }
+
   static Future<List<Comment>> feedGetComments(String postId) async {
     //Wait for firebase init
     await _waitWhile(() => (fbStore == null));
