@@ -210,7 +210,15 @@ Widget forYouTab(BuildContext context, List<SnackItem> snackList) {
           padding: EdgeInsets.only(top: 12),
           children: [
             snackOfTheWeek(context, snackList[0]),
-            getHorizontalList("Trending", context, snackList),
+            FutureBuilder(
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return getHorizontalList(
+                        "Trending", context, snapshot.data);
+                  }
+                },
+                future: SnaxBackend.getSnacksInCategory(
+                    "cracker", SnackListSort.trending)),
             getHorizontalList("Top", context, snackList),
             getMiniHorizontalList("Test", context, snackList)
           ],
