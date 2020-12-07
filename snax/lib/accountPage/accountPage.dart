@@ -242,14 +242,15 @@ class _AccountPageState extends State<AccountPage>
                   )
                 // ReadMoreText(
                 //     "${SnaxBackend.currentUser.bio}",
+                //     style: TextStyle(color: Colors.white, fontSize: 15),
                 //     delimiter: null,
+
                 //     trimLines: 4,
                 //     trimMode: TrimMode.Line,
                 //     trimCollapsedText: '   more',
                 //     trimExpandedText: '',
                 //     moreStyle: TextStyle(fontSize: 15, color: Colors.white70),
                 //   )
-
                 : Container(),
           ],
         ),
