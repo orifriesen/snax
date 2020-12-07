@@ -54,7 +54,22 @@ class SnaxUser {
   String bio;
   String photo;
 
-  SnaxUser(this.username, this.name, this.uid, this.bio, {this.photo});
+  int followerCount;
+  int followingCount;
+
+  bool userIsFollowing;
+
+  Future<void> follow() async {
+    await SnaxBackend.followUser(this.uid);
+    this.userIsFollowing = true;
+  }
+
+  Future<void> unfollow() async {
+    await SnaxBackend.unfollowUser(this.uid);
+    this.userIsFollowing = false;
+  }
+
+  SnaxUser(this.username, this.name, this.uid, this.bio, this.followerCount, this.followingCount, {this.photo,this.userIsFollowing = false});
 }
 
 class SnackSearchResultItem {

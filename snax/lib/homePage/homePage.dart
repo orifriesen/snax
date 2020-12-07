@@ -71,7 +71,7 @@ class _MainPageState extends State<MainPage>
                                         MaterialPageRoute(
                                             builder: (context) => ProductPage(
                                                 item: chosenSnack)));
-                                  }));
+                                  }, showCards: false));
                             }),
                         IconButton(
                             icon: Icon(Icons.qr_code_scanner),

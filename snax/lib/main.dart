@@ -57,12 +57,29 @@ void main() {
     });
     if (fbAuth.currentUser != null) fbAuth.currentUser.getIdToken().then((token) => printWrapped("USER REQUEST TOKEN =-=-=-=-=-=-=-=-=-=-=-\n"+token+"\n=-=-=-=-=-=-=-=-=-=-=-"));
     
+    // SnaxBackend.getFollowers("AF9IkBebqtSAtMprjipQglu6B1D2").then((users) {
+    //   users.forEach((u) { print("${u.name} - ${u.username}"); });
+    // });
+
     // SnaxBackend.updateProfile(username: "escher2",bio: "").then((_) {
     //     print("updated my bio from the app!");
     // });
 
+    // SnaxBackend.followUser("aWBb2fFQL5as5QiUs9leo3DiA1C3").then((_) {});
+
+    SnaxBackend.feedGetTrendingPosts().then((posts) {
+      print("posts for trending");
+      for (var post in posts) {
+        print(post.body);
+      }
+    });
+
     //SnaxBackend.feedLikePost("rlUXJBRe1MfKXI49Ux8M").then((_) {});
-    
+
+    // SnaxUser("doesntmatter", "notimportant", "AF9IkBebqtSAtMprjipQglu6B1D2", null, 0, 0).unfollow().then((_) { 
+    //   print("followed a user");
+    // });
+
     // SnaxBackend.getSnacksInCategory("chip", SnackListSort.top).then((snacks) {
     //   print("GOT SNACKS FROM CATEGORY!");
     //   snacks.forEach((snack) { print(snack.name); });
