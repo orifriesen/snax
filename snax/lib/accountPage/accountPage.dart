@@ -198,6 +198,8 @@ class _AccountPageState extends State<AccountPage>
 
 //* This displays the users bio
   Widget _profileBio() {
+    final bioText = "${SnaxBackend.currentUser.bio}";
+    final numLines = '\n'.allMatches(bioText).length + 1;
     var _maxLines = bioShowTextFlag ? 4 : 8;
     return Container(
       child: Padding(
@@ -210,17 +212,17 @@ class _AccountPageState extends State<AccountPage>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '${SnaxBackend.currentUser.bio}',
+                          bioText,
                           style: TextStyle(color: Colors.white, fontSize: 15),
                           maxLines: _maxLines,
                         ),
-                        _maxLines == 4
+                        numLines >= 4
                             ? InkWell(
                                 onTap: () {
                                   setState(() {
                                     bioShowTextFlag = !bioShowTextFlag;
                                   });
-                                  print(_maxLines);
+                                  print(numLines);
                                 },
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
@@ -240,17 +242,6 @@ class _AccountPageState extends State<AccountPage>
                       ],
                     ),
                   )
-                // ReadMoreText(
-                //     "${SnaxBackend.currentUser.bio}",
-                //     style: TextStyle(color: Colors.white, fontSize: 15),
-                //     delimiter: null,
-
-                //     trimLines: 4,
-                //     trimMode: TrimMode.Line,
-                //     trimCollapsedText: '   more',
-                //     trimExpandedText: '',
-                //     moreStyle: TextStyle(fontSize: 15, color: Colors.white70),
-                //   )
                 : Container(),
           ],
         ),

@@ -258,6 +258,12 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                   ),
                   onPressed: () => {
                     // Follow/Unfollow stuff goes here
+                    if (user.userIsFollowing)
+                      {
+                        user.unfollow(),
+                      }
+                    else
+                      {user.follow()}
                   },
                   child: user.userIsFollowing == true
                       ? Text(
