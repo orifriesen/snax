@@ -65,6 +65,14 @@ flutter {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     // Fix for Duplicate Class Error
-    implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
+    // implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
+    //compileOnly 'com.google.firebase:firebase-ml-vision'
+    //implementation 'com.google.android.gms:play-services-vision-common:19.0.2'
     //SOMEHOW THIS ACTUALLY WORKED IT TOOK SO LONG TO FIND https://stackoverflow.com/a/63711606/8359727
+    api 'com.google.firebase:firebase-ml-vision:24.1.0'
+    implementation 'com.google.android.gms:play-services-vision:20.1.1'
+    implementation 'com.google.android.gms:play-services-vision-common:19.1.1'
 }
+
+googleServices.disableVersionCheck = true
+// googleServices { disableVersionCheck = true }
