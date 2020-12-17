@@ -232,14 +232,14 @@ Widget postWidget(BuildContext context, Post post,
                                   fontSize: 14,
                                   color: Color.fromARGB(255, 255, 75, 43)),
                             ),
-                            onTap: () {
+                            onTap: () => {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
                                       GlobalAccountPage(post.user),
                                 ),
-                              );
+                              ),
                             },
                           ),
                         )

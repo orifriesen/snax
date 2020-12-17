@@ -170,8 +170,10 @@ class _EditProfileState extends State<EditProfile> {
                     )
                   : null,
               backgroundImage: _imageFile == null
-                  ? NetworkImage('https://picsum.photos/200/300?grayscale')
-                  : FileImage(File(_imageFile.path)),
+                  ? NetworkImage(SnaxBackend.currentUser.photo)
+                  : FileImage(
+                      File(_imageFile.path),
+                    ),
             ),
           ],
         ),
@@ -229,7 +231,7 @@ class _EditProfileState extends State<EditProfile> {
         _imageFile = pickedFile;
       });
     } catch (error) {
-      Fluttertoast.showToast(msg: "Failed to upload profile photo");
+      print("Failed to upload profile photo");
     }
     setState(() {
       this.uploadingImage = false;

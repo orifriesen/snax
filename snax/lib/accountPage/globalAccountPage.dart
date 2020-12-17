@@ -173,9 +173,11 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image:
-                      NetworkImage('https://picsum.photos/200/300?grayscale')),
+                fit: BoxFit.cover,
+                image: NetworkImage(this.widget.user.photo == null
+                    ? 'https://picsum.photos/200/300?grayscale'
+                    : this.widget.user.photo),
+              ),
             ),
           ),
         ),
@@ -270,7 +272,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => FollowingPage())),
                 },
-                child: _followingButton(),
+                child: _following(),
               ),
             ],
           ),
@@ -282,7 +284,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => FollowersPage())),
                 },
-                child: _followersButton(),
+                child: _followers(),
               )
             ],
           ),
@@ -298,7 +300,6 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                     side: BorderSide(color: Colors.white, width: 2),
                   ),
                   onPressed: () => {
-                    // Follow/Unfollow stuff goes here
                     if (this.widget.user.userIsFollowing)
                       {
                         this.widget.user.unfollow(),
@@ -310,7 +311,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                         print("followed"),
                       }
                   },
-                  child: this.widget.user.userIsFollowing == true
+                  child: this.widget.user.userIsFollowing
                       ? Text(
                           "Unfollow",
                           style: TextStyle(color: Colors.white),
@@ -330,11 +331,11 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
 
   //* This groups the text for the following button
   //* It will allow the user to see who they follow
-  Widget _followingButton() {
+  Widget _following() {
     return Column(
       children: [
         Text(
-          '2k',
+          '${this.widget.user.followingCount}',
           style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold,
@@ -353,11 +354,11 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
 
   //* This groups the text for the followers button
   //* It will allow the user to view their followers
-  Widget _followersButton() {
+  Widget _followers() {
     return Column(
       children: [
         Text(
-          '100k',
+          '${this.widget.user.followerCount}',
           style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold,
