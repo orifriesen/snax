@@ -146,7 +146,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                 ),
                 [
                   PostTab(),
-                  SecondTab(),
+                  ReviewedTab(),
                 ][_tabController.index],
               ],
             ),

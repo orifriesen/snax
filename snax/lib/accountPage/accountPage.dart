@@ -147,7 +147,7 @@ class _AccountPageState extends State<AccountPage>
                 ),
                 [
                   PostTab(),
-                  SecondTab(),
+                  ReviewedTab(),
                 ][_tabController.index],
               ],
             ),
