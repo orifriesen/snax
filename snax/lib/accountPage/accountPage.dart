@@ -147,7 +147,7 @@ class _AccountPageState extends State<AccountPage>
                 ),
                 [
                   PostTab(),
-                  SecondTab(),
+                  ReviewedTab(),
                 ][_tabController.index],
               ],
             ),
@@ -166,9 +166,11 @@ class _AccountPageState extends State<AccountPage>
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image:
-                      NetworkImage('https://picsum.photos/200/300?grayscale')),
+                fit: BoxFit.cover,
+                image: NetworkImage(SnaxBackend.currentUser.photo == null
+                    ? 'https://picsum.photos/200/300?grayscale'
+                    : SnaxBackend.currentUser.photo),
+              ),
             ),
           ),
         ),
@@ -263,7 +265,7 @@ class _AccountPageState extends State<AccountPage>
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => FollowingPage())),
                 },
-                child: _followingButton(),
+                child: _following(),
               ),
             ],
           ),
@@ -275,7 +277,7 @@ class _AccountPageState extends State<AccountPage>
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => FollowersPage())),
                 },
-                child: _followersButton(),
+                child: _followers(),
               )
             ],
           ),
@@ -313,11 +315,11 @@ class _AccountPageState extends State<AccountPage>
 
   //* This groups the text for the following button
   //* It will allow the user to see who they follow
-  Widget _followingButton() {
+  Widget _following() {
     return Column(
       children: [
         Text(
-          '2k',
+          '${SnaxBackend.currentUser.followingCount}',
           style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold,
@@ -336,11 +338,11 @@ class _AccountPageState extends State<AccountPage>
 
   //* This groups the text for the followers button
   //* It will allow the user to view their followers
-  Widget _followersButton() {
+  Widget _followers() {
     return Column(
       children: [
         Text(
-          '100k',
+          '${SnaxBackend.currentUser.followerCount}',
           style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold,
