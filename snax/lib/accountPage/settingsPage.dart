@@ -25,6 +25,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ? SnaxColors.redAccent
           : Theme.of(context).canvasColor,
       appBar: AppBar(
+        brightness: Brightness.dark,
         elevation: 1,
         backgroundColor: SnaxColors.redAccent,
         title: Text('Settings'),

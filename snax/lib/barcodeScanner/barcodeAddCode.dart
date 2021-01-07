@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
+import 'package:snax/accountPage/globalAccountPage.dart';
 import 'package:snax/backend/backend.dart';
 import 'package:snax/backend/requests.dart';
 import 'package:snax/helpers.dart';
+import 'package:sup/quick_sup.dart';
 
 class BarcodeAddSearch extends SearchDelegate<String> {
   Function callback;
   bool confirmDialog = false;
   bool popOnCallback = true;
   bool showCards = true;
+  bool showUsers = false;
 
   BarcodeAddSearch(this.callback,
       {this.confirmDialog = false,
       this.popOnCallback = true,
-      this.showCards = true});
+      this.showCards = true,
+      this.showUsers = false});
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -161,92 +165,227 @@ class BarcodeAddSearch extends SearchDelegate<String> {
                 ],
       ));
 
-    return StatefulBuilder(
-        builder: (context, setState) => FutureBuilder(
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                List<SnackSearchResultItem> snacks = snapshot.data;
-                return ListView.builder(
-                  itemBuilder: (context, i) {
-                    return ListTile(
-                      title: Text(snacks[i].name),
-                      subtitle: Text(
-                          (snacks[i].numberOfRatings ?? 0).toString() +
-                              " Ratings"),
-                      leading: AspectRatio(
-                        child: Image.network(snacks[i].image),
-                        aspectRatio: 1.0,
+    return StatefulBuilder(builder: (context, setState) {
+      return ListView(
+        children: [
+          FutureBuilder(
+              future: SnaxBackend.search(query),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  List<SnackSearchResultItem> snacks = snapshot.data;
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      snacks.length > 0
+                          ? Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 16.0, top: 24.0, bottom: 8),
+                              child: Text(
+                                  "Snacks (" + snacks.length.toString() + ")"))
+                          : Container(),
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, i) {
+                          return ListTile(
+                            title: Text(snacks[i].name),
+                            subtitle: Text(
+                                (snacks[i].numberOfRatings ?? 0).toString() +
+                                    " Ratings"),
+                            leading: AspectRatio(
+                              child: Container(
+                                clipBehavior: Clip.hardEdge,
+                                padding: EdgeInsets.all(1),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: Colors.white),
+                                child: AspectRatio(
+                                    aspectRatio: 1,
+                                    child: Image.network(snacks[i].image)),
+                              ),
+                              aspectRatio: 1.0,
+                            ),
+                            onTap: () {
+                              print("tapped");
+                              BuildContext _context = context;
+
+                              //Add to recent searches
+                              _addSearchToHistory(query);
+
+                              if (this.confirmDialog == true) {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                          title: Text("Confirm Choice"),
+                                          content: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    EdgeInsets.only(bottom: 16),
+                                                child: Container(
+                                                    height: 100,
+                                                    child: AspectRatio(
+                                                      child: Image.network(
+                                                          snacks[i].image),
+                                                      aspectRatio: 1.0,
+                                                    )),
+                                              ),
+                                              Text(
+                                                snacks[i].name,
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                              Text("Is this the right snack?")
+                                            ],
+                                          ),
+                                          actions: [
+                                            FlatButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: Text("Cancel"),
+                                                textTheme:
+                                                    ButtonTextTheme.accent),
+                                            FlatButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                  if (this.popOnCallback ==
+                                                      true)
+                                                    Navigator.of(_context)
+                                                        .pop();
+                                                  this.callback(snacks[i]);
+                                                },
+                                                child: Text("Confirm"),
+                                                textTheme:
+                                                    ButtonTextTheme.primary),
+                                          ],
+                                        ));
+                              } else {
+                                if (this.popOnCallback == true)
+                                  Navigator.of(context).pop();
+                                this.callback(snacks[i]);
+                              }
+                            },
+                          );
+                        },
+                        itemCount: snacks.length,
                       ),
-                      onTap: () {
-                        print("tapped");
-                        BuildContext _context = context;
+                      (query.length >= 3 && this.showUsers)
+                          ? FutureBuilder(
+                              future: SnaxBackend.searchUsers(query),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  List<SnaxUser> users = snapshot.data;
 
-                        //Add to recent searches
-                        _addSearchToHistory(query);
+                                  if (users.length == 0 && snacks.length == 0)
+                                    return Padding(padding: EdgeInsets.only(top: 44),child: Center(
+                                      child: QuickSup.empty(
+                                          image: Icon(Icons.search,size: 25,),
+                                          title: "No Results",
+                                          subtitle: "No snacks or users found"),
+                                    ));
 
-                        if (this.confirmDialog == true) {
-                          showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                    title: Text("Confirm Choice"),
-                                    content: Column(
-                                      mainAxisSize: MainAxisSize.min,
+                                  return users.length > 0
+                                      ? Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 16.0,
+                                                  top: 24.0,
+                                                  bottom: 8),
+                                              child: Text("Users (" +
+                                                  users.length.toString() +
+                                                  ")"),
+                                            ),
+                                            ListView.builder(
+                                              shrinkWrap: true,
+                                              physics:
+                                                  NeverScrollableScrollPhysics(),
+                                              itemBuilder: (context, i) {
+                                                SnaxUser user = users[i];
+                                                return ListTile(
+                                                  leading: CircleAvatar(
+                                                    child: ClipOval(
+                                                        child: (user.photo !=
+                                                                null)
+                                                            ? Image.network(
+                                                                user.photo)
+                                                            : Image.asset(
+                                                                "assets/blank_user.png")),
+                                                    radius: 25,
+                                                  ),
+                                                  title: Text(user.name),
+                                                  subtitle:
+                                                      Text("@" + user.username),
+                                                  onTap: () => {
+                                                    Navigator.pushReplacement(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            GlobalAccountPage(
+                                                                user),
+                                                      ),
+                                                    ),
+                                                  },
+                                                );
+                                              },
+                                              itemCount: users.length,
+                                            )
+                                          ],
+                                        )
+                                      : Container();
+                                } else {
+                                  return Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Padding(
-                                          padding: EdgeInsets.only(bottom: 16),
-                                          child: Container(
-                                              height: 100,
-                                              child: AspectRatio(
-                                                child: Image.network(
-                                                    snacks[i].image),
-                                                aspectRatio: 1.0,
-                                              )),
+                                          padding: const EdgeInsets.only(
+                                              left: 16.0, top: 24.0, bottom: 8),
+                                          child: Text("Users"),
                                         ),
-                                        Text(
-                                          snacks[i].name,
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                        Text("Is this the right snack?")
-                                      ],
-                                    ),
-                                    actions: [
-                                      FlatButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: Text("Cancel"),
-                                          textTheme: ButtonTextTheme.accent),
-                                      FlatButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                            if (this.popOnCallback == true)
-                                              Navigator.of(_context).pop();
-                                            this.callback(snacks[i]);
-                                          },
-                                          child: Text("Confirm"),
-                                          textTheme: ButtonTextTheme.primary),
-                                    ],
-                                  ));
-                        } else {
-                          if (this.popOnCallback == true)
-                            Navigator.of(context).pop();
-                          this.callback(snacks[i]);
-                        }
-                      },
-                    );
-                  },
-                  itemCount: snacks.length,
-                );
-              } else if (snapshot.hasError) {
-                return Center(
-                    child: Text("An error occurred. Please try again later."));
-              } else {
-                return Center(child: CircularProgressIndicator());
-              }
-            },
-            future: SnaxBackend.search(query)));
+                                        Padding(
+                                            padding: EdgeInsets.all(44),
+                                            child: Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            ))
+                                      ]);
+                                }
+                              })
+                          : Container(),
+                    ],
+                  );
+                } else if (snapshot.hasError) {
+                  return Center(
+                      child:
+                          Text("An error occurred. Please try again later."));
+                } else {
+                  return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 16.0, top: 24.0, bottom: 8),
+                          child: Text("Snacks"),
+                        ),
+                        Padding(
+                            padding: EdgeInsets.all(44),
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ))
+                      ]);
+                }
+              }),
+        ],
+      );
+    });
 
     // return  ListView.builder(
     //   itemBuilder: (context, index) => ListTile(

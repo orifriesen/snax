@@ -2,9 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:snax/accountPage/editProfile.dart';
 
 import 'package:snax/accountPage/followersPage.dart';
 import 'package:snax/accountPage/followingPage.dart';
+import 'package:snax/accountPage/settingsPage.dart';
 import 'package:snax/backend/backend.dart';
 
 import 'accountBottomTabs/postTab.dart';
@@ -14,8 +16,9 @@ import 'package:snax/backend/requests.dart';
 import 'package:snax/helpers.dart';
 
 class GlobalAccountPage extends StatefulWidget {
-  GlobalAccountPage(this.user);
+  GlobalAccountPage(this.user,{ this.isAccountPage = false });
   SnaxUser user;
+  bool isAccountPage;
   @override
   _GlobalAccountPageState createState() => _GlobalAccountPageState();
 }
@@ -34,6 +37,8 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
     super.initState();
     _tabController = TabController(vsync: this, length: 2, initialIndex: 0);
     _tabController.addListener(handleTabSelection);
+
+    this.isFollowing = this.widget.user.userIsFollowing;
   }
 
   handleTabSelection() {
@@ -41,6 +46,8 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
       setState(() {});
     }
   }
+
+  bool isFollowing;
 
   @override
   Widget build(BuildContext context) {
@@ -50,13 +57,20 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
       appBar: AppBar(
         elevation: 0,
         backgroundColor: burningOrangeEnd,
-        title: Text("${this.widget.user.name}\'s Profile"),
+        brightness: Brightness.dark,
+        title: Text(this.widget.isAccountPage ? "My Profile" : "${this.widget.user.name}\'s Profile"),
         actions: [
           //* Calls the settings pop up
-          _globalSettings(),
+          this.widget.isAccountPage ? IconButton(
+            icon: Icon(Icons.more_horiz_rounded),
+            onPressed: () => {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => SettingsPage()))
+            },
+          ) : _globalSettings(),
         ],
       ),
-      body: (SnaxBackend.currentUser == null)
+      body: (SnaxBackend.currentUser == null && this.widget.isAccountPage)
           ? Center(
               child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -145,7 +159,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                   ),
                 ),
                 [
-                  PostTab(),
+                  PostTab(widget.user),
                   ReviewedTab(),
                 ][_tabController.index],
               ],
@@ -293,34 +307,54 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
             children: [
               Container(
                 child: RaisedButton(
-                  color: Colors.transparent,
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    side: BorderSide(color: Colors.white, width: 2),
-                  ),
-                  onPressed: () => {
-                    if (this.widget.user.userIsFollowing)
-                      {
-                        this.widget.user.unfollow(),
-                        print("unfollowed"),
+                    color: Colors.transparent,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      side: BorderSide(color: Colors.white, width: 2),
+                    ),
+                    onPressed: () {
+                      if (this.widget.user.uid == SnaxBackend.currentUser.uid) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EditProfile(),
+                          ),
+                        ).whenComplete(
+                          () => setState(() {}),
+                        );
+                      } else if (this.widget.user.userIsFollowing) {
+                        this.widget.user.unfollow().catchError((_) {
+                          //Unfollow Failed, reset isFollowing
+                          this.isFollowing = true;
+                          this.widget.user.followerCount++;
+                        });
+                        print("unfollowed");
+                        this.isFollowing = false;
+                        this.widget.user.followerCount--;
+                      } else {
+                        this.widget.user.follow().catchError((_) {
+                          this.isFollowing = false;
+                          this.widget.user.followerCount++;
+                        });
+                        print("followed");
+                        this.isFollowing = true;
+                        this.widget.user.followerCount++;
                       }
-                    else
-                      {
-                        this.widget.user.follow(),
-                        print("followed"),
+                      this.setState(() {});
+                    },
+                    child: Text(() {
+                      if (this.widget.user.uid == SnaxBackend.currentUser.uid) {
+                        return "Edit Profile";
+                      } else if (this.isFollowing) {
+                        return "Unfollow";
+                      } else {
+                        return "Follow";
                       }
-                  },
-                  child: this.widget.user.userIsFollowing
-                      ? Text(
-                          "Unfollow",
-                          style: TextStyle(color: Colors.white),
-                        )
-                      : Text(
-                          "Follow",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                ),
+                    }(),
+                        style: TextStyle(
+                          color: Colors.white,
+                        ))),
               ),
             ],
           ),

@@ -34,6 +34,7 @@ class _MakePostPageState extends State<MakePostPage> {
         extendBodyBehindAppBar: true,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
+          brightness: Brightness.dark,
           elevation: 0,
           actions: [
             TextButton(

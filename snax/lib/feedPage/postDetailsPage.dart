@@ -25,6 +25,11 @@ class _PostDetailsPage extends State<PostDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        shadowColor: Colors.transparent,
+        brightness: Brightness.dark,
+      ),
       // appBar: AppBar(
       //   backgroundColor: Colors.transparent,
       //   elevation: 0,
@@ -46,18 +51,18 @@ class _PostDetailsPage extends State<PostDetailsPage> {
                   borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(20),
                       bottomRight: Radius.circular(20)))),
-          Padding(
-            padding: const EdgeInsets.only(top: 28, left: 8.0),
-            child: IconButton(
-                icon: Icon(
-                  Icons.close_rounded,
-                  color: Colors.white,
-                ),
-                iconSize: 28,
-                onPressed: () {
-                  Navigator.pop(context);
-                }),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.only(top: 28, left: 8.0),
+          //   child: IconButton(
+          //       icon: Icon(
+          //         Icons.close_rounded,
+          //         color: Colors.white,
+          //       ),
+          //       iconSize: 28,
+          //       onPressed: () {
+          //         Navigator.pop(context);
+          //       }),
+          // ),
           Padding(
             padding: const EdgeInsets.only(top: 76.0),
             child: postWidget(context, widget.post, opensDetails: false),

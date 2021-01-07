@@ -7,13 +7,18 @@ import 'package:snax/feedPage/post.dart';
 import 'package:like_button/like_button.dart';
 import 'package:snax/feedPage/postDetailsPage.dart';
 import 'package:snax/helpers.dart';
+import 'package:sup/sup.dart';
 
 class FeedPage extends StatefulWidget {
   @override
   _FeedPageState createState() => _FeedPageState();
 }
 
-class _FeedPageState extends State<FeedPage> {
+class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<FeedPage> {
+
+  @override 
+  bool get wantKeepAlive => true;
+
   List<Map<String, dynamic>> options = [
     {
       "title": "Friends",
@@ -50,6 +55,7 @@ class _FeedPageState extends State<FeedPage> {
   @override
   void initState() {
     super.initState();
+    print("initting state again ???");
     getPosts();
   }
 
@@ -59,6 +65,7 @@ class _FeedPageState extends State<FeedPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
         backgroundColor: Theme.of(context).canvasColor,
         body: NestedScrollView(
@@ -136,7 +143,7 @@ class _FeedPageState extends State<FeedPage> {
 
 Widget getFeed(BuildContext context, List<Post> posts, Function refresh) {
   return ListView.builder(
-    itemCount: posts.length + 1,
+    itemCount: posts.length + ((posts.length == 0) ? 2 : 1),
     itemBuilder: (context, index) {
       Post post;
       if (index == 0) {
@@ -152,6 +159,13 @@ Widget getFeed(BuildContext context, List<Post> posts, Function refresh) {
               "Feed",
               style: TextStyle(fontWeight: FontWeight.w700, fontSize: 36.0),
             ));
+      } else if (posts.length == 0) {
+        return Padding(padding: EdgeInsets.only(top: 44),child: Center(
+                                      child: QuickSup.empty(
+                                          image: Icon(Icons.chat_rounded,size: 25,),
+                                          title: "No Posts",
+                                          subtitle: "It's awfully quiet..."),
+                                    ));
       } else {
         post = posts[index - 1];
         return postWidget(context, post, refresh: refresh);

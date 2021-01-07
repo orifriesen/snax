@@ -8,6 +8,7 @@ import 'package:snax/backend/requests.dart';
 import 'package:snax/barcodeScanner/barcodeAddCode.dart';
 import 'package:snax/helpers.dart';
 import 'package:snax/homePage/userReview.dart';
+import 'package:sup/sup.dart';
 
 class ProductPage extends StatefulWidget {
   ProductPage({Key key, this.item}) : super(key: key);
@@ -28,23 +29,27 @@ class _ProductPageState extends State<ProductPage> {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
+        brightness: Brightness.dark,
         elevation: 0,
         actions: <Widget>[
           IconButton(
-              icon: const Icon(Icons.search),
-              onPressed: () {
-                showSearch(
-                    context: context,
-                    delegate: BarcodeAddSearch(
-                        (SnackSearchResultItem returnSnack) async {
-                      chosenSnack = await SnaxBackend.getSnack(returnSnack.id);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  ProductPage(item: chosenSnack)));
-                    }));
-              }),
+                            icon: Icon(Icons.search),
+                            color: Colors.white,
+                            onPressed: () {
+                              showSearch(
+                                  context: context,
+                                  delegate: BarcodeAddSearch(
+                                      (SnackSearchResultItem
+                                          returnSnack) async {
+                                    chosenSnack = await SnaxBackend.getSnack(
+                                        returnSnack.id);
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => ProductPage(
+                                                item: chosenSnack)));
+                                  }, showCards: false, showUsers: true));
+                            }),
           IconButton(icon: const Icon(Icons.more_vert), onPressed: () {})
         ],
       ),
@@ -153,18 +158,12 @@ class _ProductPageState extends State<ProductPage> {
                 this.widget.item.numberOfRatings != 0 &&
                         this.widget.item.numberOfRatings != null
                     ? criteriaList()
-                    : Center(
-                        child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Container(
-                          width: 256,
-                          child: Text(
-                            "Sorry, this snack has no ratings yet, but you can be the first",
-                            style: TextStyle(fontSize: 28, color: Colors.grey),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ))
+                    : Padding(padding: EdgeInsets.only(top: 44),child: Center(
+                                      child: QuickSup.empty(
+                                          image: Icon(Icons.star_outline,size: 30,),
+                                          title: "No Ratings",
+                                          subtitle: "Have you tried this snack? Let the world know what you think!"),
+                                    ))
               ]),
             )
           ],
@@ -173,7 +172,7 @@ class _ProductPageState extends State<ProductPage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: new FloatingActionButton.extended(
           highlightElevation: 1,
-          backgroundColor: SnaxColors.redAccent,
+          backgroundColor: SnaxColors.gradientStart,
           onPressed: () {
             Navigator.push(
                 context,
@@ -185,8 +184,13 @@ class _ProductPageState extends State<ProductPage> {
           },
           label: Container(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
-              child: Text("Rate Snack", style: TextStyle(fontSize: 16)),
+              padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+              child: Row(
+                children: [
+                  Icon(Icons.star),
+                  Text("  Rate Snack ", style: TextStyle(fontSize: 16, letterSpacing: 0.1, fontWeight: FontWeight.bold)),
+                ],
+              ),
             ),
           )),
     );

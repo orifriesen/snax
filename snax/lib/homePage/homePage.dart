@@ -71,7 +71,7 @@ class _MainPageState extends State<MainPage>
                                         MaterialPageRoute(
                                             builder: (context) => ProductPage(
                                                 item: chosenSnack)));
-                                  }, showCards: false));
+                                  }, showCards: false, showUsers: true));
                             }),
                         IconButton(
                             icon: Icon(Icons.qr_code_scanner),
@@ -215,6 +215,8 @@ Widget forYouTab(BuildContext context, List<SnackItem> snackList) {
                   if (snapshot.hasData) {
                     return getHorizontalList(
                         "Trending", context, snapshot.data);
+                  } else {
+                    return Container(child: Center(child: CircularProgressIndicator()));
                   }
                 },
                 future: SnaxBackend.getSnacksInCategory(

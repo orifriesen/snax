@@ -38,6 +38,7 @@ dependencies:
   hive: ^1.4.4+1
   hive_flutter: ^0.3.1
   flutter_phoenix: ^0.1.0
+  sup: ^1.1.1
 
   # firebase dependancies (1% chance of breaking everything)
   firebase_core: ^0.5.2
@@ -45,6 +46,7 @@ dependencies:
   cloud_firestore: ^0.14.3
   cloud_functions: ^0.7.0+1
   firebase_storage: ^5.0.1
+  firebase_messaging: "^8.0.0-dev.11"
 
   # other native dependancies (99% chance of breaking everything)
   google_sign_in: ^4.5.6
@@ -81,6 +83,7 @@ flutter:
     - assets/icon-apple.png
     - assets/snax-chip.png
     - assets/Artboard.jpeg
+    - assets/blank_user.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
