@@ -13,6 +13,8 @@ import 'accountBottomTabs/secondTab.dart';
 import 'package:snax/backend/requests.dart';
 import 'package:snax/helpers.dart';
 
+import 'package:url_launcher/url_launcher.dart';
+
 class GlobalAccountPage extends StatefulWidget {
   GlobalAccountPage(this.user);
   SnaxUser user;
@@ -52,7 +54,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
         backgroundColor: burningOrangeEnd,
         title: Text("${this.widget.user.name}\'s Profile"),
         actions: [
-          //* Calls the settings pop up
+          //* Calls the report pop up
           _globalSettings(),
         ],
       ),
@@ -154,10 +156,71 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
   }
 
   //* Settings when viewing someone else's profile
+  //* For now, this only open a dialog for reporting a user.
+  //* A Block feature will be implemented later on
   Widget _globalSettings() {
-    return IconButton(
-      icon: Icon(Icons.more_horiz_rounded),
-      onPressed: () => {},
+    return FlatButton(
+      onPressed: () => showCupertinoDialog(
+        context: context,
+        builder: (_) => Platform.isIOS
+            ? CupertinoAlertDialog(
+                title: Text("Report This User"),
+                content: Text(
+                  "Do you want to report this user? Your default email app will open.",
+                ),
+                actions: [
+                  FlatButton(
+                      child: Text(
+                        "No",
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      onPressed: () => {Navigator.pop(context)}),
+                  FlatButton(
+                    child: Text(
+                      "Yes",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    onPressed: () => {
+                      customLaunch(
+                          "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20User: ${this.widget.user}&body=Reason: "),
+                      Navigator.pop(context),
+                    },
+                  )
+                ],
+              )
+            : AlertDialog(
+                title: Text("Report This User"),
+                content: Text(
+                    "Do you want to report this user? Your default email app will open."),
+                actions: [
+                  FlatButton(
+                      child: Text(
+                        "No",
+                        style: TextStyle(
+                            fontSize: 18,
+                            color:
+                                !isDark(context) ? Colors.black : Colors.white),
+                      ),
+                      onPressed: () => {Navigator.pop(context)}),
+                  FlatButton(
+                    child: Text(
+                      "Yes",
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: !isDark(context) ? Colors.black : Colors.white,
+                      ),
+                    ),
+                    onPressed: () => {
+                      customLaunch(
+                          "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20User: ${this.widget.user}&body=Reason: "),
+                      Navigator.pop(context),
+                    },
+                  )
+                ],
+              ),
+        barrierDismissible: true,
+      ),
+      child: Icon(Icons.more_horiz),
     );
   }
 
@@ -373,5 +436,15 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
         )
       ],
     );
+  }
+
+  //* URL Launcher
+  //* command can be any link
+  customLaunch(command) async {
+    if (await canLaunch(command)) {
+      await launch(command);
+    } else {
+      print("Could not work");
+    }
   }
 }

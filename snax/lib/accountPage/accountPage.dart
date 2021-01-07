@@ -50,6 +50,7 @@ class _AccountPageState extends State<AccountPage>
         actions: [
           IconButton(
             icon: Icon(Icons.more_horiz_rounded),
+            padding: EdgeInsets.only(right: 32),
             onPressed: () => {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => SettingsPage()))

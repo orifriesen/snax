@@ -389,6 +389,8 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  //* URL Launcher
+  //* command can be any link
   customLaunch(command) async {
     if (await canLaunch(command)) {
       await launch(command);
