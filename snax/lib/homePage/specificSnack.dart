@@ -162,7 +162,7 @@ class _ProductPageState extends State<ProductPage> {
                                       child: QuickSup.empty(
                                           image: Icon(Icons.star_outline,size: 30,),
                                           title: "No Ratings",
-                                          subtitle: "Have you tried this snack? Let the world know what you think!"),
+                                          subtitle: "Have you tried this snack? Let us know what you think!"),
                                     ))
               ]),
             )
