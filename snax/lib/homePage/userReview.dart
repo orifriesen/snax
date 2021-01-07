@@ -6,6 +6,10 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import 'package:snax/backend/backend.dart';
 import 'package:snax/backend/requests.dart';
+import 'package:snax/customIcons/mouth_feel_icons.dart';
+import 'package:snax/customIcons/my_flutter_app_icons.dart';
+import 'package:snax/customIcons/sourness_icons.dart';
+import 'package:snax/customIcons/spiciness_icons.dart';
 import 'package:snax/helpers.dart';
 
 class UserReviewPage extends StatefulWidget {
@@ -287,8 +291,8 @@ class _UserReviewPageState extends State<UserReviewPage> {
                                   height: 64,
                                   width: 64,
                                   child: Icon(
-                                    Icons.tag_faces_outlined,
-                                    size: 30,
+                                    MouthFeel.noun_smiling_mouth_1172516,
+                                    size: 45,
                                   ),
                                 ),
                                 Expanded(
@@ -474,6 +478,7 @@ class _UserReviewPageState extends State<UserReviewPage> {
                                 Container(
                                   height: 64,
                                   width: 64,
+                                  child: Icon(Icons.cake_outlined, size: 30),
                                 ),
                                 Expanded(
                                   child: Column(
@@ -546,6 +551,10 @@ class _UserReviewPageState extends State<UserReviewPage> {
                                 Container(
                                   height: 64,
                                   width: 64,
+                                  child: Icon(
+                                    MyFlutterApp.noun_salt_3670709,
+                                    size: 60,
+                                  ),
                                 ),
                                 Expanded(
                                   child: Column(
@@ -617,6 +626,10 @@ class _UserReviewPageState extends State<UserReviewPage> {
                                 Container(
                                   height: 64,
                                   width: 64,
+                                  child: Icon(
+                                    Sourness.noun_lemons_1437833,
+                                    size: 45,
+                                  ),
                                 ),
                                 Expanded(
                                   child: Column(
@@ -688,6 +701,10 @@ class _UserReviewPageState extends State<UserReviewPage> {
                                 Container(
                                   height: 64,
                                   width: 64,
+                                  child: Icon(
+                                    Spiciness.noun_spicy_3017538,
+                                    size: 45,
+                                  ),
                                 ),
                                 Expanded(
                                   child: Column(
