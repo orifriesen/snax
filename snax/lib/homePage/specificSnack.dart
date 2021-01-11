@@ -10,6 +10,8 @@ import 'package:snax/helpers.dart';
 import 'package:snax/homePage/userReview.dart';
 import 'package:sup/sup.dart';
 
+import 'categoryList.dart';
+
 class ProductPage extends StatefulWidget {
   ProductPage({Key key, this.item}) : super(key: key);
   final SnackItem item;
@@ -124,19 +126,28 @@ class _ProductPageState extends State<ProductPage> {
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.all(1.0),
-                                      child: Row(
-                                        children: [
-                                          Text(this.widget.item.type.name,
-                                              style: TextStyle(
-                                                  fontSize: 14,
-                                                  color: Colors.grey[400])),
-                                          Icon(
-                                            Icons.arrow_forward_ios_rounded,
-                                            size: 14,
-                                            color: Colors.grey[400],
-                                          )
-                                        ],
-                                      ),
+                                      child: InkWell(
+                                          onTap: () {
+                                            //Present Widget
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (BuildContext
+                                                            context) =>
+                                                        CategoryPage()));
+                                          },
+                                          child: Row(
+                                            children: [
+                                              Text(this.widget.item.type.name,
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      color: Colors.grey[400])),
+                                              Icon(
+                                                Icons.arrow_forward_ios_rounded,
+                                                size: 14,
+                                                color: Colors.grey[400],
+                                              )
+                                            ],
+                                          )),
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.all(1.0),
