@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:snax/accountPage/accountPage.dart';
 
 class FollowingPage extends StatefulWidget {
   @override

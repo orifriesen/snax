@@ -7,7 +7,6 @@ import 'package:snax/backend/requests.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'settingsTabs/aboutPage.dart';
-import 'settingsTabs/helpPage.dart';
 
 import 'package:snax/helpers.dart';
 
@@ -26,6 +25,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ? SnaxColors.redAccent
           : Theme.of(context).canvasColor,
       appBar: AppBar(
+        brightness: Brightness.dark,
         elevation: 1,
         backgroundColor: SnaxColors.redAccent,
         title: Text('Settings'),
@@ -37,14 +37,78 @@ class _SettingsPageState extends State<SettingsPage> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             FlatButton(
-              onPressed: () async {
-                try {
-                  await SnaxBackend.auth.logOut(context: context);
-                  Navigator.of(context).pop();
-                } catch (error) {
-                  print(error);
-                  Fluttertoast.showToast(msg: "Failed to Log Out!");
-                }
+              onPressed: () {
+                showCupertinoDialog(
+                  context: context,
+                  builder: (_) => Platform.isIOS
+                      ? CupertinoAlertDialog(
+                          title: Text("Log Out"),
+                          content: Text("Are you sure you want to log out?"),
+                          actions: [
+                            FlatButton(
+                                child: Text(
+                                  "No",
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                                onPressed: () => {Navigator.pop(context)}),
+                            FlatButton(
+                              child: Text(
+                                "Yes",
+                                style: TextStyle(fontSize: 18),
+                              ),
+                              onPressed: () async {
+                                try {
+                                  await SnaxBackend.auth
+                                      .logOut(context: context);
+                                  Navigator.of(context).pop();
+                                } catch (error) {
+                                  print(error);
+                                  Fluttertoast.showToast(
+                                      msg: "Failed to Log Out!");
+                                }
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ],
+                        )
+                      : AlertDialog(
+                          title: Text("Log Out"),
+                          content: Text("Are you sure you want to log out?"),
+                          actions: [
+                            FlatButton(
+                                child: Text(
+                                  "No",
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                                onPressed: () => {Navigator.pop(context)}),
+                            FlatButton(
+                              child: Text(
+                                "Yes",
+                                style: TextStyle(fontSize: 18),
+                              ),
+                              onPressed: () async {
+                                try {
+                                  await SnaxBackend.auth
+                                      .logOut(context: context);
+                                  Navigator.of(context).pop();
+                                } catch (error) {
+                                  print(error);
+                                  Fluttertoast.showToast(
+                                      msg: "Failed to Log Out!");
+                                }
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ],
+                        ),
+                );
+                // try {
+                //   await SnaxBackend.auth.logOut(context: context);
+                //   Navigator.of(context).pop();
+                // } catch (error) {
+                //   print(error);
+                //   Fluttertoast.showToast(msg: "Failed to Log Out!");
+                // }
               },
               child: Row(
                 children: [

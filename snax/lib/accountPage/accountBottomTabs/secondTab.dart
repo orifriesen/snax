@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:snax/accountPage/accountPage.dart';
 
-class SecondTab extends StatelessWidget {
+class ReviewedTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Column();
+    return Padding(
+      padding: const EdgeInsets.all(32.0),
+      child: Center(
+        child: Text(
+          "Coming Soon",
+          style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
   }
 }

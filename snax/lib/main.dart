@@ -67,12 +67,14 @@ void main() {
 
     // SnaxBackend.followUser("aWBb2fFQL5as5QiUs9leo3DiA1C3").then((_) {});
 
-    SnaxBackend.feedGetTrendingPosts().then((posts) {
-      print("posts for trending");
-      for (var post in posts) {
-        print(post.body);
-      }
-    });
+    // SnaxBackend.feedGetTrendingPosts().then((posts) {
+    //   print("posts for trending");
+    //   for (var post in posts) {
+    //     print(post.body);
+    //   }
+    // });
+
+    // SnaxBackend.searchUsers("esc").then((value) => print(value.length));
 
     //SnaxBackend.feedLikePost("rlUXJBRe1MfKXI49Ux8M").then((_) {});
 

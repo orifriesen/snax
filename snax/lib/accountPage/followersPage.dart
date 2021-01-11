@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:snax/accountPage/accountPage.dart';
+
+import 'package:snax/backend/requests.dart';
 
 class FollowersPage extends StatefulWidget {
   @override

@@ -39,7 +39,7 @@ extension SortRawStrings on SnackListSort {
     switch (this) {
       case SnackListSort.top:
         return "computed.score_overall";
-      case SnackListSort.top:
+      case SnackListSort.trending:
         return "computed_trend";
       default:
         return null;
@@ -74,6 +74,7 @@ class SnaxBackend {
       String catId, SnackListSort sort,
       {int limit = 25}) async {
     //Wait for the firebase to be initiated
+    print(sort.raw);
     await _waitWhile(() => (fbStore == null));
     return await SnaxBackend._queryAllSnacks(fbStore
         .collection("snacks")
@@ -481,7 +482,7 @@ class SnaxBackend {
     //Add to local database
     var likeBox = await Hive.openBox('user_likes');
     like ? likeBox.put(postId, true) : likeBox.delete(postId);
-    await Hive.close();
+    await likeBox.close();
   }
 
   static Future<List<Post>> feedGetTopPosts() async {
@@ -821,6 +822,51 @@ class SnaxBackend {
         imgUrl);
   }
 
+  static Future<List<SnaxUser>> searchUsers(String query) async {
+    //Wait for the cloud functions client to be initiated
+    await _waitWhile(() => (fbCloud == null));
+    //Call search function from database
+    HttpsCallableResult result =
+        await fbCloud.httpsCallable("searchUsers").call({"q": query.trim()});
+    //Parse
+    if (result.data["status"] == "success") {
+      //Get following list
+      var followingBox = await Hive.openBox('user_following');
+      //Create the results list and an empty classed list
+      List resultItems = result.data["results"];
+      List<SnaxUser> returnItems = [];
+      //Iterate through search results
+      for (var result in resultItems) {
+        //Get the image url
+        String imgUrl;
+        try {
+          imgUrl = await fbStorage
+              .ref()
+              .child("user-profiles")
+              .child(result["id"].toString() + ".jpg")
+              .getDownloadURL();
+        } catch (error) {}
+
+        //Add to the list
+        returnItems.add(SnaxUser(
+            result["data"]["username"],
+            result["data"]["name"],
+            result["id"],
+            result["data"]["bio"],
+            result["data"]["followerCount"],
+            result["data"]["followingCount"],
+            photo: imgUrl, userIsFollowing: followingBox.containsKey(result["id"])));
+      }
+      await Hive.close();
+      //Return the list
+      return returnItems;
+    } else if (result.data["error"] != null) {
+      throw result.data["error"];
+    } else {
+      throw "An unknown error occurred, please try again later";
+    }
+  }
+
   static Future<List<SnackSearchResultItem>> search(String query) async {
     //Wait for the cloud functions client to be initiated
     await _waitWhile(() => (fbCloud == null));
@@ -1031,6 +1077,27 @@ class _SnaxBackendAuth {
     SnaxBackend.currentUser = null;
     await this.deleteUserInfoLocally();
     //if (restartApp) Phoenix.rebirth(context ?? globalContext);
+  }
+
+  Future<void> uploadFCMToken(String fcmToken) async {
+    //Wait for the cloud functions client to be initiated
+    await _waitWhile(() => (fbCloud == null));
+    if (fbAuth.currentUser == null) throw "Not Logged In";
+    //Get token
+    String token = await fbAuth.currentUser.getIdToken();
+    //Call search function from database
+    HttpsCallableResult result = await fbCloud
+        .httpsCallable("uploadFCMToken")
+        .call({"token": token, "fcm_token": fcmToken});
+//Parse
+    if (result.data["status"] == "success") {
+      return;
+    } else if (result.data["error"] != null) {
+      print(result.data["raw"]);
+      throw result.data["error"];
+    } else {
+      throw "An unknown error occurred, please try again later";
+    }
   }
 }
 

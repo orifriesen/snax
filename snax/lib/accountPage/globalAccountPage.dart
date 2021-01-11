@@ -1,32 +1,44 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:snax/accountPage/editProfile.dart';
 
 import 'package:snax/accountPage/followersPage.dart';
 import 'package:snax/accountPage/followingPage.dart';
 import 'package:snax/accountPage/settingsPage.dart';
+import 'package:snax/backend/backend.dart';
 
-import 'editProfile.dart';
 import 'accountBottomTabs/postTab.dart';
 import 'accountBottomTabs/secondTab.dart';
 
 import 'package:snax/backend/requests.dart';
 import 'package:snax/helpers.dart';
 
-class AccountPage extends StatefulWidget {
+class GlobalAccountPage extends StatefulWidget {
+  GlobalAccountPage(this.user,{ this.isAccountPage = false });
+  SnaxUser user;
+  bool isAccountPage;
   @override
-  _AccountPageState createState() => _AccountPageState();
+  _GlobalAccountPageState createState() => _GlobalAccountPageState();
 }
 
-class _AccountPageState extends State<AccountPage>
+class _GlobalAccountPageState extends State<GlobalAccountPage>
     with TickerProviderStateMixin {
   Color burningOrangeStart = const Color.fromRGBO(255, 65, 108, 1.0);
   Color burningOrangeEnd = const Color.fromRGBO(255, 75, 43, 1.0);
 
+  bool bioShowTextFlag = true;
+
   TabController _tabController;
+
   @override
   void initState() {
     super.initState();
     _tabController = TabController(vsync: this, length: 2, initialIndex: 0);
     _tabController.addListener(handleTabSelection);
+
+    this.isFollowing = this.widget.user.userIsFollowing;
   }
 
   handleTabSelection() {
@@ -34,6 +46,8 @@ class _AccountPageState extends State<AccountPage>
       setState(() {});
     }
   }
+
+  bool isFollowing;
 
   @override
   Widget build(BuildContext context) {
@@ -43,18 +57,20 @@ class _AccountPageState extends State<AccountPage>
       appBar: AppBar(
         elevation: 0,
         backgroundColor: burningOrangeEnd,
-        title: Text("My Profile"),
+        brightness: Brightness.dark,
+        title: Text(this.widget.isAccountPage ? "My Profile" : "${this.widget.user.name}\'s Profile"),
         actions: [
-          IconButton(
-            icon: Icon(Icons.settings),
+          //* Calls the settings pop up
+          this.widget.isAccountPage ? IconButton(
+            icon: Icon(Icons.more_horiz_rounded),
             onPressed: () => {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => SettingsPage()))
             },
-          )
+          ) : _globalSettings(),
         ],
       ),
-      body: (SnaxBackend.currentUser == null)
+      body: (SnaxBackend.currentUser == null && this.widget.isAccountPage)
           ? Center(
               child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -143,15 +159,23 @@ class _AccountPageState extends State<AccountPage>
                   ),
                 ),
                 [
-                  PostTab(),
-                  SecondTab(),
+                  PostTab(widget.user),
+                  ReviewedTab(),
                 ][_tabController.index],
               ],
             ),
     );
   }
 
-//* This is the users profile picture, username, and handle
+  //* Settings when viewing someone else's profile
+  Widget _globalSettings() {
+    return IconButton(
+      icon: Icon(Icons.more_horiz_rounded),
+      onPressed: () => {},
+    );
+  }
+
+  //* This is the users profile picture, username, and handle
   Widget _profileInfo() {
     return Row(
       children: [
@@ -163,9 +187,11 @@ class _AccountPageState extends State<AccountPage>
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image:
-                      NetworkImage('https://picsum.photos/200/300?grayscale')),
+                fit: BoxFit.cover,
+                image: NetworkImage(this.widget.user.photo == null
+                    ? 'https://picsum.photos/200/300?grayscale'
+                    : this.widget.user.photo),
+              ),
             ),
           ),
         ),
@@ -176,14 +202,14 @@ class _AccountPageState extends State<AccountPage>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              SnaxBackend.currentUser.name,
+              this.widget.user.name,
               style: TextStyle(fontSize: 20, color: Colors.white),
             ),
             SizedBox(
               height: 5,
             ),
             Text(
-              SnaxBackend.currentUser.username,
+              this.widget.user.username,
               style: TextStyle(fontSize: 15, color: Colors.grey[300]),
             ),
           ],
@@ -194,15 +220,49 @@ class _AccountPageState extends State<AccountPage>
 
 //* This displays the users bio
   Widget _profileBio() {
+    final bioText = "${this.widget.user.bio}";
+    final numLines = '\n'.allMatches(bioText).length + 1;
+    var _maxLines = bioShowTextFlag ? 4 : 8;
     return Container(
       child: Padding(
-        padding: const EdgeInsets.only(left: 16.0),
+        padding: const EdgeInsets.only(left: 16.0, right: 16),
         child: Column(
           children: [
             (SnaxBackend.currentUser.bio != null)
-                ? Text(
-                    '${SnaxBackend.currentUser.bio}',
-                    style: TextStyle(color: Colors.white, fontSize: 15),
+                ? Container(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          bioText,
+                          style: TextStyle(color: Colors.white, fontSize: 15),
+                          maxLines: _maxLines,
+                        ),
+                        numLines >= 4
+                            ? InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    bioShowTextFlag = !bioShowTextFlag;
+                                  });
+                                  print(numLines);
+                                },
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    bioShowTextFlag
+                                        ? Text(
+                                            "more",
+                                            style: TextStyle(
+                                              color: Colors.white70,
+                                            ),
+                                          )
+                                        : Container(),
+                                  ],
+                                ),
+                              )
+                            : Container(),
+                      ],
+                    ),
                   )
                 : Container(),
           ],
@@ -226,7 +286,7 @@ class _AccountPageState extends State<AccountPage>
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => FollowingPage())),
                 },
-                child: _followingButton(),
+                child: _following(),
               ),
             ],
           ),
@@ -238,33 +298,63 @@ class _AccountPageState extends State<AccountPage>
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => FollowersPage())),
                 },
-                child: _followersButton(),
+                child: _followers(),
               )
             ],
           ),
+          //* Following/Unfollowing Profile
           Column(
             children: [
               Container(
                 child: RaisedButton(
-                  color: Colors.transparent,
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    side: BorderSide(color: Colors.white, width: 2),
-                  ),
-                  onPressed: () => {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => EditProfile(),
-                      ),
-                    ).whenComplete(
-                      () => setState(() {}),
+                    color: Colors.transparent,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      side: BorderSide(color: Colors.white, width: 2),
                     ),
-                  },
-                  child: Text('Edit Profile',
-                      style: TextStyle(color: Colors.white)),
-                ),
+                    onPressed: () {
+                      if (this.widget.user.uid == SnaxBackend.currentUser.uid) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EditProfile(),
+                          ),
+                        ).whenComplete(
+                          () => setState(() {}),
+                        );
+                      } else if (this.widget.user.userIsFollowing) {
+                        this.widget.user.unfollow().catchError((_) {
+                          //Unfollow Failed, reset isFollowing
+                          this.isFollowing = true;
+                          this.widget.user.followerCount++;
+                        });
+                        print("unfollowed");
+                        this.isFollowing = false;
+                        this.widget.user.followerCount--;
+                      } else {
+                        this.widget.user.follow().catchError((_) {
+                          this.isFollowing = false;
+                          this.widget.user.followerCount++;
+                        });
+                        print("followed");
+                        this.isFollowing = true;
+                        this.widget.user.followerCount++;
+                      }
+                      this.setState(() {});
+                    },
+                    child: Text(() {
+                      if (this.widget.user.uid == SnaxBackend.currentUser.uid) {
+                        return "Edit Profile";
+                      } else if (this.isFollowing) {
+                        return "Unfollow";
+                      } else {
+                        return "Follow";
+                      }
+                    }(),
+                        style: TextStyle(
+                          color: Colors.white,
+                        ))),
               ),
             ],
           ),
@@ -275,11 +365,11 @@ class _AccountPageState extends State<AccountPage>
 
   //* This groups the text for the following button
   //* It will allow the user to see who they follow
-  Widget _followingButton() {
+  Widget _following() {
     return Column(
       children: [
         Text(
-          '2k',
+          '${this.widget.user.followingCount}',
           style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold,
@@ -298,11 +388,11 @@ class _AccountPageState extends State<AccountPage>
 
   //* This groups the text for the followers button
   //* It will allow the user to view their followers
-  Widget _followersButton() {
+  Widget _followers() {
     return Column(
       children: [
         Text(
-          '100k',
+          '${this.widget.user.followerCount}',
           style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold,

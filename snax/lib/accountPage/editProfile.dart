@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'package:snax/accountPage/accountPage.dart';
 import 'package:snax/backend/backend.dart';
 import 'package:snax/backend/requests.dart';
 import 'package:snax/helpers.dart';
@@ -46,6 +45,7 @@ class _EditProfileState extends State<EditProfile> {
         elevation: 0,
         backgroundColor: SnaxColors.gradientStart,
         leadingWidth: 90,
+        brightness: Brightness.dark,
         leading: FlatButton(
             child: Text(
               'Cancel',
@@ -127,7 +127,7 @@ class _EditProfileState extends State<EditProfile> {
                         children: [
                           Container(
                             // color: Colors.blue,
-                            height: 250,
+                            height: 400,
                             width: double.infinity,
                             padding: EdgeInsets.only(left: 16, right: 16),
                             child: Column(
@@ -170,8 +170,10 @@ class _EditProfileState extends State<EditProfile> {
                     )
                   : null,
               backgroundImage: _imageFile == null
-                  ? NetworkImage('https://picsum.photos/200/300?grayscale')
-                  : FileImage(File(_imageFile.path)),
+                  ? NetworkImage(SnaxBackend.currentUser.photo)
+                  : FileImage(
+                      File(_imageFile.path),
+                    ),
             ),
           ],
         ),
@@ -229,7 +231,7 @@ class _EditProfileState extends State<EditProfile> {
         _imageFile = pickedFile;
       });
     } catch (error) {
-      Fluttertoast.showToast(msg: "Failed to upload profile photo");
+      print("Failed to upload profile photo");
     }
     setState(() {
       this.uploadingImage = false;
@@ -295,7 +297,7 @@ class _EditProfileState extends State<EditProfile> {
   Widget _bioTextField() {
     return Material(
       elevation: 0,
-      color: Colors.transparent,
+      // color: Colors.blue,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
@@ -304,8 +306,8 @@ class _EditProfileState extends State<EditProfile> {
           LengthLimitingTextInputFormatter(150),
         ],
         controller: bioController,
-        minLines: 4,
-        maxLines: 4,
+        minLines: 1,
+        maxLines: 10,
         scrollPhysics: BouncingScrollPhysics(),
         decoration: InputDecoration(
           border: OutlineInputBorder(
