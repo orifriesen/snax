@@ -9,7 +9,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
-
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'dart:math';
 // written by escher
 
 FirebaseApp fbApp;
@@ -17,6 +18,7 @@ FirebaseAuth fbAuth;
 FirebaseFirestore fbStore;
 FirebaseStorage fbStorage;
 FirebaseFunctions fbCloud;
+FirebaseMessaging fbMessaging;
 
 Future<void> initializeFirebase() async {
   print("Initializing Firebase");
@@ -26,6 +28,7 @@ Future<void> initializeFirebase() async {
   fbStore = FirebaseFirestore.instance;
   fbCloud = FirebaseFunctions.instance;
   fbStorage = FirebaseStorage.instance;
+  fbMessaging = FirebaseMessaging.instance;
   //Add listeners
   fbAuth.authStateChanges().listen((User user) async {
     if (user == null) {
@@ -39,8 +42,33 @@ Future<void> initializeFirebase() async {
       //Grab the user's data from the server
       SnaxBackend.currentUser = await SnaxBackend.auth.getUserInfo(user);
       print("got current user," + SnaxBackend.currentUser.username);
+      //Try to get permission to send notifications
+      var notificationRequest = await fbMessaging.requestPermission(
+          alert: true,
+          announcement: false,
+          badge: true,
+          carPlay: false,
+          criticalAlert: false,
+          provisional: false,
+          sound: true);
+      print(notificationRequest.authorizationStatus);
+      // Any time the token refreshes, store this in the database too.
+      if (notificationRequest.authorizationStatus ==
+          AuthorizationStatus.authorized) {
+        var token = await FirebaseMessaging.instance.getToken();
+        print("got FCM token");
+        print(token);
+        //Check if the token is already in firebase
+        try {
+          await SnaxBackend.auth.uploadFCMToken(token);
+          print("Uploaded FCM Token to Firebase");
+        } catch (error) {
+          print(error);
+        }
+      }
     }
   });
+
   await Hive.initFlutter();
   //uncomment to show login screen on startup
   //navigatorKey.currentState.pushNamed("/login");
@@ -69,7 +97,9 @@ class SnaxUser {
     this.userIsFollowing = false;
   }
 
-  SnaxUser(this.username, this.name, this.uid, this.bio, this.followerCount, this.followingCount, {this.photo,this.userIsFollowing = false});
+  SnaxUser(this.username, this.name, this.uid, this.bio, this.followerCount,
+      this.followingCount,
+      {this.photo, this.userIsFollowing = false});
 }
 
 class SnackSearchResultItem {
@@ -109,9 +139,13 @@ class SnackItem {
   int numberOfRatingsThisWeek;
   String image;
   String banner;
+
+  String transitionId;
   SnackItem(this.name, this.id, this.type, this.upc, this.averageRatings,
       this.numberOfRatings, this.numberOfRatingsThisWeek, this.image,
-      {this.banner});
+      {this.banner}) {
+    this.transitionId = getRandomString(10);
+  }
 }
 
 //A snack rating that is calculated, no user data is attached
@@ -158,3 +192,10 @@ class SnackUserRating {
       this.sweetness,
       this.spicyness);
 }
+
+//For generating random strings
+const _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+Random _rnd = Random();
+
+String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
+    length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));

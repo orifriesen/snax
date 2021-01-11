@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'package:snax/accountPage/accountPage.dart';
 import 'package:snax/backend/backend.dart';
 import 'package:snax/backend/requests.dart';
 import 'package:snax/helpers.dart';
@@ -46,6 +45,7 @@ class _EditProfileState extends State<EditProfile> {
         elevation: 0,
         backgroundColor: SnaxColors.gradientStart,
         leadingWidth: 90,
+        brightness: Brightness.dark,
         leading: FlatButton(
             child: Text(
               'Cancel',

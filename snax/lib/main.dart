@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     globalContext = context;
     return Phoenix(
-          child: MaterialApp(
+      child: MaterialApp(
         navigatorKey: navigatorKey,
         routes: {
           //Route the app will stay in most of the time
@@ -55,11 +55,17 @@ void main() {
     SnaxBackend.search("Cheet").then((value) {
       DemoValues.items = value;
     });
-    if (fbAuth.currentUser != null) fbAuth.currentUser.getIdToken().then((token) => printWrapped("USER REQUEST TOKEN =-=-=-=-=-=-=-=-=-=-=-\n"+token+"\n=-=-=-=-=-=-=-=-=-=-=-"));
-    
-    // SnaxBackend.getFollowers("AF9IkBebqtSAtMprjipQglu6B1D2").then((users) {
-    //   users.forEach((u) { print("${u.name} - ${u.username}"); });
-    // });
+    if (fbAuth.currentUser != null)
+      fbAuth.currentUser.getIdToken().then((token) => printWrapped(
+          "USER REQUEST TOKEN =-=-=-=-=-=-=-=-=-=-=-\n" +
+              token +
+              "\n=-=-=-=-=-=-=-=-=-=-=-"));
+
+    SnaxBackend.getFollowing("92kBXfyxAKdkYcwYIRPo7SrKVKj1").then((users) {
+      users.forEach((u) {
+        print("${u.name} - ${u.username}");
+      });
+    });
 
     // SnaxBackend.updateProfile(username: "escher2",bio: "").then((_) {
     //     print("updated my bio from the app!");
@@ -67,16 +73,18 @@ void main() {
 
     // SnaxBackend.followUser("aWBb2fFQL5as5QiUs9leo3DiA1C3").then((_) {});
 
-    SnaxBackend.feedGetTrendingPosts().then((posts) {
-      print("posts for trending");
-      for (var post in posts) {
-        print(post.body);
-      }
-    });
+    // SnaxBackend.feedGetTrendingPosts().then((posts) {
+    //   print("posts for trending");
+    //   for (var post in posts) {
+    //     print(post.body);
+    //   }
+    // });
+
+    // SnaxBackend.searchUsers("esc").then((value) => print(value.length));
 
     //SnaxBackend.feedLikePost("rlUXJBRe1MfKXI49Ux8M").then((_) {});
 
-    // SnaxUser("doesntmatter", "notimportant", "AF9IkBebqtSAtMprjipQglu6B1D2", null, 0, 0).unfollow().then((_) { 
+    // SnaxUser("doesntmatter", "notimportant", "AF9IkBebqtSAtMprjipQglu6B1D2", null, 0, 0).unfollow().then((_) {
     //   print("followed a user");
     // });
 
@@ -116,4 +124,3 @@ void main() {
     // });
   });
 }
-

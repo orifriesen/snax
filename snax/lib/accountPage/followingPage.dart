@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:snax/backend/backend.dart';
-
 import 'package:snax/backend/requests.dart';
-import 'package:snax/accountPage/accountPage.dart';
 
 class FollowingPage extends StatefulWidget {
   String uid;

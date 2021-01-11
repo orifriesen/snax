@@ -14,7 +14,8 @@ class MainPage extends StatefulWidget {
   _MainPageState createState() => _MainPageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _MainPageState extends State<MainPage>
+    with AutomaticKeepAliveClientMixin<MainPage> {
   SnackItem chosenSnack;
 
   @override
@@ -70,7 +71,7 @@ class _MainPageState extends State<MainPage> {
                                         MaterialPageRoute(
                                             builder: (context) => ProductPage(
                                                 item: chosenSnack)));
-                                  }, showCards: false));
+                                  }, showCards: false, showUsers: true));
                             }),
                         IconButton(
                             icon: Icon(Icons.qr_code_scanner),
@@ -88,6 +89,9 @@ class _MainPageState extends State<MainPage> {
                 },
                 body: getTabBarPages())));
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 Widget getTabBarPages() {
@@ -201,10 +205,30 @@ class _TopList extends State<TopList>
 }
 
 Widget forYouTab(BuildContext context, List<SnackItem> snackList) {
-  return ListView(
-    children: [
-      getHorizontalList("Trending", context, snackList),
-      getHorizontalList("Top", context, snackList)
-    ],
-  );
+  return snackList != null
+      ? ListView(
+          padding: EdgeInsets.only(top: 12),
+          children: [
+            snackOfTheWeek(context, snackList[0]),
+            FutureBuilder(
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return getHorizontalList(
+                        "Trending", context, snapshot.data);
+                  } else {
+                    return Container(child: Center(child: CircularProgressIndicator()));
+                  }
+                },
+                future: SnaxBackend.getSnacksInCategory(
+                    "cracker", SnackListSort.trending)),
+            getHorizontalList("Top", context, snackList),
+            getMiniHorizontalList("Test", context, snackList)
+          ],
+        )
+      : Container(
+          child: Center(
+              child: CircularProgressIndicator(
+            valueColor: new AlwaysStoppedAnimation<Color>(SnaxColors.redAccent),
+          )),
+        );
 }
