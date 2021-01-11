@@ -33,23 +33,21 @@ class _ProductPageState extends State<ProductPage> {
         elevation: 0,
         actions: <Widget>[
           IconButton(
-                            icon: Icon(Icons.search),
-                            color: Colors.white,
-                            onPressed: () {
-                              showSearch(
-                                  context: context,
-                                  delegate: BarcodeAddSearch(
-                                      (SnackSearchResultItem
-                                          returnSnack) async {
-                                    chosenSnack = await SnaxBackend.getSnack(
-                                        returnSnack.id);
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => ProductPage(
-                                                item: chosenSnack)));
-                                  }, showCards: false, showUsers: true));
-                            }),
+              icon: Icon(Icons.search),
+              color: Colors.white,
+              onPressed: () {
+                showSearch(
+                    context: context,
+                    delegate: BarcodeAddSearch(
+                        (SnackSearchResultItem returnSnack) async {
+                      chosenSnack = await SnaxBackend.getSnack(returnSnack.id);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  ProductPage(item: chosenSnack)));
+                    }, showCards: false, showUsers: true));
+              }),
           IconButton(icon: const Icon(Icons.more_vert), onPressed: () {})
         ],
       ),
@@ -75,82 +73,91 @@ class _ProductPageState extends State<ProductPage> {
               bottom: false,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16.0, 8, 16, 16),
-                child: Container(
-                    decoration: BoxDecoration(
-                        color: isDark(context)
-                            ? SnaxColors.darkGreyGradientEnd
-                            : Colors.white,
-                        borderRadius: BorderRadius.circular(24),
-                        boxShadow: [
-                          BoxShadow(
-                              color: Color.fromARGB(36, 0, 0, 0),
-                              blurRadius: 12)
-                        ]),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(16),
-                                color: Colors.white),
-                            clipBehavior: Clip.hardEdge,
-                            padding: EdgeInsets.all(2),
-                            height: 64,
-                            width: 64,
-                            child: AspectRatio(
-                                aspectRatio: 1.0,
-                                child: Image.network(this.widget.item.image)),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 8),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 1.0),
-                                  child: Text(
-                                    this.widget.item.name,
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(1.0),
-                                  child: Row(
-                                    children: [
-                                      Text(this.widget.item.type.name,
+                child: Hero(
+                  key: Key(this.widget.item.id),
+                  tag: this.widget.item.transitionId,
+                  child: Material(
+                    color: Colors.transparent,
+                    child: Container(
+                        decoration: BoxDecoration(
+                            color: isDark(context)
+                                ? SnaxColors.darkGreyGradientEnd
+                                : Colors.white,
+                            borderRadius: BorderRadius.circular(24),
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Color.fromARGB(36, 0, 0, 0),
+                                  blurRadius: 12)
+                            ]),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(16),
+                                    color: Colors.white),
+                                clipBehavior: Clip.hardEdge,
+                                padding: EdgeInsets.all(2),
+                                height: 64,
+                                width: 64,
+                                child: AspectRatio(
+                                    aspectRatio: 1.0,
+                                    child:
+                                        Image.network(this.widget.item.image)),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 1.0),
+                                      child: Text(
+                                        this.widget.item.name,
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(1.0),
+                                      child: Row(
+                                        children: [
+                                          Text(this.widget.item.type.name,
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.grey[400])),
+                                          Icon(
+                                            Icons.arrow_forward_ios_rounded,
+                                            size: 14,
+                                            color: Colors.grey[400],
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(1.0),
+                                      child: Text(
+                                          display(this
+                                                  .widget
+                                                  .item
+                                                  .numberOfRatings) +
+                                              " total ratings",
                                           style: TextStyle(
                                               fontSize: 14,
                                               color: Colors.grey[400])),
-                                      Icon(
-                                        Icons.arrow_forward_ios_rounded,
-                                        size: 14,
-                                        color: Colors.grey[400],
-                                      )
-                                    ],
-                                  ),
+                                    )
+                                  ],
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.all(1.0),
-                                  child: Text(
-                                      display(this
-                                              .widget
-                                              .item
-                                              .numberOfRatings) +
-                                          " total ratings",
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.grey[400])),
-                                )
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    )),
+                              )
+                            ],
+                          ),
+                        )),
+                  ),
+                ),
               ),
             ),
             Expanded(
@@ -158,12 +165,18 @@ class _ProductPageState extends State<ProductPage> {
                 this.widget.item.numberOfRatings != 0 &&
                         this.widget.item.numberOfRatings != null
                     ? criteriaList()
-                    : Padding(padding: EdgeInsets.only(top: 44),child: Center(
-                                      child: QuickSup.empty(
-                                          image: Icon(Icons.star_outline,size: 30,),
-                                          title: "No Ratings",
-                                          subtitle: "Have you tried this snack? Let us know what you think!"),
-                                    ))
+                    : Padding(
+                        padding: EdgeInsets.only(top: 44),
+                        child: Center(
+                          child: QuickSup.empty(
+                              image: Icon(
+                                Icons.star_outline,
+                                size: 30,
+                              ),
+                              title: "No Ratings",
+                              subtitle:
+                                  "Have you tried this snack? Let us know what you think!"),
+                        ))
               ]),
             )
           ],
@@ -188,7 +201,11 @@ class _ProductPageState extends State<ProductPage> {
               child: Row(
                 children: [
                   Icon(Icons.star),
-                  Text("  Rate Snack ", style: TextStyle(fontSize: 16, letterSpacing: 0.1, fontWeight: FontWeight.bold)),
+                  Text("  Rate Snack ",
+                      style: TextStyle(
+                          fontSize: 16,
+                          letterSpacing: 0.1,
+                          fontWeight: FontWeight.bold)),
                 ],
               ),
             ),

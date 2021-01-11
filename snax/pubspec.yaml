@@ -26,7 +26,7 @@ dependencies:
   number_display: ^2.3.0
   crypto: ^2.1.5
   shared_preferences: ^0.5.12+4
-  fluttertoast: ^7.1.1
+  fluttertoast: ^7.1.6
   percent_indicator: ^2.1.8
   loading: ^1.0.2
   like_button: ^1.0.4
