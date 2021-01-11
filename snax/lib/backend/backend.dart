@@ -10,7 +10,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-
+import 'dart:math';
 // written by escher
 
 FirebaseApp fbApp;
@@ -139,9 +139,13 @@ class SnackItem {
   int numberOfRatingsThisWeek;
   String image;
   String banner;
+
+  String transitionId;
   SnackItem(this.name, this.id, this.type, this.upc, this.averageRatings,
       this.numberOfRatings, this.numberOfRatingsThisWeek, this.image,
-      {this.banner});
+      {this.banner}) {
+    this.transitionId = getRandomString(10);
+  }
 }
 
 //A snack rating that is calculated, no user data is attached
@@ -188,3 +192,10 @@ class SnackUserRating {
       this.sweetness,
       this.spicyness);
 }
+
+//For generating random strings
+const _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+Random _rnd = Random();
+
+String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
+    length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));

@@ -329,6 +329,7 @@ class SnaxBackend {
         .docs
         .map((e) => e.id)
         .toList();
+    if (userIds.length == 0) return [];
     List<QueryDocumentSnapshot> userDocs = (await fbStore
             .collection("users")
             .where(FieldPath.documentId, whereIn: userIds)
@@ -367,6 +368,7 @@ class SnaxBackend {
         .docs
         .map((e) => e.id)
         .toList();
+    if (userIds.length == 0) return [];
     List<QueryDocumentSnapshot> userDocs = (await fbStore
             .collection("users")
             .where(FieldPath.documentId, whereIn: userIds)
@@ -855,7 +857,8 @@ class SnaxBackend {
             result["data"]["bio"],
             result["data"]["followerCount"],
             result["data"]["followingCount"],
-            photo: imgUrl, userIsFollowing: followingBox.containsKey(result["id"])));
+            photo: imgUrl,
+            userIsFollowing: followingBox.containsKey(result["id"])));
       }
       await Hive.close();
       //Return the list
