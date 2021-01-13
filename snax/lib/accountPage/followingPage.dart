@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:snax/backend/backend.dart';
+
 import 'package:snax/backend/requests.dart';
 
 class FollowingPage extends StatefulWidget {
@@ -16,21 +18,20 @@ class _FollowingPageState extends State<FollowingPage> {
       ),
       body: FutureBuilder(
         future: SnaxBackend.getFollowing(this.widget.uid),
-        builder: (context, index) {
-          if (index.connectionState == ConnectionState.done) {
-            return ListView(
-              children: [
-                Container(
-                  child: Text("${SnaxBackend.currentUser.name}"),
-                )
-              ],
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            print("working");
+            return ListView.builder(
+              itemCount: snapshot.data.length,
+              itemBuilder: (context, index) {
+                return Text(snapshot.data[index].username);
+              },
             );
           } else {
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator());
           }
         },
       ),
-      // body: postFollowing(this.widget.uid),
     );
   }
 }

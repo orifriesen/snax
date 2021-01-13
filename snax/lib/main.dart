@@ -82,7 +82,7 @@ void main() {
 
     // SnaxBackend.searchUsers("esc").then((value) => print(value.length));
 
-    //SnaxBackend.feedLikePost("rlUXJBRe1MfKXI49Ux8M").then((_) {});
+    // SnaxBackend.feedLikePost("rlUXJBRe1MfKXI49Ux8M").then((_) {});
 
     // SnaxUser("doesntmatter", "notimportant", "AF9IkBebqtSAtMprjipQglu6B1D2", null, 0, 0).unfollow().then((_) {
     //   print("followed a user");
@@ -92,7 +92,7 @@ void main() {
     //   print("GOT SNACKS FROM CATEGORY!");
     //   snacks.forEach((snack) { print(snack.name); });
     // });
-    //SnaxBackend.auth.logOut(restartApp: false).then((_) { print("logged out"); });
+    // SnaxBackend.auth.logOut(restartApp: false).then((_) { print("logged out"); });
     // SnaxBackend.feedCommentOnPost("rlUXJBRe1MfKXI49Ux8M", "fyp").then((_) {
     //   print("made a comment");
     // });

@@ -20,6 +20,7 @@ import 'package:url_launcher/url_launcher.dart';
 class GlobalAccountPage extends StatefulWidget {
   GlobalAccountPage(this.user, {this.isAccountPage = false});
   SnaxUser user;
+  String uid;
   bool isAccountPage;
   @override
   _GlobalAccountPageState createState() => _GlobalAccountPageState();

@@ -22,7 +22,6 @@ class _EditProfileState extends State<EditProfile> {
   final bioController = TextEditingController();
   final usernameController = TextEditingController();
 
-  bool maxedLines = false;
   bool uploadingImage = false;
   bool error = false;
 
@@ -219,6 +218,7 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
+  //* This is the camera
   takePhoto(ImageSource source, BuildContext context) async {
     Navigator.of(context).pop();
     setState(() {

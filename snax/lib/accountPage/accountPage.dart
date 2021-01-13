@@ -13,6 +13,8 @@ import 'package:snax/backend/backend.dart';
 import 'package:snax/helpers.dart';
 
 class AccountPage extends StatefulWidget {
+  SnaxUser user;
+  String uid;
   @override
   _AccountPageState createState() => _AccountPageState();
 }
@@ -147,7 +149,8 @@ class _AccountPageState extends State<AccountPage>
                   ),
                 ),
                 [
-                  PostTab(),
+                  //! Not sure if this is correct
+                  PostTab(this.widget.user),
                   ReviewedTab(),
                 ][_tabController.index],
               ],
@@ -224,7 +227,6 @@ class _AccountPageState extends State<AccountPage>
                                   setState(() {
                                     bioShowTextFlag = !bioShowTextFlag;
                                   });
-                                  print(numLines);
                                 },
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
