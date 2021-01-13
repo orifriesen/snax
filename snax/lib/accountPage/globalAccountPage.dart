@@ -351,8 +351,11 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
             children: [
               FlatButton(
                 onPressed: () => {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => FollowingPage(this.widget.user.uid))),
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => FollowingPage(
+                              this.widget.user.uid, this.widget.user))),
                 },
                 child: _following(),
               ),
@@ -363,8 +366,11 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
             children: [
               FlatButton(
                 onPressed: () => {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => FollowersPage(this.widget.user.uid))),
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => FollowersPage(
+                              this.widget.user.uid, this.widget.user))),
                 },
                 child: _followers(),
               )
@@ -375,43 +381,44 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
             children: [
               Container(
                 child: RaisedButton(
-                    color: Colors.transparent,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      side: BorderSide(color: Colors.white, width: 2),
-                    ),
-                    onPressed: () {
-                      if (this.widget.user.uid == SnaxBackend.currentUser.uid) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => EditProfile(),
-                          ),
-                        ).whenComplete(
-                          () => setState(() {}),
-                        );
-                      } else if (this.widget.user.userIsFollowing) {
-                        this.widget.user.unfollow().catchError((_) {
-                          //Unfollow Failed, reset isFollowing
-                          this.isFollowing = true;
-                          this.widget.user.followerCount++;
-                        });
-                        print("unfollowed");
-                        this.isFollowing = false;
-                        this.widget.user.followerCount--;
-                      } else {
-                        this.widget.user.follow().catchError((_) {
-                          this.isFollowing = false;
-                          this.widget.user.followerCount++;
-                        });
-                        print("followed");
+                  color: Colors.transparent,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    side: BorderSide(color: Colors.white, width: 2),
+                  ),
+                  onPressed: () {
+                    if (this.widget.user.uid == SnaxBackend.currentUser.uid) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EditProfile(),
+                        ),
+                      ).whenComplete(
+                        () => setState(() {}),
+                      );
+                    } else if (this.widget.user.userIsFollowing) {
+                      this.widget.user.unfollow().catchError((_) {
+                        //Unfollow Failed, reset isFollowing
                         this.isFollowing = true;
                         this.widget.user.followerCount++;
-                      }
-                      this.setState(() {});
-                    },
-                    child: Text(() {
+                      });
+                      print("unfollowed");
+                      this.isFollowing = false;
+                      this.widget.user.followerCount--;
+                    } else {
+                      this.widget.user.follow().catchError((_) {
+                        this.isFollowing = false;
+                        this.widget.user.followerCount++;
+                      });
+                      print("followed");
+                      this.isFollowing = true;
+                      this.widget.user.followerCount++;
+                    }
+                    this.setState(() {});
+                  },
+                  child: Text(
+                    () {
                       if (this.widget.user.uid == SnaxBackend.currentUser.uid) {
                         return "Edit Profile";
                       } else if (this.isFollowing) {
@@ -420,9 +427,11 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                         return "Follow";
                       }
                     }(),
-                        style: TextStyle(
-                          color: Colors.white,
-                        ))),
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
