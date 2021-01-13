@@ -352,7 +352,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
               FlatButton(
                 onPressed: () => {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => FollowingPage())),
+                      MaterialPageRoute(builder: (context) => FollowingPage(this.widget.user.uid))),
                 },
                 child: _following(),
               ),
@@ -364,7 +364,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
               FlatButton(
                 onPressed: () => {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => FollowersPage())),
+                      MaterialPageRoute(builder: (context) => FollowersPage(this.widget.user.uid))),
                 },
                 child: _followers(),
               )

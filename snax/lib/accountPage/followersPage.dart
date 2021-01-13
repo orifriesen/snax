@@ -4,6 +4,7 @@ import 'package:snax/backend/requests.dart';
 
 class FollowersPage extends StatefulWidget {
   String uid;
+  FollowersPage(this.uid);
   @override
   _FollowersPageState createState() => _FollowersPageState();
 }
