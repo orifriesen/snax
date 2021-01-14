@@ -7,50 +7,51 @@ import 'package:snax/backend/backend.dart';
 import 'package:snax/backend/requests.dart';
 import 'package:snax/helpers.dart';
 
-class FollowingPage extends StatefulWidget {
-  SnaxUser user;
-  String uid;
-  FollowingPage(this.uid, this.user);
+class UserListPage extends StatefulWidget {
+  Future fetcher;
+  String pageTitle;
+  UserListPage(this.pageTitle, this.fetcher);
 
   @override
-  _FollowingPageState createState() => _FollowingPageState();
+  _UserListPageState createState() => _UserListPageState();
 }
 
-class _FollowingPageState extends State<FollowingPage> {
+class _UserListPageState extends State<UserListPage> {
   @override
   void initState() {
-    super.initState();
-    this.isFollowing = this.widget.user.userIsFollowing;
+    super.initState(); 
   }
-
-  bool isFollowing;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Following'),
+        title: Text(this.widget.pageTitle),
+        brightness: Brightness.dark,
       ),
       body: FutureBuilder(
-        future: SnaxBackend.getFollowing(this.widget.uid),
+        future: this.widget.fetcher,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return ListView.builder(
+              padding: EdgeInsets.only(top: 16),
               itemCount: snapshot.data.length,
               itemBuilder: (context, index) {
+                SnaxUser user = snapshot.data[index];
+                print(user.userIsFollowing);
                 return ListTile(
                   title: Text(snapshot.data[index].username),
                   leading: CircleAvatar(
                       backgroundImage:
                           //! NOT RIGHT -- Escher will fix this
-                          NetworkImage(SnaxBackend.currentUser.photo)),
+                          (user.photo != null) ? NetworkImage(user.photo) : AssetImage("assets/blank_user.png")),
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) =>
                             //! NOT RIGHT -- Leads to current user's profile
-                            GlobalAccountPage(this.widget.user),
+                            GlobalAccountPage(user),
                       ),
                     );
                   },
@@ -58,45 +59,45 @@ class _FollowingPageState extends State<FollowingPage> {
                     onPressed: () {
                       //! This whole section only works when following
                       //! Changes/Updates all the users rather than one
-                      if (this.widget.user.userIsFollowing) {
-                        this.widget.user.unfollow().catchError((_) {
-                          //Unfollow Failed, reset isFollowing
-                          this.isFollowing = true;
-                          this.widget.user.followerCount++;
-                        });
-                        this.isFollowing = false;
-                        this.widget.user.followerCount--;
-                      } else {
-                        this.widget.user.follow().catchError((_) {
-                          this.isFollowing = false;
-                          this.widget.user.followerCount++;
-                        });
-                        this.isFollowing = true;
-                        this.widget.user.followerCount++;
-                      }
-                      this.setState(() {});
+                      // if (this.widget.user.userIsFollowing) {
+                      //   this.widget.user.unfollow().catchError((_) {
+                      //     //Unfollow Failed, reset isFollowing
+                      //     this.isFollowing = true;
+                      //     this.widget.user.followerCount++;
+                      //   });
+                      //   this.isFollowing = false;
+                      //   this.widget.user.followerCount--;
+                      // } else {
+                      //   this.widget.user.follow().catchError((_) {
+                      //     this.isFollowing = false;
+                      //     this.widget.user.followerCount++;
+                      //   });
+                      //   this.isFollowing = true;
+                      //   this.widget.user.followerCount++;
+                      // }
+                      // this.setState(() {});
                     },
                     height: 30,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                       side: BorderSide(
-                          color: this.isFollowing
-                              ? Colors.grey
+                          color: user.userIsFollowing
+                              ? SnaxColors.subtext
                               : Colors.transparent),
                     ),
                     child: Text(
                       () {
-                        if (this.isFollowing) {
+                        if (user.userIsFollowing) {
                           return "Unfollow";
                         } else {
                           return "Follow";
                         }
                       }(),
                       style: TextStyle(
-                        color: Colors.white,
+                        color: SnaxColors.subtext,
                       ),
                     ),
-                    color: this.isFollowing
+                    color: user.userIsFollowing
                         ? Colors.transparent
                         : SnaxColors.redAccent,
                   ),

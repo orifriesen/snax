@@ -26,6 +26,7 @@ abstract class SnaxColors {
   static Color darkGreyGradientEnd = HexColor.fromHex("2C2C2C");
 
   static Color redAccent = HexColor.fromHex("FF4844");
+  static Color redAppBarColor = Color.fromRGBO(255, 75, 43, 1.0);
 
   static Color subtext = HexColor.fromHex("ABABAB");
 }

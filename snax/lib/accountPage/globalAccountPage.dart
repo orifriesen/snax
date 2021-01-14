@@ -4,8 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:snax/accountPage/editProfile.dart';
 
-import 'package:snax/accountPage/followersPage.dart';
-import 'package:snax/accountPage/followingPage.dart';
+import 'package:snax/accountPage/userListPage.dart';
 import 'package:snax/accountPage/settingsPage.dart';
 import 'package:snax/backend/backend.dart';
 
@@ -249,16 +248,19 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
       children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              image: DecorationImage(
-                fit: BoxFit.cover,
-                image: NetworkImage(this.widget.user.photo == null
-                    ? 'https://picsum.photos/200/300?grayscale'
-                    : this.widget.user.photo),
+          child: Hero(
+            tag: "profile-photo",
+                      child: Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: NetworkImage(this.widget.user.photo == null
+                      ? 'https://picsum.photos/200/300?grayscale'
+                      : this.widget.user.photo),
+                ),
               ),
             ),
           ),
@@ -354,8 +356,8 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => FollowingPage(
-                              this.widget.user.uid, this.widget.user))),
+                          builder: (context) => UserListPage("Following",
+                              SnaxBackend.getFollowing(this.widget.user.uid)))),
                 },
                 child: _following(),
               ),
@@ -369,8 +371,8 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => FollowersPage(
-                              this.widget.user.uid, this.widget.user))),
+                          builder: (context) => UserListPage("Followers",
+                              SnaxBackend.getFollowers(this.widget.user.uid)))),
                 },
                 child: _followers(),
               )

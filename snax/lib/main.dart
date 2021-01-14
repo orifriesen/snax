@@ -33,6 +33,7 @@ class MyApp extends StatelessWidget {
             accentColor: SnaxColors.redAccent,
             cursorColor: SnaxColors.redAccent,
             brightness: ThemeData.dark().brightness,
+            appBarTheme: AppBarTheme(color: SnaxColors.redAppBarColor),
             cupertinoOverrideTheme:
                 CupertinoThemeData(primaryColor: SnaxColors.redAccent)),
         theme: ThemeData(
@@ -40,7 +41,7 @@ class MyApp extends StatelessWidget {
             accentColor: SnaxColors.redAccent,
             cupertinoOverrideTheme:
                 CupertinoThemeData(primaryColor: SnaxColors.redAccent),
-            appBarTheme: AppBarTheme(brightness: Brightness.light)),
+            appBarTheme: AppBarTheme(brightness: Brightness.light, color: SnaxColors.redAppBarColor)),
       ),
     );
   }
@@ -61,11 +62,11 @@ void main() {
               token +
               "\n=-=-=-=-=-=-=-=-=-=-=-"));
 
-    SnaxBackend.getFollowing("92kBXfyxAKdkYcwYIRPo7SrKVKj1").then((users) {
-      users.forEach((u) {
-        print("${u.name} - ${u.username}");
-      });
-    });
+    // SnaxBackend.getFollowing("92kBXfyxAKdkYcwYIRPo7SrKVKj1").then((users) {
+    //   users.forEach((u) {
+    //     print("${u.name} - ${u.username}");
+    //   });
+    // });
 
     // SnaxBackend.updateProfile(username: "escher2",bio: "").then((_) {
     //     print("updated my bio from the app!");

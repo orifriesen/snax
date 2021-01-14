@@ -21,13 +21,9 @@ class _SettingsPageState extends State<SettingsPage> {
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: !isDark(context)
-          ? SnaxColors.redAccent
-          : Theme.of(context).canvasColor,
       appBar: AppBar(
         brightness: Brightness.dark,
         elevation: 1,
-        backgroundColor: SnaxColors.redAccent,
         title: Text('Settings'),
       ),
       bottomNavigationBar: BottomAppBar(
@@ -114,11 +110,11 @@ class _SettingsPageState extends State<SettingsPage> {
                 children: [
                   Icon(
                     Icons.logout,
-                    color: Colors.white,
+                    color: SnaxColors.redAccent,
                   ),
                   Text(
                     " Log Out",
-                    style: TextStyle(color: Colors.white, fontSize: 18),
+                    style: TextStyle(color: SnaxColors.redAccent, fontSize: 18),
                   ),
                 ],
               ),
@@ -197,13 +193,11 @@ class _SettingsPageState extends State<SettingsPage> {
             children: [
               Icon(
                 iconData,
-                color: Colors.white,
               ),
               SizedBox(width: 8),
               Text(
                 title,
                 style: TextStyle(
-                  color: Colors.white,
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
@@ -212,7 +206,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           Icon(
             Icons.arrow_forward_ios,
-            color: Colors.white70,
+            color: SnaxColors.subtext
           )
         ],
       ),
@@ -234,13 +228,11 @@ class _SettingsPageState extends State<SettingsPage> {
             children: [
               Icon(
                 iconData,
-                color: Colors.white,
               ),
               SizedBox(width: 8),
               Text(
                 title,
                 style: TextStyle(
-                  color: Colors.white,
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
@@ -249,7 +241,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           Icon(
             Icons.arrow_forward_ios,
-            color: Colors.white70,
+            color: SnaxColors.subtext,
           )
         ],
       ),
@@ -325,13 +317,11 @@ class _SettingsPageState extends State<SettingsPage> {
             children: [
               Icon(
                 iconData,
-                color: Colors.white,
               ),
               SizedBox(width: 8),
               Text(
                 title,
                 style: TextStyle(
-                  color: Colors.white,
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
@@ -340,7 +330,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           Icon(
             Icons.arrow_forward_ios,
-            color: Colors.white70,
+            color: SnaxColors.subtext,
           )
         ],
       ),
@@ -368,13 +358,11 @@ class _SettingsPageState extends State<SettingsPage> {
             children: [
               Icon(
                 iconData,
-                color: Colors.white,
               ),
               SizedBox(width: 8),
               Text(
                 title,
                 style: TextStyle(
-                  color: Colors.white,
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
@@ -383,7 +371,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           Icon(
             Icons.arrow_forward_ios,
-            color: Colors.white70,
+            color: SnaxColors.subtext,
           )
         ],
       ),

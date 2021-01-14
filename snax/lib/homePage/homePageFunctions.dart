@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:number_display/number_display.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
@@ -532,31 +534,45 @@ Widget snackOfTheWeek(BuildContext context, SnackItem snackItem) {
                 child: ClipRRect(
                     borderRadius: BorderRadius.circular(18),
                     child: Image.network(snackItem.banner))),
-            Padding(
-              padding: EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Snack of the Week:",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-                  Container(height: 2),
-                  Text(snackItem.name + "!",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
-                  Container(height: 2),
-                  Row(
+            Container(
+              
+              decoration: BoxDecoration(
+                gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [SnaxColors.gradientStart.withAlpha(210), SnaxColors.gradientEnd.withAlpha(80)]),
+                borderRadius: BorderRadius.circular(18),
+              ),
+              child: AspectRatio(
+                aspectRatio: 4/2,
+                child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(snackItem.averageRatings.overall.toStringAsFixed(1),
-                          style: TextStyle(fontSize: 20)),
-                      Icon(
-                        Icons.star_rounded,
-                        color: SnaxColors.redAccent,
-                        size: 28,
+                      Text("Snack of the Week:",
+                          style:
+                              TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.white)),
+                      Container(height: 2),
+                      Text(snackItem.name + "!",
+                          style:
+                              TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white)),
+                      Container(height: 2),
+                      Row(
+                        children: [
+                          Text(
+                              ((snackItem.averageRatings != null)
+                                  ? snackItem.averageRatings.overall
+                                      .toStringAsFixed(1)
+                                  : "No Ratings") + " ",
+                              style: TextStyle(fontSize: 20, color: Colors.white)),
+                          Icon(
+                            Icons.star_rounded,
+                            color: Colors.white,
+                            size: 23,
+                          )
+                        ],
                       )
                     ],
-                  )
-                ],
+                  ),
+                ),
               ),
             )
           ])));
