@@ -43,50 +43,45 @@ class _UserListPageState extends State<UserListPage> {
                     return ListTile(
                       title: Text(snapshot.data[index].username),
                       leading: CircleAvatar(
-                          backgroundImage:
-                              //! NOT RIGHT -- Escher will fix this
-                              (user.photo != null)
-                                  ? NetworkImage(user.photo)
-                                  : AssetImage("assets/blank_user.png")),
+                          backgroundImage: (user.photo != null)
+                              ? NetworkImage(user.photo)
+                              : AssetImage("assets/blank_user.png")),
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                //! NOT RIGHT -- Leads to current user's profile
-                                GlobalAccountPage(user),
+                            builder: (context) => GlobalAccountPage(user),
                           ),
                         );
                       },
                       trailing: FlatButton(
                         onPressed: () {
-                          //! This whole section only works when following
-                          //! Changes/Updates all the users rather than one
-                          // if (this.widget.user.userIsFollowing) {
-                          //   this.widget.user.unfollow().catchError((_) {
-                          //     //Unfollow Failed, reset isFollowing
-                          //     this.isFollowing = true;
-                          //     this.widget.user.followerCount++;
-                          //   });
-                          //   this.isFollowing = false;
-                          //   this.widget.user.followerCount--;
-                          // } else {
-                          //   this.widget.user.follow().catchError((_) {
-                          //     this.isFollowing = false;
-                          //     this.widget.user.followerCount++;
-                          //   });
-                          //   this.isFollowing = true;
-                          //   this.widget.user.followerCount++;
-                          // }
-                          // this.setState(() {});
+                          if (user.userIsFollowing) {
+                            user.unfollow().catchError((_) {
+                              //Unfollow Failed, reset isFollowing
+                              user.userIsFollowing = true;
+                              user.followerCount++;
+                            });
+                            user.userIsFollowing = false;
+                            user.followerCount--;
+                          } else {
+                            user.follow().catchError((_) {
+                              user.userIsFollowing = false;
+                              user.followerCount++;
+                            });
+                            user.userIsFollowing = true;
+                            user.followerCount++;
+                          }
+                          this.setState(() {});
                         },
                         height: 30,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                           side: BorderSide(
-                              color: user.userIsFollowing
-                                  ? SnaxColors.subtext
-                                  : Colors.transparent),
+                            color: user.userIsFollowing
+                                ? Colors.grey
+                                : Colors.transparent,
+                          ),
                         ),
                         child: Text(
                           () {
@@ -96,9 +91,7 @@ class _UserListPageState extends State<UserListPage> {
                               return "Follow";
                             }
                           }(),
-                          style: TextStyle(
-                            color: SnaxColors.subtext,
-                          ),
+                          style: TextStyle(color: Colors.white),
                         ),
                         color: user.userIsFollowing
                             ? Colors.transparent

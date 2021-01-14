@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:snax/accountPage/globalAccountPage.dart';
 
-import 'package:snax/feedPage/post.dart';
 import 'package:snax/backend/backend.dart';
 import 'package:snax/backend/requests.dart';
 import 'package:snax/helpers.dart';
@@ -41,10 +40,6 @@ class _FollowingPageState extends State<FollowingPage> {
                 return ListTile(
                   title: Text(snapshot.data[index].username),
                   subtitle: Text(snapshot.data[index].name),
-                  leading: CircleAvatar(
-                      backgroundImage:
-                          //! NOT RIGHT -- Escher will fix this
-                          NetworkImage(SnaxBackend.currentUser.photo)),
                   onTap: () {
                     Navigator.push(
                       context,
