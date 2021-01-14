@@ -6,6 +6,7 @@ import 'package:snax/feedPage/post.dart';
 import 'package:snax/backend/backend.dart';
 import 'package:snax/backend/requests.dart';
 import 'package:snax/helpers.dart';
+import 'package:sup/quick_sup.dart';
 
 class FollowersPage extends StatefulWidget {
   SnaxUser user;
@@ -32,82 +33,91 @@ class _FollowersPageState extends State<FollowersPage> {
         title: Text('Followers'),
       ),
       body: FutureBuilder(
-        future: SnaxBackend.getFollowers(this.widget.uid),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return ListView.builder(
-              itemCount: snapshot.data.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(snapshot.data[index].username),
-                  leading: CircleAvatar(
-                      backgroundImage:
-                          //! NOT RIGHT -- Escher will fix this
-                          NetworkImage(SnaxBackend.currentUser.photo)),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            //! NOT RIGHT -- Leads to current user's profile
-                            GlobalAccountPage(this.widget.user),
+          future: SnaxBackend.getFollowers(this.widget.uid),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              if (this.widget.user.followerCount == 0) {
+                return Padding(
+                  padding: const EdgeInsets.only(left: 24, top: 75, right: 24),
+                  child: Center(
+                    child: Column(
+                      children: [
+                        Text(
+                          "No Followers",
+                          style: TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.bold),
+                        ),
+                        Column(
+                          children: [
+                            Text(
+                              "@" +
+                                  this.widget.user.username +
+                                  " has no followers",
+                            ),
+                            Text("Be the first the follow!")
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                );
+              } else {
+                return ListView.builder(
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(snapshot.data[index].username),
+                      subtitle: Text(snapshot.data[index].name),
+                      leading: CircleAvatar(
+                          backgroundImage:
+                              //! NOT RIGHT -- Escher will fix this
+                              NetworkImage(SnaxBackend.currentUser.photo)),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                //! NOT RIGHT -- Leads to current user's profile
+                                GlobalAccountPage(this.widget.user),
+                          ),
+                        );
+                      },
+                      trailing: FlatButton(
+                        onPressed: () {},
+                        height: 30,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          side: BorderSide(
+                              color: this.isFollowing
+                                  ? Colors.grey[600]
+                                  : Colors.transparent),
+                        ),
+                        child: Text(
+                          () {
+                            if (this.isFollowing) {
+                              print("followed: ${this.widget.user.name}");
+                              return "Unfollow";
+                            } else {
+                              print("unfollowed: ${this.widget.user.name}");
+                              return "Follow";
+                            }
+                          }(),
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                        color: this.isFollowing
+                            ? Colors.transparent
+                            : SnaxColors.redAccent,
                       ),
                     );
                   },
-                  trailing: FlatButton(
-                    onPressed: () {
-                      //! This whole section only works when following
-                      //! Changes/Updates all the users rather than one
-                      if (this.widget.user.userIsFollowing) {
-                        this.widget.user.unfollow().catchError((_) {
-                          //Unfollow Failed, reset isFollowing
-                          this.isFollowing = true;
-                          this.widget.user.followerCount++;
-                        });
-                        this.isFollowing = false;
-                        this.widget.user.followerCount--;
-                      } else {
-                        this.widget.user.follow().catchError((_) {
-                          this.isFollowing = false;
-                          this.widget.user.followerCount++;
-                        });
-                        this.isFollowing = true;
-                        this.widget.user.followerCount++;
-                      }
-                      this.setState(() {});
-                    },
-                    height: 30,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      side: BorderSide(
-                          color: this.isFollowing
-                              ? Colors.grey
-                              : Colors.transparent),
-                    ),
-                    child: Text(
-                      () {
-                        if (this.isFollowing) {
-                          return "Unfollow";
-                        } else {
-                          return "Follow";
-                        }
-                      }(),
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
-                    color: this.isFollowing
-                        ? Colors.transparent
-                        : SnaxColors.redAccent,
-                  ),
                 );
-              },
-            );
-          } else {
-            return Center(child: CircularProgressIndicator());
-          }
-        },
-      ),
+              }
+            } else {
+              return Center(child: CircularProgressIndicator());
+            }
+          }),
     );
   }
 }

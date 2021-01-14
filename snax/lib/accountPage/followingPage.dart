@@ -40,6 +40,7 @@ class _FollowingPageState extends State<FollowingPage> {
               itemBuilder: (context, index) {
                 return ListTile(
                   title: Text(snapshot.data[index].username),
+                  subtitle: Text(snapshot.data[index].name),
                   leading: CircleAvatar(
                       backgroundImage:
                           //! NOT RIGHT -- Escher will fix this
@@ -55,27 +56,7 @@ class _FollowingPageState extends State<FollowingPage> {
                     );
                   },
                   trailing: FlatButton(
-                    onPressed: () {
-                      //! This whole section only works when following
-                      //! Changes/Updates all the users rather than one
-                      if (this.widget.user.userIsFollowing) {
-                        this.widget.user.unfollow().catchError((_) {
-                          //Unfollow Failed, reset isFollowing
-                          this.isFollowing = true;
-                          this.widget.user.followerCount++;
-                        });
-                        this.isFollowing = false;
-                        this.widget.user.followerCount--;
-                      } else {
-                        this.widget.user.follow().catchError((_) {
-                          this.isFollowing = false;
-                          this.widget.user.followerCount++;
-                        });
-                        this.isFollowing = true;
-                        this.widget.user.followerCount++;
-                      }
-                      this.setState(() {});
-                    },
+                    onPressed: () {},
                     height: 30,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
