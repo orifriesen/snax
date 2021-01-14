@@ -208,6 +208,7 @@ Widget forYouTab(BuildContext context, List<SnackItem> snackList) {
   return snackList != null
       ? FutureBuilder(
           future: Future.wait([
+            SnaxBackend.snackOfTheWeek(),
             SnaxBackend.chartTrending(),
             SnaxBackend.chartTop(),
             SnaxBackend.getSnacksInCategory("chip", SnackListSort.trending),
@@ -218,13 +219,13 @@ Widget forYouTab(BuildContext context, List<SnackItem> snackList) {
               return ListView(
                 padding: EdgeInsets.only(top: 12),
                 children: [
-                  snackOfTheWeek(context, snackList[0]),
-                  getHorizontalList("Trending", context, snapshot.data[0]),
-                  getHorizontalList("Top", context, snapshot.data[1]),
+                  snackOfTheWeek(context, snapshot.data[0]),
+                  getHorizontalList("Trending", context, snapshot.data[1]),
+                  getHorizontalList("Top", context, snapshot.data[2]),
                   getMiniHorizontalList(
-                      "Trending in Chips", context, snapshot.data[2]),
+                      "Trending in Chips", context, snapshot.data[3]),
                   getMiniHorizontalList(
-                      "Top in Crackers", context, snapshot.data[3]),
+                      "Top in Crackers", context, snapshot.data[4]),
                 ],
               );
             } else {
