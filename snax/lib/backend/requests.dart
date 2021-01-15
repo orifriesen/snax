@@ -79,16 +79,16 @@ class SnaxBackend {
   }
 
   // Snack of the week
-  static Future<SnackItem> snackOfTheWeek(
-      {bool forceRefresh = false}) async {
+  static Future<SnackItem> snackOfTheWeek({bool forceRefresh = false}) async {
     //Wait for the firebase to be initiated
     await _waitWhile(() => (fbStore == null));
     return (await SnaxBackend._queryAllSnacks(
-        fbStore
-            .collection("snacks")
-            .orderBy("isSnackOfTheWeek", descending: true)
-            .limit(1),
-        forceRefresh)).first;
+            fbStore
+                .collection("snacks")
+                .orderBy("isSnackOfTheWeek", descending: true)
+                .limit(1),
+            forceRefresh))
+        .first;
   }
 
   static Future<List<SnackItem>> getSnacksInCategory(
@@ -164,8 +164,6 @@ class SnaxBackend {
         imgUrl,
         banner: bannerUrl);
   }
-
-
 
   // Private function for getting list of snacks with a sort and limit
   static Future<List<SnackItem>> _queryAllSnacks(
@@ -371,14 +369,7 @@ class SnaxBackend {
     //Make the list
     List<SnaxUser> users = [];
     for (var doc in userDocs) {
-      var userImg;
-      try {
-        userImg = await fbStorage
-            .ref()
-            .child("user-profiles")
-            .child(doc.id + ".jpg")
-            .getDownloadURL();
-      } catch (_) {}
+      var userImg = await getUserImage(doc.id);
       users.add(SnaxUser(doc.get("username"), doc.get("name"), doc.id,
           doc.data()["bio"], doc.get("followerCount"), doc.get("followerCount"),
           photo: userImg,
@@ -386,6 +377,17 @@ class SnaxBackend {
     }
     // await Hive.close();
     return users;
+  }
+
+  static Future<String> getUserImage(uid) async {
+    var ref = fbStorage.ref().child("user-profiles").child(uid + ".jpg");
+    try {
+      return await ref.getDownloadURL();
+    } catch (_) {
+      print(
+          "ignore previous firebase storage error, it was just a user without a profile photo");
+      return null;
+    }
   }
 
   static Future<List<SnaxUser>> getFollowing(String uid) async {
@@ -412,14 +414,7 @@ class SnaxBackend {
     //Make the list
     List<SnaxUser> users = [];
     for (var doc in userDocs) {
-      var userImg;
-      try {
-        userImg = await fbStorage
-            .ref()
-            .child("user-profiles")
-            .child(doc.id + ".jpg")
-            .getDownloadURL();
-      } catch (_) {}
+      var userImg = await getUserImage(doc.id);
       users.add(SnaxUser(doc.get("username"), doc.get("name"), doc.id,
           doc.data()["bio"], doc.get("followerCount"), doc.get("followerCount"),
           photo: userImg,
@@ -668,14 +663,7 @@ class SnaxBackend {
     for (var doc in docs) {
       var data = doc.data();
       //Grab photo of user
-      String userImg;
-      try {
-        userImg = await fbStorage
-            .ref()
-            .child("user-profiles")
-            .child(data["uid"] + ".jpg")
-            .getDownloadURL();
-      } catch (error) {}
+      String userImg = await getUserImage(data["uid"]);
 
       SnaxUser user = SnaxUser(
           userDatas[data["uid"]]["username"],
@@ -744,18 +732,13 @@ class SnaxBackend {
 
       //Get snack image
       String snackImg;
-      String userImg;
+      String userImg = await getUserImage(data["uid"]);
 
       try {
         snackImg = await fbStorage
             .ref()
             .child("snacks")
             .child(data["snack_id"] + ".jpg")
-            .getDownloadURL();
-        userImg = await fbStorage
-            .ref()
-            .child("user-profiles")
-            .child(data["uid"] + ".jpg")
             .getDownloadURL();
       } catch (error) {}
 

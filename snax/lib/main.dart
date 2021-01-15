@@ -53,9 +53,9 @@ void main() {
   //Initialize Firebase synchronously (has to happen after runApp)
   initializeFirebase().whenComplete(() {
     print("initialized firebase");
-    SnaxBackend.search("Cheet").then((value) {
-      DemoValues.items = value;
-    });
+    // SnaxBackend.search("Cheet").then((value) {
+    //   DemoValues.items = value;
+    // });
     if (fbAuth.currentUser != null)
       fbAuth.currentUser.getIdToken().then((token) => printWrapped(
           "USER REQUEST TOKEN =-=-=-=-=-=-=-=-=-=-=-\n" +
