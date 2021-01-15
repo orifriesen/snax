@@ -193,7 +193,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
         PopupMenuItem(
           value: 1,
           child: Row(
-            children: <Widget>[
+            children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(2, 2, 8, 2),
               ),
