@@ -187,7 +187,6 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
   Widget _globalSettings() {
     return PopupMenuButton(
       onSelected: (value) {
-        print(value);
         value == 1 ? reportButton() : Container();
       },
       itemBuilder: (context) => [
@@ -237,7 +236,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                   ),
                   onPressed: () => {
                     customLaunch(
-                        "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20User: ${this.widget.user}&body=Reason: "),
+                        "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20User:${this.widget.user}&body=Reason:"),
                     Navigator.pop(context),
                   },
                 )
@@ -267,7 +266,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                   ),
                   onPressed: () => {
                     customLaunch(
-                        "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20User: ${this.widget.user}&body=Reason: "),
+                        "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20User:${this.widget.user}&body=Reason:"),
                     Navigator.pop(context),
                   },
                 )
