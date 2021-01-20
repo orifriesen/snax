@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:snax/backend/backend.dart';
 import 'package:snax/backend/requests.dart';
 import 'package:snax/barcodeScanner/barcodeAddCode.dart';
@@ -43,10 +44,11 @@ class _MakePostPageState extends State<MakePostPage> {
                         titleController.text, bodyController.text, snack.id)
                     .then((_) {
                   print("sent");
-                  Navigator.pop(context);
+                  Fluttertoast.showToast(msg: "Post Sent");
                 }).catchError((error) {
-                  print("error");
+                  Fluttertoast.showToast(msg: "An error occurred");
                 });
+                Navigator.pop(context);
               },
               child: Row(
                 children: [
