@@ -112,59 +112,64 @@ Widget getHorizontalList(
                                                       snackList[index].image)),
                                             ),
                                             Container(width: 12),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  snackList[index].name,
-                                                  style: TextStyle(
-                                                      fontSize: 15,
-                                                      fontWeight:
-                                                          FontWeight.w500),
-                                                ),
-                                                Row(
-                                                  children: [
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              top: 2.0),
-                                                      child: Text(
-                                                          "${(snackList[index].averageRatings.overall ?? 0).toStringAsFixed(1)} ",
-                                                          style: TextStyle(
-                                                            color: SnaxColors
-                                                                .subtext,
-                                                          )),
-                                                    ),
-                                                    SmoothStarRating(
-                                                        allowHalfRating: true,
-                                                        starCount: 5,
-                                                        rating: snackList[index]
-                                                                .averageRatings
-                                                                .overall ??
-                                                            0,
-                                                        size: 17,
-                                                        isReadOnly: true,
-                                                        defaultIconData: Icons
-                                                            .star_border_rounded,
-                                                        filledIconData:
-                                                            Icons.star_rounded,
-                                                        halfFilledIconData: Icons
-                                                            .star_half_rounded,
-                                                        color: SnaxColors
-                                                            .redAccent,
-                                                        borderColor: SnaxColors
-                                                            .redAccent,
-                                                        spacing: 0.0),
-                                                  ],
-                                                ),
-                                                Container(height: 2),
-                                                Text(
-                                                    "${snackList[index].numberOfRatings} Ratings",
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    snackList[index].name,
+                                                    overflow: TextOverflow.fade,
+                                                    softWrap: false,
                                                     style: TextStyle(
-                                                        color:
-                                                            SnaxColors.subtext))
-                                              ],
+                                                        fontSize: 15,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(top: 2.0),
+                                                        child: Text(
+                                                            "${(snackList[index].averageRatings.overall ?? 0).toStringAsFixed(1)} ",
+                                                            style: TextStyle(
+                                                              color: SnaxColors
+                                                                  .subtext,
+                                                            )),
+                                                      ),
+                                                      SmoothStarRating(
+                                                          allowHalfRating: true,
+                                                          starCount: 5,
+                                                          rating: snackList[index]
+                                                                  .averageRatings
+                                                                  .overall ??
+                                                              0,
+                                                          size: 17,
+                                                          isReadOnly: true,
+                                                          defaultIconData: Icons
+                                                              .star_border_rounded,
+                                                          filledIconData: Icons
+                                                              .star_rounded,
+                                                          halfFilledIconData: Icons
+                                                              .star_half_rounded,
+                                                          color: SnaxColors
+                                                              .redAccent,
+                                                          borderColor:
+                                                              SnaxColors
+                                                                  .redAccent,
+                                                          spacing: 0.0),
+                                                    ],
+                                                  ),
+                                                  Container(height: 2),
+                                                  Text(
+                                                      "${snackList[index].numberOfRatings} Ratings",
+                                                      style: TextStyle(
+                                                          color: SnaxColors
+                                                              .subtext))
+                                                ],
+                                              ),
                                             )
                                           ],
                                         ),
@@ -535,34 +540,45 @@ Widget snackOfTheWeek(BuildContext context, SnackItem snackItem) {
                     borderRadius: BorderRadius.circular(18),
                     child: Image.network(snackItem.banner))),
             Container(
-              
               decoration: BoxDecoration(
-                gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [SnaxColors.gradientStart.withAlpha(210), SnaxColors.gradientEnd.withAlpha(80)]),
+                gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      SnaxColors.gradientStart.withAlpha(210),
+                      SnaxColors.gradientEnd.withAlpha(80)
+                    ]),
                 borderRadius: BorderRadius.circular(18),
               ),
               child: AspectRatio(
-                aspectRatio: 4/2,
+                aspectRatio: 4 / 2,
                 child: Padding(
                   padding: EdgeInsets.all(20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text("Snack of the Week:",
-                          style:
-                              TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.white)),
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white)),
                       Container(height: 2),
                       Text(snackItem.name + "!",
-                          style:
-                              TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white)),
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white)),
                       Container(height: 2),
                       Row(
                         children: [
                           Text(
                               ((snackItem.averageRatings != null)
-                                  ? snackItem.averageRatings.overall
-                                      .toStringAsFixed(1)
-                                  : "No Ratings") + " ",
-                              style: TextStyle(fontSize: 20, color: Colors.white)),
+                                      ? snackItem.averageRatings.overall
+                                          .toStringAsFixed(1)
+                                      : "No Ratings") +
+                                  " ",
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.white)),
                           Icon(
                             Icons.star_rounded,
                             color: Colors.white,

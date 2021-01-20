@@ -204,10 +204,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ],
           ),
-          Icon(
-            Icons.arrow_forward_ios,
-            color: SnaxColors.subtext
-          )
+          Icon(Icons.arrow_forward_ios, color: SnaxColors.subtext)
         ],
       ),
     );

@@ -16,6 +16,14 @@ import 'package:snax/helpers.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
+class Items {
+  String name;
+  Items(this.name);
+  static List<Items> getItems() {
+    return <Items>[Items("hello"), Items("nope")];
+  }
+}
+
 class GlobalAccountPage extends StatefulWidget {
   GlobalAccountPage(this.user, {this.isAccountPage = false});
   SnaxUser user;
@@ -177,68 +185,94 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
   //* For now, this only open a dialog for reporting a user.
   //* A Block feature will be implemented later on
   Widget _globalSettings() {
-    return FlatButton(
-      onPressed: () => showCupertinoDialog(
-        context: context,
-        builder: (_) => Platform.isIOS
-            ? CupertinoAlertDialog(
-                title: Text("Report This User"),
-                content: Text(
-                  "Do you want to report this user? Your default email app will open.",
-                ),
-                actions: [
-                  FlatButton(
-                      child: Text(
-                        "No",
-                        style: TextStyle(fontSize: 18),
-                      ),
-                      onPressed: () => {Navigator.pop(context)}),
-                  FlatButton(
+    return PopupMenuButton(
+      onSelected: (value) {
+        value == 1 ? reportButton() : Container();
+      },
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          value: 1,
+          child: Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(2, 2, 8, 2),
+              ),
+              Text(
+                'Report',
+                style: TextStyle(color: SnaxColors.redAccent),
+              )
+            ],
+          ),
+          height: 32,
+        ),
+      ],
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+    );
+  }
+
+  //* Report Button in the pop up menu
+  void reportButton() {
+    showCupertinoDialog(
+      context: context,
+      builder: (_) => Platform.isIOS
+          ? CupertinoAlertDialog(
+              title: Text("Report This User"),
+              content: Text(
+                "Do you want to report this user? Your default email app will open.",
+              ),
+              actions: [
+                FlatButton(
                     child: Text(
-                      "Yes",
+                      "No",
                       style: TextStyle(fontSize: 18),
                     ),
-                    onPressed: () => {
-                      customLaunch(
-                          "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20User: ${this.widget.user}&body=Reason: "),
-                      Navigator.pop(context),
-                    },
-                  )
-                ],
-              )
-            : AlertDialog(
-                title: Text("Report This User"),
-                content: Text(
-                    "Do you want to report this user? Your default email app will open."),
-                actions: [
-                  FlatButton(
-                      child: Text(
-                        "No",
-                        style: TextStyle(
-                            fontSize: 18,
-                            color:
-                                !isDark(context) ? Colors.black : Colors.white),
-                      ),
-                      onPressed: () => {Navigator.pop(context)}),
-                  FlatButton(
+                    onPressed: () => {Navigator.pop(context)}),
+                FlatButton(
+                  child: Text(
+                    "Yes",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  onPressed: () => {
+                    customLaunch(
+                        "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20User:${this.widget.user}&body=Reason:"),
+                    Navigator.pop(context),
+                  },
+                )
+              ],
+            )
+          : AlertDialog(
+              title: Text("Report This User"),
+              content: Text(
+                  "Do you want to report this user? Your default email app will open."),
+              actions: [
+                FlatButton(
                     child: Text(
-                      "Yes",
+                      "No",
                       style: TextStyle(
-                        fontSize: 18,
-                        color: !isDark(context) ? Colors.black : Colors.white,
-                      ),
+                          fontSize: 18,
+                          color:
+                              !isDark(context) ? Colors.black : Colors.white),
                     ),
-                    onPressed: () => {
-                      customLaunch(
-                          "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20User: ${this.widget.user}&body=Reason: "),
-                      Navigator.pop(context),
-                    },
-                  )
-                ],
-              ),
-        barrierDismissible: true,
-      ),
-      child: Icon(Icons.more_horiz),
+                    onPressed: () => {Navigator.pop(context)}),
+                FlatButton(
+                  child: Text(
+                    "Yes",
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: !isDark(context) ? Colors.black : Colors.white,
+                    ),
+                  ),
+                  onPressed: () => {
+                    customLaunch(
+                        "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20User:${this.widget.user}&body=Reason:"),
+                    Navigator.pop(context),
+                  },
+                )
+              ],
+            ),
+      barrierDismissible: true,
     );
   }
 
@@ -250,7 +284,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
           padding: const EdgeInsets.all(8.0),
           child: Hero(
             tag: "profile-photo",
-                      child: Container(
+            child: Container(
               width: 80,
               height: 80,
               decoration: BoxDecoration(
@@ -405,7 +439,6 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                         this.isFollowing = true;
                         this.widget.user.followerCount++;
                       });
-                      print("unfollowed");
                       this.isFollowing = false;
                       this.widget.user.followerCount--;
                     } else {
@@ -413,7 +446,6 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                         this.isFollowing = false;
                         this.widget.user.followerCount++;
                       });
-                      print("followed");
                       this.isFollowing = true;
                       this.widget.user.followerCount++;
                     }
