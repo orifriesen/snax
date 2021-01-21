@@ -18,7 +18,6 @@ class AboutPage extends StatelessWidget {
             height: 200,
             width: double.infinity,
             decoration: BoxDecoration(
-              // gradient: SnaxGradients.redBigThings,
               image: DecorationImage(
                 image: AssetImage("assets/Artboard.jpeg") != null
                     ? AssetImage("assets/Artboard.jpeg")

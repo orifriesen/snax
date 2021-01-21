@@ -27,9 +27,6 @@ class _FollowingPageState extends State<FollowingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Following'),
-      ),
       body: FutureBuilder(
         future: SnaxBackend.getFollowing(this.widget.uid),
         builder: (context, snapshot) {
@@ -45,7 +42,6 @@ class _FollowingPageState extends State<FollowingPage> {
                       context,
                       MaterialPageRoute(
                         builder: (context) =>
-                            //! NOT RIGHT -- Leads to current user's profile
                             GlobalAccountPage(this.widget.user),
                       ),
                     );
