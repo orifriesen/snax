@@ -2,21 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:snax/customIcons/instagram_icons.dart';
 import 'package:snax/web_view_container.dart';
 
-class Links {
-  String link;
-  String name;
-
-  Links({this.link, this.name});
-}
-
 class AboutPage extends StatelessWidget {
-  List<Links> _links = [
-    Links(link: 'https://www.instagram.com/escherwd/', name: 'Escher'),
-    Links(link: 'https://www.instagram.com/orifriesen/', name: 'Ori'),
-    Links(link: 'https://www.instagram.com/waltbringenberg/', name: 'Walt'),
-    Links(link: 'https://www.instagram.com/ramirez.brrandon/', name: 'Brandon')
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,10 +70,9 @@ class AboutPage extends StatelessWidget {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: _links
-                      .map(
-                          (link) => _teamSocials(context, link.name, link.link))
-                      .toList(),
+                  children: [
+                    teamSocials(context, "Snax", () => ("https://google.com")),
+                  ],
                 ),
               ],
             ),
@@ -97,7 +82,7 @@ class AboutPage extends StatelessWidget {
     );
   }
 
-  Widget _teamSocials(BuildContext context, String name, String url) {
+  Widget teamSocials(BuildContext context, String name, customLaunch()) {
     return Padding(
       padding: const EdgeInsets.only(left: 8, top: 16, bottom: 16, right: 8),
       child: Container(
@@ -125,10 +110,7 @@ class AboutPage extends StatelessWidget {
             //* Instagram
             FlatButton(
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => WebViewContainer(url)));
+                customLaunch();
               },
               child: Icon(
                 Instagram.icons8_instagram,
