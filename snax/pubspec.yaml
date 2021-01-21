@@ -21,6 +21,7 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
+  webview_flutter: ^1.0.7
   flappy_search_bar: ^1.7.2
   smooth_star_rating: ^1.1.1
   number_display: ^2.3.0
@@ -116,6 +117,9 @@ flutter:
     - family: MouthFeel
       fonts: 
         - asset: assets/fonts/MouthFeel.ttf
+    - family: Instagram
+      fonts: 
+        - asset: assets/fonts/Instagram.ttf
   # fonts:
   #   - family: Schyler
   #     fonts:
