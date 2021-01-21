@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+
 import 'package:snax/customIcons/instagram_icons.dart';
-import 'package:snax/web_view_container.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AboutPage extends StatelessWidget {
   @override
@@ -71,7 +72,31 @@ class AboutPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    teamSocials(context, "Snax", () => ("https://google.com")),
+                    teamSocials(
+                        context,
+                        'Snax',
+                        () => customLaunch(
+                            "https://www.instagram.com/snaxappofficial/")),
+                    teamSocials(
+                        context,
+                        'Ori',
+                        () => customLaunch(
+                            "https://www.instagram.com/orifriesen/")),
+                    teamSocials(
+                        context,
+                        'Escher',
+                        () => customLaunch(
+                            "https://www.instagram.com/escherwd/")),
+                    teamSocials(
+                        context,
+                        'Walt',
+                        () => customLaunch(
+                            "https://www.instagram.com/waltbringenberg/")),
+                    teamSocials(
+                        context,
+                        'Brandon',
+                        () => customLaunch(
+                            "https://www.instagram.com/ramirez.brrandon/")),
                   ],
                 ),
               ],
@@ -125,5 +150,13 @@ class AboutPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  customLaunch(command) async {
+    if (await canLaunch(command)) {
+      await launch(command);
+    } else {
+      print("Could not work");
+    }
   }
 }
