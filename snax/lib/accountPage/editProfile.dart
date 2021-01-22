@@ -110,7 +110,7 @@ class _EditProfileState extends State<EditProfile> {
             children: [
               _profileImage(),
               Padding(
-                padding: const EdgeInsets.only(bottom: 30),
+                padding: const EdgeInsets.only(top: 5, bottom: 18),
                 child: Center(
                   child: InkWell(
                     child: Text(
@@ -304,7 +304,6 @@ class _EditProfileState extends State<EditProfile> {
   Widget _bioTextField() {
     return Material(
       elevation: 0,
-      // color: Colors.blue,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
