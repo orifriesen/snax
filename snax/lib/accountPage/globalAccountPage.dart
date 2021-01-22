@@ -182,8 +182,6 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
   }
 
   //* Settings when viewing someone else's profile
-  //* For now, this only open a dialog for reporting a user.
-  //* A Block feature will be implemented later on
   Widget _globalSettings() {
     return PopupMenuButton(
       onSelected: (value) {
@@ -291,9 +289,9 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                 shape: BoxShape.circle,
                 image: DecorationImage(
                   fit: BoxFit.cover,
-                  image: NetworkImage(this.widget.user.photo == null
-                      ? 'https://picsum.photos/200/300?grayscale'
-                      : this.widget.user.photo),
+                  image: (this.widget.user.photo != null)
+                      ? NetworkImage(this.widget.user.photo)
+                      : AssetImage("assets/blank_user.png"),
                 ),
               ),
             ),
