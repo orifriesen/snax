@@ -105,7 +105,13 @@ class _EditProfileState extends State<EditProfile> {
           }
         },
         child: Container(
-          decoration: BoxDecoration(gradient: SnaxGradients.redBigThings),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.centerRight,
+              colors: [SnaxColors.gradientStart, SnaxColors.gradientEnd],
+            ),
+          ),
           child: Column(
             children: [
               _profileImage(),
@@ -121,6 +127,12 @@ class _EditProfileState extends State<EditProfile> {
                       showModalBottomSheet(
                         context: context,
                         builder: (builder) => _imageSheet(context),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(32),
+                            topRight: Radius.circular(32),
+                          ),
+                        ),
                       )
                     },
                   ),

@@ -125,7 +125,14 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                       borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(40),
                           bottomRight: Radius.circular(40)),
-                      gradient: SnaxGradients.redBigThings,
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          SnaxColors.gradientStart,
+                          SnaxColors.gradientEnd
+                        ],
+                      ),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -313,7 +320,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
   //* This is for the following, followers, and EP
   Widget _profileStats() {
     return Padding(
-      padding: const EdgeInsets.only(right: 16.0, top: 8.0),
+      padding: const EdgeInsets.only(right: 0.0, top: 8.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
