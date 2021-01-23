@@ -288,10 +288,14 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                                         ? Text(
                                             "more",
                                             style: TextStyle(
-                                              color: Colors.white70,
+                                              color: SnaxColors.subtext,
                                             ),
                                           )
-                                        : Container(),
+                                        : Text(
+                                            "less",
+                                            style: TextStyle(
+                                                color: SnaxColors.subtext),
+                                          ),
                                   ],
                                 ),
                               )

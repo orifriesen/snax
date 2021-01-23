@@ -34,26 +34,13 @@ class _UserReviewPageState extends State<UserReviewPage> {
         body: Builder(
       builder: (context) => Scaffold(
         appBar: AppBar(
-          leadingWidth: 100,
           leading: FlatButton(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: Row(
-              children: [
-                Icon(
-                  Icons.arrow_back_ios_rounded,
-                  color: SnaxColors.redAccent,
-                ),
-                Text(
-                  "Back",
-                  style: TextStyle(color: SnaxColors.redAccent, fontSize: 18),
-                )
-              ],
-            ),
-          ),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(32)),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Icon(Icons.arrow_back_ios_rounded)),
           elevation: 0,
           backgroundColor: Theme.of(context).canvasColor,
           centerTitle: true,
@@ -760,8 +747,10 @@ class _UserReviewPageState extends State<UserReviewPage> {
                             Navigator.pop(context);
                           } else {
                             Fluttertoast.showToast(
-                                backgroundColor: SnaxColors.redAccent,
-                                msg: "Please rate this snack to submit!");
+                              timeInSecForIosWeb: 2,
+                              backgroundColor: SnaxColors.darkGreyGradientStart,
+                              msg: "Please rate each category",
+                            );
                           }
                         },
                         label: Container(
