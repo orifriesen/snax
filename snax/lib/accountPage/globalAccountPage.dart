@@ -1,19 +1,17 @@
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:snax/accountPage/editProfile.dart';
 
+import 'package:snax/accountPage/editProfile.dart';
 import 'package:snax/accountPage/userListPage.dart';
 import 'package:snax/accountPage/settingsPage.dart';
-import 'package:snax/backend/backend.dart';
 
 import 'accountBottomTabs/postTab.dart';
 import 'accountBottomTabs/secondTab.dart';
 
+import 'package:snax/backend/backend.dart';
 import 'package:snax/backend/requests.dart';
 import 'package:snax/helpers.dart';
-
 import 'package:url_launcher/url_launcher.dart';
 
 class GlobalAccountPage extends StatefulWidget {
@@ -286,7 +284,6 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                                   setState(() {
                                     bioShowTextFlag = !bioShowTextFlag;
                                   });
-                                  print(numLines);
                                 },
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.end,

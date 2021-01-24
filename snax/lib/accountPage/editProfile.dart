@@ -129,8 +129,8 @@ class _EditProfileState extends State<EditProfile> {
                         builder: (builder) => _imageSheet(context),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(32),
-                            topRight: Radius.circular(32),
+                            topLeft: Radius.circular(29),
+                            topRight: Radius.circular(29),
                           ),
                         ),
                       )

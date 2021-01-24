@@ -12,6 +12,7 @@ class AboutPage extends StatelessWidget {
         backgroundColor: Colors.transparent,
       ),
       body: ListView(
+        physics: ClampingScrollPhysics(),
         children: [
           //* Top Container
           Container(
@@ -42,7 +43,7 @@ class AboutPage extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Text(
-                      "Snax is a reviewing platform that allows all kinds of people from around the world to review their favorite snacks.",
+                      "Snax is a mobile app that allows users to rate and discuss all types of snacks.",
                     ),
                   ),
                 ],
