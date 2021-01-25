@@ -560,8 +560,7 @@ class SnaxBackend {
 
     var cacheKey = "feed_friends:" + followingBox.values.join("-");
     //Check cache before actually fetching
-    if (!forceRefresh && Cache.has(cacheKey))
-      return Cache.fetch(cacheKey);
+    if (!forceRefresh && Cache.has(cacheKey)) return Cache.fetch(cacheKey);
     //Actually fetch
     List<QueryDocumentSnapshot> docs = [];
     (await Future.wait(uidGroups.map((g) => fbStore
@@ -728,23 +727,38 @@ class SnaxBackend {
         snackIds.add(doc.data()["snack_id"]);
     });
     //Grab all
-    List<QuerySnapshot> results = await Future.wait([
-      fbStore
+    List<QueryDocumentSnapshot> snackResults = [];
+    List<QueryDocumentSnapshot> userResults = [];
+    var futureResults = (await Future.wait([
+      Future.wait(partition(snackIds, 10).map((r) => fbStore
           .collection("snacks")
-          .where(FieldPath.documentId, whereIn: snackIds)
-          .get(),
-      fbStore
+          .where(FieldPath.documentId, whereIn: r)
+          .get())),
+      Future.wait(partition(userIds, 10).map((r) => fbStore
           .collection("users")
-          .where(FieldPath.documentId, whereIn: userIds)
-          .get()
-    ]);
+          .where(FieldPath.documentId, whereIn: r)
+          .get())),
+    ]));
+    futureResults[0].forEach((snackGroup) { snackResults.addAll(snackGroup.docs); });
+    futureResults[1].forEach((userGroup) { userResults.addAll(userGroup.docs); });
+
+    // List<QuerySnapshot> results = await Future.wait([
+    //   fbStore
+    //       .collection("snacks")
+    //       .where(FieldPath.documentId, whereIn: snackIds)
+    //       .get(),
+    //   fbStore
+    //       .collection("users")
+    //       .where(FieldPath.documentId, whereIn: userIds)
+    //       .get()
+    // ]);
     //Organize the data
     Map<String, Map> snackDatas = {};
-    results[0].docs.forEach((e) {
+    snackResults.forEach((e) {
       snackDatas[e.id] = e.data();
     });
     Map<String, Map> userDatas = {};
-    results[1].docs.forEach((e) {
+    userResults.forEach((e) {
       userDatas[e.id] = e.data();
     });
     //Create posts
