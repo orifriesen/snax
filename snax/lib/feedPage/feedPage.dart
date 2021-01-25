@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:snax/accountPage/globalAccountPage.dart';
 import 'package:snax/backend/requests.dart';
 import 'package:snax/feedPage/demoValues.dart';
@@ -14,9 +15,9 @@ class FeedPage extends StatefulWidget {
   _FeedPageState createState() => _FeedPageState();
 }
 
-class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<FeedPage> {
-
-  @override 
+class _FeedPageState extends State<FeedPage>
+    with AutomaticKeepAliveClientMixin<FeedPage> {
+  @override
   bool get wantKeepAlive => true;
 
   List<Map<String, dynamic>> options = [
@@ -32,24 +33,30 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
     },
     {"title": "Top", "value": "top", "func": SnaxBackend.feedGetTopPosts}
   ];
-  String dropDownValue = "friends";
+  String dropDownValue =
+      (SnaxBackend.currentUser != null) ? "friends" : "trending";
 
   List<Post> posts;
 
-  void getPosts() async {
-    //make the posts null to show the loading animation
-    setState(() {
-      this.posts = null;
-    });
+  Future<void> getPosts({bool pull = false}) async {
+    try {
+      //make the posts null to show the loading animation (pull has its own loading animation)
+      if (!pull)
+      setState(() {
+        this.posts = null;
+      });
 
-    List<Post> newPosts = await this
-        .options
-        .where((e) => e['value'] == dropDownValue)
-        .first['func']();
+      List<Post> newPosts = await this
+          .options
+          .where((e) => e['value'] == dropDownValue)
+          .first['func'](forceRefresh: pull);
 
-    setState(() {
-      this.posts = newPosts;
-    });
+      setState(() {
+        this.posts = newPosts;
+      });
+    } catch (err) {
+      Fluttertoast.showToast(msg: err);
+    }
   }
 
   @override
@@ -67,77 +74,82 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-        backgroundColor: Theme.of(context).canvasColor,
-        body: NestedScrollView(
-            headerSliverBuilder: (BuildContext context, bool isScrolled) => [
-                  SliverAppBar(
-                    floating: true,
-                    pinned: false,
-                    snap: true,
-                    backgroundColor: Theme.of(context).canvasColor,
-                    elevation: 0,
-                    centerTitle: true,
-                    leadingWidth: double.infinity,
-                    leading: Padding(
-                      padding: const EdgeInsets.only(left: 20.0),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton(
-                            value: dropDownValue,
-                            icon: Icon(
-                              Icons.arrow_drop_down_rounded,
+      backgroundColor: Theme.of(context).canvasColor,
+      body: NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool isScrolled) => [
+                SliverAppBar(
+                  floating: true,
+                  pinned: false,
+                  snap: true,
+                  backgroundColor: Theme.of(context).canvasColor,
+                  elevation: 0,
+                  centerTitle: true,
+                  leadingWidth: double.infinity,
+                  leading: Padding(
+                    padding: const EdgeInsets.only(left: 20.0),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton(
+                          value: dropDownValue,
+                          icon: Icon(
+                            Icons.arrow_drop_down_rounded,
+                            color: Color.fromARGB(255, 255, 75, 43),
+                          ),
+                          iconSize: 0,
+                          style: TextStyle(
                               color: Color.fromARGB(255, 255, 75, 43),
-                            ),
-                            iconSize: 0,
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 255, 75, 43),
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16.0),
-                            selectedItemBuilder: (BuildContext context) {
-                              return options.map((Map value) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(top: 14),
-                                  child: Text(value['title'],
-                                      style: TextStyle(
-                                          color:
-                                              Color.fromARGB(255, 255, 75, 43),
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 20.0)),
-                                );
-                              }).toList();
-                            },
-                            onChanged: (dynamic newValue) {
-                              setState(() {
-                                dropDownValue = newValue;
-                              });
-                              this.getPosts();
-                            },
-                            items: this
-                                .options
-                                .map((e) => DropdownMenuItem(
-                                    child: Text(e['title']), value: e['value']))
-                                .toList()),
-                      ),
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16.0),
+                          selectedItemBuilder: (BuildContext context) {
+                            return options.map((Map value) {
+                              return Padding(
+                                padding: const EdgeInsets.only(top: 14),
+                                child: Text(value['title'],
+                                    style: TextStyle(
+                                        color: Color.fromARGB(255, 255, 75, 43),
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 20.0)),
+                              );
+                            }).toList();
+                          },
+                          onChanged: (dynamic newValue) {
+                            setState(() {
+                              dropDownValue = newValue;
+                            });
+                            this.getPosts();
+                          },
+                          items: this
+                              .options
+                              .map((e) => DropdownMenuItem(
+                                  child: Text(e['title']), value: e['value']))
+                              .toList()),
                     ),
-                    actions: [
-                      IconButton(
-                        padding: EdgeInsets.only(right: 4),
-                        icon: Icon(Icons.add_rounded),
-                        color: Color.fromARGB(255, 255, 75, 43),
-                        iconSize: 28,
-                        onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => MakePostPage(),
-                              fullscreenDialog: true));
-                        },
-                      )
-                    ],
                   ),
-                ],
-            body: (posts == null)
-                ? Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : getFeed(context, posts, refresh)));
+                  actions: [
+                    IconButton(
+                      padding: EdgeInsets.only(right: 4),
+                      icon: Icon(Icons.add_rounded),
+                      color: Color.fromARGB(255, 255, 75, 43),
+                      iconSize: 28,
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => MakePostPage(),
+                            fullscreenDialog: true));
+                      },
+                    )
+                  ],
+                ),
+              ],
+          body: (posts == null)
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : RefreshIndicator(
+                  onRefresh: () async {
+                    await this.getPosts(pull: true);
+                    return;
+                  },
+                  child: getFeed(context, posts, refresh))),
+    );
   }
 }
 
@@ -160,12 +172,17 @@ Widget getFeed(BuildContext context, List<Post> posts, Function refresh) {
               style: TextStyle(fontWeight: FontWeight.w700, fontSize: 36.0),
             ));
       } else if (posts.length == 0) {
-        return Padding(padding: EdgeInsets.only(top: 44),child: Center(
-                                      child: QuickSup.empty(
-                                          image: Icon(Icons.chat_rounded,size: 25,),
-                                          title: "No Posts",
-                                          subtitle: "It's awfully quiet..."),
-                                    ));
+        return Padding(
+            padding: EdgeInsets.only(top: 44),
+            child: Center(
+              child: QuickSup.empty(
+                  image: Icon(
+                    Icons.chat_rounded,
+                    size: 25,
+                  ),
+                  title: "No Posts",
+                  subtitle: "It's awfully quiet..."),
+            ));
       } else {
         post = posts[index - 1];
         return postWidget(context, post, refresh: refresh);
@@ -191,10 +208,10 @@ Widget postWidget(BuildContext context, Post post,
       },
       child: Hero(
         tag: post.id,
-              child: Material(
-                color: Colors.transparent,
-                              child: Container(
-          decoration: BoxDecoration(
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(16)),
                 boxShadow: [
                   BoxShadow(color: Color.fromARGB(36, 0, 0, 0), blurRadius: 12)
@@ -210,9 +227,9 @@ Widget postWidget(BuildContext context, Post post,
                       )
                     : null,
                 color: isDark(context) ? null : Theme.of(context).canvasColor),
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(16, 24, 16, 16),
-            child: Column(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(16, 24, 16, 16),
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
@@ -270,14 +287,16 @@ Widget postWidget(BuildContext context, Post post,
                     padding: const EdgeInsets.only(top: 16.0),
                     child: Text(
                       post.title,
-                      style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                      style:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Text(
                       post.body,
-                      style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
+                      style:
+                          TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
                     ),
                   ),
                   Padding(
@@ -329,8 +348,8 @@ Widget postWidget(BuildContext context, Post post,
                             padding: const EdgeInsets.only(top: 7, right: 4),
                             child: Text(
                               dateFormatPost(post.time),
-                              style:
-                                  TextStyle(fontSize: 14, color: Colors.grey[400]),
+                              style: TextStyle(
+                                  fontSize: 14, color: Colors.grey[400]),
                               textAlign: TextAlign.right,
                             ),
                           ),
@@ -339,10 +358,10 @@ Widget postWidget(BuildContext context, Post post,
                     ),
                   )
                 ],
+              ),
             ),
           ),
         ),
-              ),
       ),
     ),
   );
