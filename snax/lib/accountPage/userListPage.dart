@@ -98,9 +98,11 @@ class _UserListPageState extends State<UserListPage> {
                                   }
                                 }(),
                                 style: TextStyle(
-                                  color: isDark(context)
-                                      ? Colors.white
-                                      : Colors.black,
+                                  color: user.userIsFollowing
+                                      ? isDark(context)
+                                          ? Colors.white
+                                          : Colors.black
+                                      : Colors.white,
                                 ),
                               ),
                               color: user.userIsFollowing
