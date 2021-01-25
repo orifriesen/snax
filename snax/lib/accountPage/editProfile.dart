@@ -257,6 +257,27 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
+  //* This is the camera
+  takePhoto(ImageSource source, BuildContext context) async {
+    Navigator.of(context).pop();
+    setState(() {
+      this.uploadingImage = true;
+    });
+    try {
+      final pickedFile = await _imagePicker.getImage(source: source);
+      await SnaxBackend.updateProfilePhoto(pickedFile);
+      setState(() {
+        _imageFile = File(pickedFile.path);
+      });
+    } catch (error) {
+      print(error);
+      print("Failed to upload profile photo");
+    }
+    setState(() {
+      this.uploadingImage = false;
+    });
+  }
+
   //* This allows the user to change their name
   Widget _nameTextField() {
     return Material(

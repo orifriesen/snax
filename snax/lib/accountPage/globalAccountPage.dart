@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:snax/accountPage/editProfile.dart';
 
 import 'package:snax/accountPage/editProfile.dart';
 import 'package:snax/accountPage/userListPage.dart';
@@ -84,35 +86,18 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                 )
               ],
             ))
-          : NestedScrollView(
-              headerSliverBuilder:
-                  (BuildContext context, bool innerBoxIsScrolled) {
-                return [
-                  new SliverAppBar(
-                    title: Text(this.widget.isAccountPage
-                        ? "My Profile"
-                        : "${this.widget.user.name}\'s Profile"),
-                    elevation: 0,
-                    floating: true,
-                    pinned: true,
-                    snap: true,
-                    actions: [
-                      this.widget.isAccountPage
-                          ? IconButton(
-                              icon: Icon(Icons.more_horiz_rounded),
-                              onPressed: () => {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => SettingsPage()))
-                              },
-                            )
-                          : _globalSettings(),
-                    ],
-                  ),
-                ];
+          : RefreshIndicator(
+              onRefresh: () async {
+                try {
+                  this.widget.user = await SnaxBackend.getUser(
+                      this.widget.uid ?? this.widget.user.uid);
+                } catch (err) {
+                  print(err);
+                  Fluttertoast.showToast(msg: "Couldn't Refresh");
+                }
               },
-              body: Column(
+              child: ListView(
+                physics: ClampingScrollPhysics(),
                 children: [
                   Container(
                     decoration: BoxDecoration(
@@ -123,14 +108,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                       borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(40),
                           bottomRight: Radius.circular(40)),
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          SnaxColors.gradientStart,
-                          SnaxColors.gradientEnd
-                        ],
-                      ),
+                      gradient: SnaxGradients.redBigThings,
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -151,11 +129,12 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                     ),
                   ),
                   SizedBox(height: 5),
-                  Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 16.0, right: 16),
-                        child: TabBar(
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16.0, right: 16),
+                    child: ListView(
+                      shrinkWrap: true,
+                      children: [
+                        TabBar(
                           controller: _tabController,
                           indicatorColor: SnaxColors.redAccent,
                           labelColor:
@@ -170,8 +149,8 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                             ),
                           ],
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   [
                     PostTab(widget.user),

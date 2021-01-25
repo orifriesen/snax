@@ -41,6 +41,8 @@ class _PostTabState extends State<PostTab>
         ? posts.length > 0
             ? Expanded(
                 child: ListView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
                 padding: EdgeInsets.only(top: 16),
                 itemCount: posts.length,
                 itemBuilder: (context, index) {
@@ -56,7 +58,8 @@ class _PostTabState extends State<PostTab>
                       this.widget.user.username +
                       " doesn't have a lot to say",
                 ))
-        : Expanded(
+        : Container(
+            padding: EdgeInsets.all(40),
             child: Center(
               child: CircularProgressIndicator(
                 valueColor:

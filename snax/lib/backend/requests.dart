@@ -295,7 +295,7 @@ class SnaxBackend {
     Image image = decodeImage(await pickedFile.readAsBytes());
     Image resized = copyResize(image, width: 400, height: 400);
     io.Directory appDocDirectory = await getApplicationDocumentsDirectory();
-    io.File file = io.File(appDocDirectory.path + '$uid.jpg');
+    io.File file = io.File(appDocDirectory.path + '/$uid.jpg');
     await file.writeAsBytes(encodeJpg(resized));
 
     try {
@@ -378,8 +378,13 @@ class SnaxBackend {
     List<SnaxUser> users = [];
     for (var doc in userDocs) {
       var userImg = await getUserImage(doc.id);
-      users.add(SnaxUser(doc.get("username"), doc.get("name"), doc.id,
-          doc.data()["bio"], doc.get("followerCount"), doc.get("followingCount"),
+      users.add(SnaxUser(
+          doc.get("username"),
+          doc.get("name"),
+          doc.id,
+          doc.data()["bio"],
+          doc.get("followerCount"),
+          doc.get("followingCount"),
           photo: userImg,
           userIsFollowing: followingBox.values.contains(doc.id)));
     }
@@ -430,8 +435,13 @@ class SnaxBackend {
     List<SnaxUser> users = [];
     for (var doc in userDocs) {
       var userImg = await getUserImage(doc.id);
-      users.add(SnaxUser(doc.get("username"), doc.get("name"), doc.id,
-          doc.data()["bio"], doc.get("followerCount"), doc.get("followingCount"),
+      users.add(SnaxUser(
+          doc.get("username"),
+          doc.get("name"),
+          doc.id,
+          doc.data()["bio"],
+          doc.get("followerCount"),
+          doc.get("followingCount"),
           photo: userImg,
           userIsFollowing: followingBox.values.contains(doc.id)));
     }
@@ -569,13 +579,13 @@ class SnaxBackend {
             .collection("feed")
             .where("uid", whereIn: g)
             .orderBy("timestamp", descending: true)
-            .limit((amountToFetch/uidGroups.length).floor())
+            .limit((amountToFetch / uidGroups.length).floor())
             .get())))
         .forEach((result) {
       docs.addAll(result.docs);
     });
     //Restore the sort
-    docs.sort((a,b) {
+    docs.sort((a, b) {
       int ta = a.data()["timestamp"];
       int tb = b.data()["timestamp"];
       return tb.compareTo(ta);
@@ -678,12 +688,15 @@ class SnaxBackend {
       if (!userIds.contains(doc.data()["uid"])) userIds.add(doc.data()["uid"]);
     });
     //Get all the users
-    
+
     List<QueryDocumentSnapshot> userDocs = [];
     (await Future.wait(partition(userIds, 10).map((e) => fbStore
             .collection("users")
             .where(FieldPath.documentId, whereIn: e)
-            .get()))).forEach((element) { userDocs.addAll(element.docs); });
+            .get())))
+        .forEach((element) {
+      userDocs.addAll(element.docs);
+    });
     //Organize the data
     Map<String, Map> userDatas = {};
     userDocs.forEach((e) {
@@ -748,8 +761,12 @@ class SnaxBackend {
           .where(FieldPath.documentId, whereIn: r)
           .get())),
     ]));
-    futureResults[0].forEach((snackGroup) { snackResults.addAll(snackGroup.docs); });
-    futureResults[1].forEach((userGroup) { userResults.addAll(userGroup.docs); });
+    futureResults[0].forEach((snackGroup) {
+      snackResults.addAll(snackGroup.docs);
+    });
+    futureResults[1].forEach((userGroup) {
+      userResults.addAll(userGroup.docs);
+    });
 
     // List<QuerySnapshot> results = await Future.wait([
     //   fbStore
@@ -947,6 +964,34 @@ class SnaxBackend {
     } else {
       throw "An unknown error occurred, please try again later";
     }
+  }
+
+  static Future<SnaxUser> getUser(String uid) async {
+    //Wait for the firebase to be initiated
+    await _waitWhile(() => (fbStore == null));
+
+    var doc = await fbStore.collection("users").doc(uid).get();
+    print(doc.id);
+    //Get the image
+     String imgUrl;
+        try {
+          imgUrl = await fbStorage
+              .ref()
+              .child("user-profiles")
+              .child(uid + ".jpg")
+              .getDownloadURL();
+        } catch (error) {}
+    //Get following list
+    var followingBox = await Hive.openBox('user_following');
+
+    return SnaxUser(
+        doc.data()["username"],
+        doc.data()["name"],
+        doc.id,
+        doc.data()["bio"],
+        doc.data()["followerCount"],
+        doc.data()["followingCount"],
+        userIsFollowing: followingBox.values.contains(doc.id),photo: imgUrl);
   }
 
   static Future<List<SnackSearchResultItem>> search(String query) async {
