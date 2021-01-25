@@ -35,8 +35,6 @@ class _EditProfileState extends State<EditProfile> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       resizeToAvoidBottomPadding: false,
@@ -85,7 +83,13 @@ class _EditProfileState extends State<EditProfile> {
           }
         },
         child: Container(
-          decoration: BoxDecoration(gradient: SnaxGradients.redBigThings),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.centerRight,
+              colors: [SnaxColors.gradientStart, SnaxColors.gradientEnd],
+            ),
+          ),
           child: Column(
             children: [
               _profileImage(),
