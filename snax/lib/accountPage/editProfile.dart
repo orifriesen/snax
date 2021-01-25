@@ -293,6 +293,9 @@ class _EditProfileState extends State<EditProfile> {
         borderRadius: BorderRadius.circular(20),
       ),
       child: TextFormField(
+        inputFormatters: [
+          FilteringTextInputFormatter.deny(RegExp(r'\s')),
+        ],
         controller: usernameController,
         decoration: InputDecoration(
           border: OutlineInputBorder(
