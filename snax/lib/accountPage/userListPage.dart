@@ -39,7 +39,6 @@ class _UserListPageState extends State<UserListPage> {
                   itemCount: snapshot.data.length,
                   itemBuilder: (context, index) {
                     SnaxUser user = snapshot.data[index];
-                    print(user.userIsFollowing);
                     return ListTile(
                       title: Text(snapshot.data[index].username),
                       leading: CircleAvatar(
@@ -91,7 +90,7 @@ class _UserListPageState extends State<UserListPage> {
                               return "Follow";
                             }
                           }(),
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(color: user.userIsFollowing ? Theme.of(context).textTheme.bodyText1.color : Colors.white)
                         ),
                         color: user.userIsFollowing
                             ? Colors.transparent

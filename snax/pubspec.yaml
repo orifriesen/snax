@@ -30,7 +30,7 @@ dependencies:
   percent_indicator: ^2.1.8
   loading: ^1.0.2
   like_button: ^1.0.4
-  image_picker: ^0.6.7+14
+  image_picker: ^0.6.7+21
   url_launcher: ^5.7.10
   image: ^2.1.19
   path_provider: ^1.6.24
@@ -39,7 +39,7 @@ dependencies:
   hive_flutter: ^0.3.1
   flutter_phoenix: ^0.1.0
   sup: ^1.1.1
-  morpheus: ^1.2.2+1
+  quiver: ^2.1.5
 
   # firebase dependancies (1% chance of breaking everything)
   firebase_core: ^0.7.0

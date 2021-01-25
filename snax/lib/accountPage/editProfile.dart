@@ -234,6 +234,7 @@ class _EditProfileState extends State<EditProfile> {
         _imageFile = pickedFile;
       });
     } catch (error) {
+      print(error);
       print("Failed to upload profile photo");
     }
     setState(() {

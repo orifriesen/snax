@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:snax/accountPage/editProfile.dart';
 
 import 'package:snax/accountPage/userListPage.dart';
@@ -117,67 +118,78 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                 )
               ],
             ))
-          : Column(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                          color: Color.fromARGB(60, 0, 0, 0), blurRadius: 12)
-                    ],
-                    borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(40),
-                        bottomRight: Radius.circular(40)),
-                    gradient: SnaxGradients.redBigThings,
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      width: double.infinity,
-                      child: Column(
-                        children: [
-                          _profileInfo(),
-                          SizedBox(height: 10),
-                          Container(
-                              alignment: Alignment.centerLeft,
-                              child: _profileBio()),
-                          SizedBox(height: 10),
-                          _profileStats(),
-                        ],
+          : RefreshIndicator(
+            onRefresh: () async {
+              try {
+              this.widget.user = await SnaxBackend.getUser(this.widget.uid ?? this.widget.user.uid);
+              } catch (err) {
+                print(err);
+                Fluttertoast.showToast(msg: "Couldn't Refresh");
+              }
+            },
+                      child: ListView(
+                        physics: ClampingScrollPhysics(),
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                            color: Color.fromARGB(60, 0, 0, 0), blurRadius: 12)
+                      ],
+                      borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(40),
+                          bottomRight: Radius.circular(40)),
+                      gradient: SnaxGradients.redBigThings,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        width: double.infinity,
+                        child: Column(
+                          children: [
+                            _profileInfo(),
+                            SizedBox(height: 10),
+                            Container(
+                                alignment: Alignment.centerLeft,
+                                child: _profileBio()),
+                            SizedBox(height: 10),
+                            _profileStats(),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-                SizedBox(height: 5),
-                Padding(
-                  padding: const EdgeInsets.only(left: 16.0, right: 16),
-                  child: ListView(
-                    shrinkWrap: true,
-                    children: [
-                      TabBar(
-                        controller: _tabController,
-                        indicatorColor: SnaxColors.redAccent,
-                        labelColor:
-                            !isDark(context) ? Colors.black : Colors.white,
-                        unselectedLabelColor: Colors.grey,
-                        tabs: [
-                          Tab(
-                            text: 'Posts',
-                          ),
-                          Tab(
-                            text: 'Reviewed',
-                          ),
-                        ],
-                      ),
-                    ],
+                  SizedBox(height: 5),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16.0, right: 16),
+                    child: ListView(
+                      shrinkWrap: true,
+                      children: [
+                        TabBar(
+                          controller: _tabController,
+                          indicatorColor: SnaxColors.redAccent,
+                          labelColor:
+                              !isDark(context) ? Colors.black : Colors.white,
+                          unselectedLabelColor: Colors.grey,
+                          tabs: [
+                            Tab(
+                              text: 'Posts',
+                            ),
+                            Tab(
+                              text: 'Reviewed',
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                [
-                  PostTab(widget.user),
-                  ReviewedTab(),
-                ][_tabController.index],
-              ],
-            ),
+                  [
+                    PostTab(widget.user),
+                    ReviewedTab(),
+                  ][_tabController.index],
+                ],
+              ),
+          ),
     );
   }
 

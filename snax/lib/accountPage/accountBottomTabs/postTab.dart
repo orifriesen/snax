@@ -41,6 +41,8 @@ class _PostTabState extends State<PostTab>
     return posts != null
         ? posts.length > 0 ? Expanded(
             child: ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
             padding: EdgeInsets.only(top: 16),
             itemCount: posts.length,
             itemBuilder: (context, index) {
@@ -48,14 +50,15 @@ class _PostTabState extends State<PostTab>
               return postWidget(context, post);
             },
           )) : Padding(padding: EdgeInsets.only(top: 44),child: QuickSup.empty(title: "No Posts", subtitle: "@"+this.widget.user.username+" doesn't have a lot to say",))
-        : Expanded(
-            child: Center(
-              child: CircularProgressIndicator(
-                valueColor:
-                    new AlwaysStoppedAnimation<Color>(SnaxColors.redAccent),
-              ),
+        : Container(
+          padding: EdgeInsets.all(40),
+                  child: Center(
+            child: CircularProgressIndicator(
+              valueColor:
+                  new AlwaysStoppedAnimation<Color>(SnaxColors.redAccent),
             ),
-          );
+          ),
+        );
   }
 
   @override
