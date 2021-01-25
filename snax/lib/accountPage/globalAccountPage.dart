@@ -62,8 +62,6 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -249,7 +247,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                   ),
                   onPressed: () => {
                     customLaunch(
-                        "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20User:${this.widget.user}&body=Reason:"),
+                        "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20User: ${this.widget.user.username}&body= Reason: "),
                     Navigator.pop(context),
                   },
                 )
@@ -279,7 +277,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                   ),
                   onPressed: () => {
                     customLaunch(
-                        "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20User:${this.widget.user}&body=Reason:"),
+                        "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20User: ${this.widget.user.username}&body=Reason: "),
                     Navigator.pop(context),
                   },
                 )
@@ -304,9 +302,9 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                 shape: BoxShape.circle,
                 image: DecorationImage(
                   fit: BoxFit.cover,
-                  image: NetworkImage(this.widget.user.photo == null
-                      ? 'https://picsum.photos/200/300?grayscale'
-                      : this.widget.user.photo),
+                  image: (this.widget.user.photo != null)
+                      ? NetworkImage(this.widget.user.photo)
+                      : AssetImage("assets/blank_user.png"),
                 ),
               ),
             ),

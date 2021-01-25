@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 
+import 'package:snax/backend/backend.dart';
 import 'package:snax/backend/requests.dart';
 import 'package:snax/helpers.dart';
 
@@ -13,39 +15,15 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
+  PickedFile _imageFile;
+  ImagePicker _imagePicker = ImagePicker();
+
   final nameController = TextEditingController();
   final bioController = TextEditingController();
   final usernameController = TextEditingController();
 
   bool uploadingImage = false;
   bool error = false;
-
-  final _imagePicker = ImagePicker();
-  File _imageFile;
-
-  Future _pickImage(ImageSource source) async {
-    Navigator.of(context).pop();
-    setState(() {
-      this.uploadingImage = true;
-    });
-    try {
-      final selectedImage = await _imagePicker.getImage(source: source);
-      await SnaxBackend.updateProfilePhoto(selectedImage);
-
-      if (selectedImage != null) {
-        _imageFile = File(selectedImage.path);
-      } else {
-        print("NO IMAGE SELECTED");
-      }
-      //* The assignment in the if statement goes into the state
-      setState(() {});
-    } catch (error) {
-      print("Failed to upload profile photo");
-    }
-    setState(() {
-      this.uploadingImage = false;
-    });
-  }
 
   @override
   void initState() {
@@ -57,6 +35,8 @@ class _EditProfileState extends State<EditProfile> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       resizeToAvoidBottomPadding: false,
@@ -92,7 +72,7 @@ class _EditProfileState extends State<EditProfile> {
               'Done',
               style: TextStyle(color: Colors.white),
             ),
-            shape: CircleBorder(),
+            shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
           ),
         ],
       ),
@@ -105,18 +85,12 @@ class _EditProfileState extends State<EditProfile> {
           }
         },
         child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.centerRight,
-              colors: [SnaxColors.gradientStart, SnaxColors.gradientEnd],
-            ),
-          ),
+          decoration: BoxDecoration(gradient: SnaxGradients.redBigThings),
           child: Column(
             children: [
               _profileImage(),
               Padding(
-                padding: const EdgeInsets.only(top: 5, bottom: 18),
+                padding: const EdgeInsets.only(bottom: 30),
                 child: Center(
                   child: InkWell(
                     child: Text(
@@ -125,15 +99,8 @@ class _EditProfileState extends State<EditProfile> {
                     ),
                     onTap: () => {
                       showModalBottomSheet(
-                        context: context,
-                        builder: (builder) => _imageSheet(context),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(29),
-                            topRight: Radius.circular(29),
-                          ),
-                        ),
-                      )
+                          context: context,
+                          builder: (builder) => _imageSheet(context))
                     },
                   ),
                 ),
@@ -207,10 +174,9 @@ class _EditProfileState extends State<EditProfile> {
                     ? (SnaxBackend.currentUser.photo != null)
                         ? NetworkImage(SnaxBackend.currentUser.photo)
                         : AssetImage("assets/blank_user.png")
-                    : Image.file(_imageFile),
-                // FileImage(
-                //     File(_imageFile.path),
-                //),
+                    : FileImage(
+                        File(_imageFile.path),
+                      ),
               ),
             ),
           ],
@@ -242,12 +208,12 @@ class _EditProfileState extends State<EditProfile> {
             children: [
               FlatButton.icon(
                 icon: Icon(Icons.camera_alt_outlined),
-                onPressed: () => {_pickImage(ImageSource.camera)},
+                onPressed: () => {takePhoto(ImageSource.camera, context)},
                 label: Text('Camera'),
               ),
               FlatButton.icon(
-                onPressed: () => {_pickImage(ImageSource.gallery)},
                 icon: Icon(Icons.image_outlined),
+                onPressed: () => {takePhoto(ImageSource.gallery, context)},
                 label: Text('Gallery'),
               )
             ],
@@ -267,7 +233,7 @@ class _EditProfileState extends State<EditProfile> {
       final pickedFile = await _imagePicker.getImage(source: source);
       await SnaxBackend.updateProfilePhoto(pickedFile);
       setState(() {
-        _imageFile = File(pickedFile.path);
+        _imageFile = pickedFile;
       });
     } catch (error) {
       print(error);
@@ -340,6 +306,7 @@ class _EditProfileState extends State<EditProfile> {
   Widget _bioTextField() {
     return Material(
       elevation: 0,
+      // color: Colors.blue,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
