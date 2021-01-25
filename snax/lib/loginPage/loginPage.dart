@@ -43,6 +43,7 @@ class _LoginPageState extends State<LoginPage> {
 
     return Scaffold(
       appBar: AppBar(
+        brightness: Brightness.dark,
         backgroundColor: Colors.transparent,
         shadowColor: Colors.transparent,
       ),

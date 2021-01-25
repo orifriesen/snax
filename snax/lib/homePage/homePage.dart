@@ -132,6 +132,54 @@ class _ForYou extends State<ForYou> with AutomaticKeepAliveClientMixin<ForYou> {
 
   @override
   bool get wantKeepAlive => true;
+
+  Future forYouPromise = Future.wait([
+    SnaxBackend.snackOfTheWeek(),
+    SnaxBackend.chartTrending(),
+    SnaxBackend.chartTop(),
+    SnaxBackend.getSnacksInCategory("chip", SnackListSort.trending),
+    SnaxBackend.getSnacksInCategory("cracker", SnackListSort.top),
+  ]);
+
+  Widget forYouTab(BuildContext context, List<SnackItem> snackList) {
+    return RefreshIndicator(
+        onRefresh: () {
+          setState(() {
+            this.forYouPromise = Future.wait([
+              SnaxBackend.snackOfTheWeek(forceRefresh: true),
+              SnaxBackend.chartTrending(forceRefresh: true),
+              SnaxBackend.chartTop(forceRefresh: true),
+              SnaxBackend.getSnacksInCategory("chip", SnackListSort.trending,
+                  forceRefresh: true),
+              SnaxBackend.getSnacksInCategory("cracker", SnackListSort.top,
+                  forceRefresh: true),
+            ]);
+          });
+          return Future.delayed(Duration(seconds: 2));
+        },
+        child: FutureBuilder(
+            future: forYouPromise,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return ListView(
+                  padding: EdgeInsets.only(top: 12),
+                  children: [
+                    snackOfTheWeek(context, snapshot.data[0]),
+                    getHorizontalList("Trending", context, snapshot.data[1]),
+                    getHorizontalList("Top", context, snapshot.data[2]),
+                    getMiniHorizontalList(
+                        "Trending in Chips", context, snapshot.data[3]),
+                    getMiniHorizontalList(
+                        "Top in Crackers", context, snapshot.data[4]),
+                  ],
+                );
+              } else {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            }));
+  }
 }
 
 class TrendingList extends StatefulWidget {
@@ -202,42 +250,4 @@ class _TopList extends State<TopList>
 
   @override
   bool get wantKeepAlive => true;
-}
-
-Widget forYouTab(BuildContext context, List<SnackItem> snackList) {
-  return snackList != null
-      ? FutureBuilder(
-          future: Future.wait([
-            SnaxBackend.snackOfTheWeek(),
-            SnaxBackend.chartTrending(),
-            SnaxBackend.chartTop(),
-            SnaxBackend.getSnacksInCategory("chip", SnackListSort.trending),
-            SnaxBackend.getSnacksInCategory("cracker", SnackListSort.top),
-          ]),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return ListView(
-                padding: EdgeInsets.only(top: 12),
-                children: [
-                  snackOfTheWeek(context, snapshot.data[0]),
-                  getHorizontalList("Trending", context, snapshot.data[1]),
-                  getHorizontalList("Top", context, snapshot.data[2]),
-                  getMiniHorizontalList(
-                      "Trending in Chips", context, snapshot.data[3]),
-                  getMiniHorizontalList(
-                      "Top in Crackers", context, snapshot.data[4]),
-                ],
-              );
-            } else {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-          })
-      : Container(
-          child: Center(
-              child: CircularProgressIndicator(
-            valueColor: new AlwaysStoppedAnimation<Color>(SnaxColors.redAccent),
-          )),
-        );
 }

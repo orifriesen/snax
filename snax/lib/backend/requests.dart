@@ -379,7 +379,7 @@ class SnaxBackend {
     for (var doc in userDocs) {
       var userImg = await getUserImage(doc.id);
       users.add(SnaxUser(doc.get("username"), doc.get("name"), doc.id,
-          doc.data()["bio"], doc.get("followerCount"), doc.get("followerCount"),
+          doc.data()["bio"], doc.get("followerCount"), doc.get("followingCount"),
           photo: userImg,
           userIsFollowing: followingBox.values.contains(doc.id)));
     }
@@ -431,7 +431,7 @@ class SnaxBackend {
     for (var doc in userDocs) {
       var userImg = await getUserImage(doc.id);
       users.add(SnaxUser(doc.get("username"), doc.get("name"), doc.id,
-          doc.data()["bio"], doc.get("followerCount"), doc.get("followerCount"),
+          doc.data()["bio"], doc.get("followerCount"), doc.get("followingCount"),
           photo: userImg,
           userIsFollowing: followingBox.values.contains(doc.id)));
     }
@@ -555,6 +555,8 @@ class SnaxBackend {
     var followingBox = await Hive.openBox('user_following');
     if (followingBox.keys.isEmpty) return [];
 
+    int amountToFetch = 30;
+
     List<List<dynamic>> uidGroups =
         partition(followingBox.values.toList(), 10).toList();
 
@@ -567,10 +569,16 @@ class SnaxBackend {
             .collection("feed")
             .where("uid", whereIn: g)
             .orderBy("timestamp", descending: true)
-            .limit(25)
+            .limit((amountToFetch/uidGroups.length).floor())
             .get())))
         .forEach((result) {
       docs.addAll(result.docs);
+    });
+    //Restore the sort
+    docs.sort((a,b) {
+      int ta = a.data()["timestamp"];
+      int tb = b.data()["timestamp"];
+      return tb.compareTo(ta);
     });
     var results = docs.isNotEmpty ? await _feedGrabRefs(docs) : [];
     //Add to cache
@@ -670,11 +678,12 @@ class SnaxBackend {
       if (!userIds.contains(doc.data()["uid"])) userIds.add(doc.data()["uid"]);
     });
     //Get all the users
-    List<QueryDocumentSnapshot> userDocs = (await fbStore
+    
+    List<QueryDocumentSnapshot> userDocs = [];
+    (await Future.wait(partition(userIds, 10).map((e) => fbStore
             .collection("users")
-            .where(FieldPath.documentId, whereIn: userIds)
-            .get())
-        .docs;
+            .where(FieldPath.documentId, whereIn: e)
+            .get()))).forEach((element) { userDocs.addAll(element.docs); });
     //Organize the data
     Map<String, Map> userDatas = {};
     userDocs.forEach((e) {
