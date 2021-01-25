@@ -43,7 +43,7 @@ class AboutPage extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Text(
-                      "Snax is a mobile app that allows users to rate and discuss all types of snacks.",
+                      "Our goal is to bring everyone together to discuss all types of snack. No matter who you are, we believe that you should be able to express your feelings about your favorite foods.",
                     ),
                   ),
                 ],
