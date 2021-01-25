@@ -483,7 +483,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                   ),
                   onPressed: () => {
                     customLaunch(
-                        "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20User:${this.widget.user.username}&body=Reason:"),
+                        "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20User: ${this.widget.user.username}&body=Reason: "),
                     Navigator.pop(context),
                   },
                 )
