@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:like_button/like_button.dart';
 import 'package:snax/backend/requests.dart';
 import 'package:snax/feedPage/demoValues.dart';
@@ -79,47 +80,37 @@ class _PostDetailsPage extends State<PostDetailsPage> {
             hintText: "Add Comment...", contentPadding: EdgeInsets.all(16.0)),
         onEditingComplete: () {
           widget.post.comment(commentController.text).then((Comment comment) {
+            //Find the index of the temp comment and replace it
+            var tempIndex = widget.post.comments.indexWhere((e) => e.id == 'temp-cmt-id');
+            if (tempIndex > 0)
             setState(() {
-              widget.post.comments.add(comment);
-              widget.post.commentCount++;
+              widget.post.comments[tempIndex] = comment;
             });
             print("Sent Comment");
-            commentController.clear();
-            FocusScope.of(context).unfocus();
           }).catchError((error) {
             print("Error");
+            Fluttertoast.showToast(msg: "An error occurred");
+            //Remove temp comment
+            var tempIndex = widget.post.comments.indexWhere((e) => e.id == 'temp-cmt-id');
+            if (tempIndex > 0)
+            setState(() {
+              widget.post.comments.removeAt(tempIndex);
+            });
+          });
+          var tempComment = Comment("temp-cmt-id", this.widget.post.id, SnaxBackend.currentUser, commentController.text, DateTime.now(), 0);
+          setState(() {
+              widget.post.comments.insert(0,tempComment);
+              widget.post.commentCount++;
+              commentController.clear();
+              FocusScope.of(context).unfocus();
           });
         },
       ),
     );
   }
-}
 
-Widget commentLoader(BuildContext context, Post post) {
-  if (post.comments != null)
-    return getPostDetails(context, post);
-  else
-    return FutureBuilder(
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          post.comments = snapshot.data; // delete once comments load
-          return getPostDetails(context, post);
-        } else if (snapshot.hasError)
-          return Center(
-            child: Text("Failed to load post."),
-          );
-        else
-          return Expanded(
-              child: Center(
-                  child: CircularProgressIndicator(
-                      valueColor: new AlwaysStoppedAnimation<Color>(
-                          SnaxColors.redAccent))));
-      },
-      future: post.getComments(),
-    );
-}
 
-Widget getPostDetails(BuildContext context, Post post) {
+  Widget getPostDetails(BuildContext context, Post post) {
   return Expanded(
     child: ListView.builder(
       padding: EdgeInsets.zero,
@@ -168,8 +159,15 @@ Widget getPostDetails(BuildContext context, Post post) {
                           size: 20.0,
                         );
                       },
+                      isLiked: comment.likedByMe,
+                      key: Key('${widget.post.id}${comment.id}'),
                       likeCount: (comment.likes > 0) ? comment.likes : null,
                       countPostion: CountPostion.left,
+                      onTap: (isLiked) async {
+                        comment.like(!isLiked);
+                        setState(() {});
+                        return !isLiked;
+                      },
                     )),
                   ],
                 ),
@@ -181,3 +179,35 @@ Widget getPostDetails(BuildContext context, Post post) {
     ),
   );
 }
+
+
+Widget commentLoader(BuildContext context, Post post) {
+  if (post.comments != null)
+    return getPostDetails(context, post);
+  else
+    return FutureBuilder(
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          post.comments = snapshot.data; // delete once comments load
+          return getPostDetails(context, post);
+        } else if (snapshot.hasError)
+          return Center(
+            child: Text("Failed to load post."),
+          );
+        else
+          return Expanded(
+              child: Center(
+                  child: CircularProgressIndicator(
+                      valueColor: new AlwaysStoppedAnimation<Color>(
+                          SnaxColors.redAccent))));
+      },
+      future: post.getComments(),
+    );
+}
+
+
+
+
+
+}
+

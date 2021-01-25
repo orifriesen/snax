@@ -40,7 +40,7 @@ dependencies:
   hive_flutter: ^0.3.1
   flutter_phoenix: ^0.1.0
   sup: ^1.1.1
-  morpheus: ^1.2.2+1
+  quiver: ^2.1.5
 
   # firebase dependancies (1% chance of breaking everything)
   firebase_core: ^0.7.0

@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:quiver/iterables.dart';
 import 'package:snax/backend/caching.dart';
 import 'package:snax/feedPage/post.dart';
 import 'package:snax/main.dart';
@@ -79,16 +80,16 @@ class SnaxBackend {
   }
 
   // Snack of the week
-  static Future<SnackItem> snackOfTheWeek(
-      {bool forceRefresh = false}) async {
+  static Future<SnackItem> snackOfTheWeek({bool forceRefresh = false}) async {
     //Wait for the firebase to be initiated
     await _waitWhile(() => (fbStore == null));
     return (await SnaxBackend._queryAllSnacks(
-        fbStore
-            .collection("snacks")
-            .orderBy("isSnackOfTheWeek", descending: true)
-            .limit(1),
-        forceRefresh)).first;
+            fbStore
+                .collection("snacks")
+                .orderBy("isSnackOfTheWeek", descending: true)
+                .limit(1),
+            forceRefresh))
+        .first;
   }
 
   static Future<List<SnackItem>> getSnacksInCategory(
@@ -164,8 +165,6 @@ class SnaxBackend {
         imgUrl,
         banner: bannerUrl);
   }
-
-
 
   // Private function for getting list of snacks with a sort and limit
   static Future<List<SnackItem>> _queryAllSnacks(
@@ -361,24 +360,24 @@ class SnaxBackend {
         .map((e) => e.id)
         .toList();
     if (userIds.length == 0) return [];
-    List<QueryDocumentSnapshot> userDocs = (await fbStore
+    //Partition the groups of 10 (the limit for Firebase)
+    List<List<String>> uidGroups = partition(userIds, 10).toList();
+    //Collect the results
+    List<QueryDocumentSnapshot> userDocs = [];
+    List<QuerySnapshot> groupResults = (await Future.wait(uidGroups.map((g) =>
+        (fbStore
             .collection("users")
-            .where(FieldPath.documentId, whereIn: userIds)
-            .get())
-        .docs;
+            .where(FieldPath.documentId, whereIn: g)
+            .get()))))
+      ..forEach((group) {
+        userDocs.addAll(group.docs);
+      });
     //Open the box
     var followingBox = await Hive.openBox('user_following');
     //Make the list
     List<SnaxUser> users = [];
     for (var doc in userDocs) {
-      var userImg;
-      try {
-        userImg = await fbStorage
-            .ref()
-            .child("user-profiles")
-            .child(doc.id + ".jpg")
-            .getDownloadURL();
-      } catch (_) {}
+      var userImg = await getUserImage(doc.id);
       users.add(SnaxUser(doc.get("username"), doc.get("name"), doc.id,
           doc.data()["bio"], doc.get("followerCount"), doc.get("followerCount"),
           photo: userImg,
@@ -386,6 +385,17 @@ class SnaxBackend {
     }
     // await Hive.close();
     return users;
+  }
+
+  static Future<String> getUserImage(uid) async {
+    var ref = fbStorage.ref().child("user-profiles").child(uid + ".jpg");
+    try {
+      return await ref.getDownloadURL();
+    } catch (_) {
+      print(
+          "ignore previous firebase storage error, it was just a user without a profile photo");
+      return null;
+    }
   }
 
   static Future<List<SnaxUser>> getFollowing(String uid) async {
@@ -401,25 +411,25 @@ class SnaxBackend {
         .map((e) => e.id)
         .toList();
     if (userIds.length == 0) return [];
-    List<QueryDocumentSnapshot> userDocs = (await fbStore
+    //Partition the groups of 10 (the limit for Firebase)
+    List<List<String>> uidGroups = partition(userIds, 10).toList();
+    //Collect the results
+    List<QueryDocumentSnapshot> userDocs = [];
+    List<QuerySnapshot> groupResults = (await Future.wait(uidGroups.map((g) =>
+        (fbStore
             .collection("users")
-            .where(FieldPath.documentId, whereIn: userIds)
-            .get())
-        .docs;
+            .where(FieldPath.documentId, whereIn: g)
+            .get()))))
+      ..forEach((group) {
+        userDocs.addAll(group.docs);
+      });
     //Open the box
     var followingBox = await Hive.openBox('user_following');
     print(followingBox.values);
     //Make the list
     List<SnaxUser> users = [];
     for (var doc in userDocs) {
-      var userImg;
-      try {
-        userImg = await fbStorage
-            .ref()
-            .child("user-profiles")
-            .child(doc.id + ".jpg")
-            .getDownloadURL();
-      } catch (_) {}
+      var userImg = await getUserImage(doc.id);
       users.add(SnaxUser(doc.get("username"), doc.get("name"), doc.id,
           doc.data()["bio"], doc.get("followerCount"), doc.get("followerCount"),
           photo: userImg,
@@ -544,19 +554,28 @@ class SnaxBackend {
     await auth.loginIfNotAlready();
     var followingBox = await Hive.openBox('user_following');
     if (followingBox.keys.isEmpty) return [];
-    var query = fbStore
-        .collection("feed")
-        .where("uid", whereIn: followingBox.values.toList())
-        .orderBy("timestamp", descending: true)
-        .limit(25);
+
+    List<List<dynamic>> uidGroups =
+        partition(followingBox.values.toList(), 10).toList();
+
+    var cacheKey = "feed_friends:" + followingBox.values.join("-");
     //Check cache before actually fetching
-    if (!forceRefresh && Cache.has(query.parameters.toString()))
-      return Cache.fetch(query.parameters.toString());
+    if (!forceRefresh && Cache.has(cacheKey))
+      return Cache.fetch(cacheKey);
     //Actually fetch
-    List<QueryDocumentSnapshot> docs = (await query.get()).docs;
+    List<QueryDocumentSnapshot> docs = [];
+    (await Future.wait(uidGroups.map((g) => fbStore
+            .collection("feed")
+            .where("uid", whereIn: g)
+            .orderBy("timestamp", descending: true)
+            .limit(25)
+            .get())))
+        .forEach((result) {
+      docs.addAll(result.docs);
+    });
     var results = docs.isNotEmpty ? await _feedGrabRefs(docs) : [];
     //Add to cache
-    Cache.add(query.parameters.toString(), results);
+    Cache.add(cacheKey, results);
     return results;
   }
 
@@ -668,14 +687,7 @@ class SnaxBackend {
     for (var doc in docs) {
       var data = doc.data();
       //Grab photo of user
-      String userImg;
-      try {
-        userImg = await fbStorage
-            .ref()
-            .child("user-profiles")
-            .child(data["uid"] + ".jpg")
-            .getDownloadURL();
-      } catch (error) {}
+      String userImg = await getUserImage(data["uid"]);
 
       SnaxUser user = SnaxUser(
           userDatas[data["uid"]]["username"],
@@ -744,18 +756,13 @@ class SnaxBackend {
 
       //Get snack image
       String snackImg;
-      String userImg;
+      String userImg = await getUserImage(data["uid"]);
 
       try {
         snackImg = await fbStorage
             .ref()
             .child("snacks")
             .child(data["snack_id"] + ".jpg")
-            .getDownloadURL();
-        userImg = await fbStorage
-            .ref()
-            .child("user-profiles")
-            .child(data["uid"] + ".jpg")
             .getDownloadURL();
       } catch (error) {}
 
