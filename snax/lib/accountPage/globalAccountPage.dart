@@ -161,23 +161,18 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                   SizedBox(height: 5),
                   Padding(
                     padding: const EdgeInsets.only(left: 16.0, right: 16),
-                    child: ListView(
-                      shrinkWrap: true,
-                      children: [
-                        TabBar(
-                          controller: _tabController,
-                          indicatorColor: SnaxColors.redAccent,
-                          labelColor:
-                              !isDark(context) ? Colors.black : Colors.white,
-                          unselectedLabelColor: Colors.grey,
-                          tabs: [
-                            Tab(
-                              text: 'Posts',
-                            ),
-                            Tab(
-                              text: 'Reviewed',
-                            ),
-                          ],
+                    child: TabBar(
+                      controller: _tabController,
+                      indicatorColor: SnaxColors.redAccent,
+                      labelColor:
+                          !isDark(context) ? Colors.black : Colors.white,
+                      unselectedLabelColor: Colors.grey,
+                      tabs: [
+                        Tab(
+                          text: 'Posts',
+                        ),
+                        Tab(
+                          text: 'Reviewed',
                         ),
                       ],
                     ),
