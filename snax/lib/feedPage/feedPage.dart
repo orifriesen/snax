@@ -8,7 +8,6 @@ import 'package:like_button/like_button.dart';
 import 'package:snax/feedPage/postDetailsPage.dart';
 import 'package:snax/helpers.dart';
 import 'package:sup/sup.dart';
-import 'package:morpheus/morpheus.dart';
 
 class FeedPage extends StatefulWidget {
   @override

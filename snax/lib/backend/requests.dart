@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:quiver/iterables.dart';
 import 'package:snax/backend/caching.dart';
 import 'package:snax/feedPage/post.dart';
 import 'package:snax/main.dart';
@@ -359,11 +360,18 @@ class SnaxBackend {
         .map((e) => e.id)
         .toList();
     if (userIds.length == 0) return [];
-    List<QueryDocumentSnapshot> userDocs = (await fbStore
+    //Partition the groups of 10 (the limit for Firebase)
+    List<List<String>> uidGroups = partition(userIds, 10).toList();
+    //Collect the results
+    List<QueryDocumentSnapshot> userDocs = [];
+    List<QuerySnapshot> groupResults = (await Future.wait(uidGroups.map((g) =>
+        (fbStore
             .collection("users")
-            .where(FieldPath.documentId, whereIn: userIds)
-            .get())
-        .docs;
+            .where(FieldPath.documentId, whereIn: g)
+            .get()))))
+      ..forEach((group) {
+        userDocs.addAll(group.docs);
+      });
     //Open the box
     var followingBox = await Hive.openBox('user_following');
     //Make the list
@@ -403,11 +411,18 @@ class SnaxBackend {
         .map((e) => e.id)
         .toList();
     if (userIds.length == 0) return [];
-    List<QueryDocumentSnapshot> userDocs = (await fbStore
+    //Partition the groups of 10 (the limit for Firebase)
+    List<List<String>> uidGroups = partition(userIds, 10).toList();
+    //Collect the results
+    List<QueryDocumentSnapshot> userDocs = [];
+    List<QuerySnapshot> groupResults = (await Future.wait(uidGroups.map((g) =>
+        (fbStore
             .collection("users")
-            .where(FieldPath.documentId, whereIn: userIds)
-            .get())
-        .docs;
+            .where(FieldPath.documentId, whereIn: g)
+            .get()))))
+      ..forEach((group) {
+        userDocs.addAll(group.docs);
+      });
     //Open the box
     var followingBox = await Hive.openBox('user_following');
     print(followingBox.values);
@@ -539,19 +554,28 @@ class SnaxBackend {
     await auth.loginIfNotAlready();
     var followingBox = await Hive.openBox('user_following');
     if (followingBox.keys.isEmpty) return [];
-    var query = fbStore
-        .collection("feed")
-        .where("uid", whereIn: followingBox.values.toList())
-        .orderBy("timestamp", descending: true)
-        .limit(25);
+
+    List<List<dynamic>> uidGroups =
+        partition(followingBox.values.toList(), 10).toList();
+
+    var cacheKey = "feed_friends:" + followingBox.values.join("-");
     //Check cache before actually fetching
-    if (!forceRefresh && Cache.has(query.parameters.toString()))
-      return Cache.fetch(query.parameters.toString());
+    if (!forceRefresh && Cache.has(cacheKey))
+      return Cache.fetch(cacheKey);
     //Actually fetch
-    List<QueryDocumentSnapshot> docs = (await query.get()).docs;
+    List<QueryDocumentSnapshot> docs = [];
+    (await Future.wait(uidGroups.map((g) => fbStore
+            .collection("feed")
+            .where("uid", whereIn: g)
+            .orderBy("timestamp", descending: true)
+            .limit(25)
+            .get())))
+        .forEach((result) {
+      docs.addAll(result.docs);
+    });
     var results = docs.isNotEmpty ? await _feedGrabRefs(docs) : [];
     //Add to cache
-    Cache.add(query.parameters.toString(), results);
+    Cache.add(cacheKey, results);
     return results;
   }
 
