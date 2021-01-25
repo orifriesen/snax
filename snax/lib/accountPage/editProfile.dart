@@ -22,7 +22,6 @@ class _EditProfileState extends State<EditProfile> {
   final bioController = TextEditingController();
   final usernameController = TextEditingController();
 
-  bool maxedLines = false;
   bool uploadingImage = false;
   bool error = false;
 
@@ -159,21 +158,24 @@ class _EditProfileState extends State<EditProfile> {
       child: Center(
         child: Stack(
           children: [
-            CircleAvatar(
-              backgroundColor: Colors.grey,
-              radius: 80.0,
-              child: this.uploadingImage
-                  ? Container(
-                      child: Center(child: CircularProgressIndicator()),
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle, color: Colors.black54),
-                    )
-                  : null,
-              backgroundImage: _imageFile == null
-                  ? NetworkImage(SnaxBackend.currentUser.photo)
-                  : FileImage(
-                      File(_imageFile.path),
-                    ),
+            Hero(
+              tag: 'profile-photo',
+                          child: CircleAvatar(
+                backgroundColor: Colors.grey,
+                radius: 80.0,
+                child: this.uploadingImage
+                    ? Container(
+                        child: Center(child: CircularProgressIndicator()),
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle, color: Colors.black54),
+                      )
+                    : null,
+                backgroundImage: _imageFile == null
+                    ? (SnaxBackend.currentUser.photo != null) ? NetworkImage(SnaxBackend.currentUser.photo) : AssetImage("assets/blank_user.png")
+                    : FileImage(
+                        File(_imageFile.path),
+                      ),
+              ),
             ),
           ],
         ),
@@ -219,6 +221,7 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
+  //* This is the camera
   takePhoto(ImageSource source, BuildContext context) async {
     Navigator.of(context).pop();
     setState(() {

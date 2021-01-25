@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:snax/backend/caching.dart';
 import 'package:snax/feedPage/post.dart';
 import 'package:snax/main.dart';
 
@@ -51,36 +52,59 @@ class SnaxBackend {
   static SnaxUser currentUser;
 
   // Top rated snacks of all time
-  static Future<List<SnackItem>> chartTop({int limit = 25}) async {
+  static Future<List<SnackItem>> chartTop(
+      {int limit = 25, bool forceRefresh = false}) async {
     //Wait for the firebase to be initiated
     await _waitWhile(() => (fbStore == null));
-    return await SnaxBackend._queryAllSnacks(fbStore
-        .collection("snacks")
-        .orderBy("computed.score_overall", descending: true)
-        .limit(limit));
+
+    return await SnaxBackend._queryAllSnacks(
+        fbStore
+            .collection("snacks")
+            .orderBy("computed.score_overall", descending: true)
+            .limit(limit),
+        forceRefresh);
   }
 
   // Snacks with most reviews in the last week
-  static Future<List<SnackItem>> chartTrending({int limit = 25}) async {
+  static Future<List<SnackItem>> chartTrending(
+      {int limit = 25, bool forceRefresh = false}) async {
     //Wait for the firebase to be initiated
     await _waitWhile(() => (fbStore == null));
-    return await SnaxBackend._queryAllSnacks(fbStore
-        .collection("snacks")
-        .orderBy("computed_trend", descending: true)
-        .limit(limit));
+    return await SnaxBackend._queryAllSnacks(
+        fbStore
+            .collection("snacks")
+            .orderBy("computed_trend", descending: true)
+            .limit(limit),
+        forceRefresh);
+  }
+
+  // Snack of the week
+  static Future<SnackItem> snackOfTheWeek({bool forceRefresh = false}) async {
+    //Wait for the firebase to be initiated
+    await _waitWhile(() => (fbStore == null));
+    return (await SnaxBackend._queryAllSnacks(
+            fbStore
+                .collection("snacks")
+                .orderBy("isSnackOfTheWeek", descending: true)
+                .limit(1),
+            forceRefresh))
+        .first;
   }
 
   static Future<List<SnackItem>> getSnacksInCategory(
       String catId, SnackListSort sort,
-      {int limit = 25}) async {
+      {int limit = 25, bool forceRefresh = false}) async {
     //Wait for the firebase to be initiated
     print(sort.raw);
     await _waitWhile(() => (fbStore == null));
-    return await SnaxBackend._queryAllSnacks(fbStore
-        .collection("snacks")
-        .where("type", isEqualTo: fbStore.collection("snack-types").doc(catId))
-        .orderBy(sort.raw, descending: true)
-        .limit(limit));
+    return await SnaxBackend._queryAllSnacks(
+        fbStore
+            .collection("snacks")
+            .where("type",
+                isEqualTo: fbStore.collection("snack-types").doc(catId))
+            .orderBy(sort.raw, descending: true)
+            .limit(limit),
+        forceRefresh);
   }
 
   static Future<SnackItem> getSnack(String id) async {
@@ -142,7 +166,11 @@ class SnaxBackend {
   }
 
   // Private function for getting list of snacks with a sort and limit
-  static Future<List<SnackItem>> _queryAllSnacks(Query query) async {
+  static Future<List<SnackItem>> _queryAllSnacks(
+      Query query, bool forceRefresh) async {
+    //Check cache for value
+    if (!forceRefresh && Cache.has(query.parameters.toString()))
+      return Cache.fetch(query.parameters.toString());
     // String sort, bool desc, int limit) async {
     //Wait for the firebase to be initiated
     await _waitWhile(() => (fbStore == null));
@@ -207,7 +235,7 @@ class SnaxBackend {
           imgUrl,
           banner: bannerUrl));
     }
-
+    Cache.add(query.parameters.toString(), snacks);
     //Return the mapped data
     return snacks;
   }
@@ -270,11 +298,12 @@ class SnaxBackend {
     await file.writeAsBytes(encodeJpg(resized));
 
     try {
-      await fbStorage
+      var task = await fbStorage
           .ref()
           .child("user-profiles")
           .child(uid + ".jpg")
           .putFile(file);
+      SnaxBackend.currentUser.photo = await task.ref.getDownloadURL();
     } catch (error) {
       print(error);
       throw "Failed to upload";
@@ -295,8 +324,8 @@ class SnaxBackend {
 
     //Add to local database
     var followingBox = await Hive.openBox('user_following');
-    followingBox.put(uid, true);
-    await Hive.close();
+    followingBox.add(uid);
+    // await Hive.close();
   }
 
   static Future<void> unfollowUser(String uid) async {
@@ -313,8 +342,8 @@ class SnaxBackend {
 
     //Remove from local database
     var followingBox = await Hive.openBox('user_following');
-    followingBox.delete(uid);
-    await Hive.close();
+    followingBox.deleteAt(followingBox.values.toList().indexOf(uid));
+    // await Hive.close();
   }
 
   static Future<List<SnaxUser>> getFollowers(String uid) async {
@@ -340,20 +369,25 @@ class SnaxBackend {
     //Make the list
     List<SnaxUser> users = [];
     for (var doc in userDocs) {
-      var userImg;
-      try {
-        userImg = await fbStorage
-            .ref()
-            .child("user-profiles")
-            .child(doc.id + ".jpg")
-            .getDownloadURL();
-      } catch (_) {}
+      var userImg = await getUserImage(doc.id);
       users.add(SnaxUser(doc.get("username"), doc.get("name"), doc.id,
           doc.data()["bio"], doc.get("followerCount"), doc.get("followerCount"),
-          photo: userImg, userIsFollowing: followingBox.containsKey(doc.id)));
+          photo: userImg,
+          userIsFollowing: followingBox.values.contains(doc.id)));
     }
-    await Hive.close();
+    // await Hive.close();
     return users;
+  }
+
+  static Future<String> getUserImage(uid) async {
+    var ref = fbStorage.ref().child("user-profiles").child(uid + ".jpg");
+    try {
+      return await ref.getDownloadURL();
+    } catch (_) {
+      print(
+          "ignore previous firebase storage error, it was just a user without a profile photo");
+      return null;
+    }
   }
 
   static Future<List<SnaxUser>> getFollowing(String uid) async {
@@ -376,22 +410,17 @@ class SnaxBackend {
         .docs;
     //Open the box
     var followingBox = await Hive.openBox('user_following');
+    print(followingBox.values);
     //Make the list
     List<SnaxUser> users = [];
     for (var doc in userDocs) {
-      var userImg;
-      try {
-        userImg = await fbStorage
-            .ref()
-            .child("user-profiles")
-            .child(doc.id + ".jpg")
-            .getDownloadURL();
-      } catch (_) {}
+      var userImg = await getUserImage(doc.id);
       users.add(SnaxUser(doc.get("username"), doc.get("name"), doc.id,
           doc.data()["bio"], doc.get("followerCount"), doc.get("followerCount"),
-          photo: userImg, userIsFollowing: followingBox.containsKey(doc.id)));
+          photo: userImg,
+          userIsFollowing: followingBox.values.contains(doc.id)));
     }
-    await Hive.close();
+    // await Hive.close();
     return users;
   }
 
@@ -456,7 +485,7 @@ class SnaxBackend {
     like
         ? likeBox.put(postId + "." + commentId, true)
         : likeBox.delete(postId + "." + commentId);
-    await Hive.close();
+    // await Hive.close();
   }
 
   static Future<void> feedLikePost(String postId, bool like) async {
@@ -484,47 +513,62 @@ class SnaxBackend {
     //Add to local database
     var likeBox = await Hive.openBox('user_likes');
     like ? likeBox.put(postId, true) : likeBox.delete(postId);
-    await likeBox.close();
+    // await likeBox.close();
   }
 
-  static Future<List<Post>> feedGetTopPosts() async {
+  static Future<List<Post>> feedGetTopPosts({bool forceRefresh = false}) async {
     //Wait for firebase init
     await _waitWhile(() => (fbStore == null));
-    List<QueryDocumentSnapshot> docs = (await fbStore
-            .collection("feed")
-            .orderBy("likes", descending: true)
-            .limit(25)
-            .get())
-        .docs;
-    return docs.isNotEmpty ? await _feedGrabRefs(docs) : [];
+    var query =
+        fbStore.collection("feed").orderBy("likes", descending: true).limit(25);
+    //Check cache before actually fetching
+    if (!forceRefresh && Cache.has(query.parameters.toString()))
+      return Cache.fetch(query.parameters.toString());
+    //Actually fetch
+    List<QueryDocumentSnapshot> docs = (await query.get()).docs;
+    var results = docs.isNotEmpty ? await _feedGrabRefs(docs) : [];
+    //Add to cache
+    Cache.add(query.parameters.toString(), results);
+    return results;
   }
 
-  static Future<List<Post>> feedGetRecentFriendPosts() async {
+  static Future<List<Post>> feedGetRecentFriendPosts(
+      {bool forceRefresh = false}) async {
     //Wait for firebase init
     await _waitWhile(() => (fbStore == null));
     await auth.loginIfNotAlready();
     var followingBox = await Hive.openBox('user_following');
     if (followingBox.keys.isEmpty) return [];
-    List<QueryDocumentSnapshot> docs = (await fbStore
-            .collection("feed")
-            .where("uid", whereIn: followingBox.keys.toList())
-            .orderBy("timestamp", descending: true)
-            .limit(25)
-            .get())
-        .docs;
-    return docs.isNotEmpty ? await _feedGrabRefs(docs) : [];
+    var query = fbStore
+        .collection("feed")
+        .where("uid", whereIn: followingBox.values.toList())
+        .orderBy("timestamp", descending: true)
+        .limit(25);
+    //Check cache before actually fetching
+    if (!forceRefresh && Cache.has(query.parameters.toString()))
+      return Cache.fetch(query.parameters.toString());
+    //Actually fetch
+    List<QueryDocumentSnapshot> docs = (await query.get()).docs;
+    var results = docs.isNotEmpty ? await _feedGrabRefs(docs) : [];
+    //Add to cache
+    Cache.add(query.parameters.toString(), results);
+    return results;
   }
 
-  static Future<List<Post>> feedGetTrendingPosts() async {
+  static Future<List<Post>> feedGetTrendingPosts(
+      {bool forceRefresh = false}) async {
     //Wait for firebase init
     await _waitWhile(() => (fbStore == null));
-    List<QueryDocumentSnapshot> docs = (await fbStore
-            .collection("feed")
-            .orderBy("trend", descending: true)
-            .limit(25)
-            .get())
-        .docs;
-    return docs.isNotEmpty ? await _feedGrabRefs(docs) : [];
+    var query =
+        fbStore.collection("feed").orderBy("trend", descending: true).limit(25);
+    //Check cache before actually fetching
+    if (!forceRefresh && Cache.has(query.parameters.toString()))
+      return Cache.fetch(query.parameters.toString());
+    List<QueryDocumentSnapshot> docs = (await query.get()).docs;
+    var results = docs.isNotEmpty ? await _feedGrabRefs(docs) : [];
+    //Add to cache
+    Cache.add(query.parameters.toString(), results);
+    return results;
   }
 
   static Future<List<Post>> feedGetTopPostsForSnack(String snackId) async {
@@ -619,14 +663,7 @@ class SnaxBackend {
     for (var doc in docs) {
       var data = doc.data();
       //Grab photo of user
-      String userImg;
-      try {
-        userImg = await fbStorage
-            .ref()
-            .child("user-profiles")
-            .child(data["uid"] + ".jpg")
-            .getDownloadURL();
-      } catch (error) {}
+      String userImg = await getUserImage(data["uid"]);
 
       SnaxUser user = SnaxUser(
           userDatas[data["uid"]]["username"],
@@ -636,7 +673,7 @@ class SnaxBackend {
           userDatas[data["uid"]]["followerCount"],
           userDatas[data["uid"]]["followingCount"],
           photo: userImg,
-          userIsFollowing: followingBox.containsKey(data["uid"]));
+          userIsFollowing: followingBox.values.contains(data["uid"]));
       comments.add(Comment(
           doc.id,
           postId,
@@ -646,7 +683,7 @@ class SnaxBackend {
           data["likes"] ?? 0,
           likedByMe: likeBox.containsKey(postId + "." + doc.id)));
     }
-    await Hive.close();
+    // await Hive.close();
     return comments;
   }
 
@@ -695,18 +732,13 @@ class SnaxBackend {
 
       //Get snack image
       String snackImg;
-      String userImg;
+      String userImg = await getUserImage(data["uid"]);
 
       try {
         snackImg = await fbStorage
             .ref()
             .child("snacks")
             .child(data["snack_id"] + ".jpg")
-            .getDownloadURL();
-        userImg = await fbStorage
-            .ref()
-            .child("user-profiles")
-            .child(data["uid"] + ".jpg")
             .getDownloadURL();
       } catch (error) {}
 
@@ -719,7 +751,7 @@ class SnaxBackend {
           userDatas[data["uid"]]["followerCount"],
           userDatas[data["uid"]]["followingCount"],
           photo: userImg,
-          userIsFollowing: followingBox.containsKey(data["uid"]));
+          userIsFollowing: followingBox.values.contains(data["uid"]));
 
       //Create snack
       SnackSearchResultItem snack = SnackSearchResultItem(
@@ -741,7 +773,7 @@ class SnaxBackend {
           data["comments"],
           likedByMe: likeBox.containsKey(doc.id)));
     }
-    await Hive.close();
+    // await Hive.close();
     return posts;
   }
 
@@ -858,9 +890,9 @@ class SnaxBackend {
             result["data"]["followerCount"],
             result["data"]["followingCount"],
             photo: imgUrl,
-            userIsFollowing: followingBox.containsKey(result["id"])));
+            userIsFollowing: followingBox.values.contains(result["id"])));
       }
-      await Hive.close();
+      // await Hive.close();
       //Return the list
       return returnItems;
     } else if (result.data["error"] != null) {
@@ -1034,6 +1066,21 @@ class _SnaxBackendAuth {
         likeMap[id] = true;
       });
       await likeBox.putAll(likeMap);
+      //Get following
+      var followingUids = (await fbStore
+              .collection("users")
+              .doc(user.uid)
+              .collection("following")
+              .get())
+          .docs
+          .map((e) => e.id)
+          .toList()
+          .asMap();
+      var followingBox = await Hive.openBox('user_following');
+      print(followingUids);
+      await followingBox.clear();
+      await followingBox.putAll(followingUids);
+      // await followingBox.close();
       //Return instance
       return SnaxUser(
           userInDB.get("username"),

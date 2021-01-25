@@ -4,8 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:snax/accountPage/editProfile.dart';
 
-import 'package:snax/accountPage/followersPage.dart';
-import 'package:snax/accountPage/followingPage.dart';
+import 'package:snax/accountPage/userListPage.dart';
 import 'package:snax/accountPage/settingsPage.dart';
 import 'package:snax/backend/backend.dart';
 
@@ -15,9 +14,20 @@ import 'accountBottomTabs/secondTab.dart';
 import 'package:snax/backend/requests.dart';
 import 'package:snax/helpers.dart';
 
+import 'package:url_launcher/url_launcher.dart';
+
+class Items {
+  String name;
+  Items(this.name);
+  static List<Items> getItems() {
+    return <Items>[Items("hello"), Items("nope")];
+  }
+}
+
 class GlobalAccountPage extends StatefulWidget {
-  GlobalAccountPage(this.user,{ this.isAccountPage = false });
+  GlobalAccountPage(this.user, {this.isAccountPage = false});
   SnaxUser user;
+  String uid;
   bool isAccountPage;
   @override
   _GlobalAccountPageState createState() => _GlobalAccountPageState();
@@ -58,16 +68,20 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
         elevation: 0,
         backgroundColor: burningOrangeEnd,
         brightness: Brightness.dark,
-        title: Text(this.widget.isAccountPage ? "My Profile" : "${this.widget.user.name}\'s Profile"),
+        title: Text(this.widget.isAccountPage
+            ? "My Profile"
+            : "${this.widget.user.name}\'s Profile"),
         actions: [
           //* Calls the settings pop up
-          this.widget.isAccountPage ? IconButton(
-            icon: Icon(Icons.more_horiz_rounded),
-            onPressed: () => {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => SettingsPage()))
-            },
-          ) : _globalSettings(),
+          this.widget.isAccountPage
+              ? IconButton(
+                  icon: Icon(Icons.more_horiz_rounded),
+                  onPressed: () => {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => SettingsPage()))
+                  },
+                )
+              : _globalSettings(),
         ],
       ),
       body: (SnaxBackend.currentUser == null && this.widget.isAccountPage)
@@ -168,10 +182,97 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
   }
 
   //* Settings when viewing someone else's profile
+  //* For now, this only open a dialog for reporting a user.
+  //* A Block feature will be implemented later on
   Widget _globalSettings() {
-    return IconButton(
-      icon: Icon(Icons.more_horiz_rounded),
-      onPressed: () => {},
+    return PopupMenuButton(
+      onSelected: (value) {
+        value == 1 ? reportButton() : Container();
+      },
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          value: 1,
+          child: Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(2, 2, 8, 2),
+              ),
+              Text(
+                'Report',
+                style: TextStyle(color: SnaxColors.redAccent),
+              )
+            ],
+          ),
+          height: 32,
+        ),
+      ],
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+    );
+  }
+
+  //* Report Button in the pop up menu
+  void reportButton() {
+    showCupertinoDialog(
+      context: context,
+      builder: (_) => Platform.isIOS
+          ? CupertinoAlertDialog(
+              title: Text("Report This User"),
+              content: Text(
+                "Do you want to report this user? Your default email app will open.",
+              ),
+              actions: [
+                FlatButton(
+                    child: Text(
+                      "No",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    onPressed: () => {Navigator.pop(context)}),
+                FlatButton(
+                  child: Text(
+                    "Yes",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  onPressed: () => {
+                    customLaunch(
+                        "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20User:${this.widget.user}&body=Reason:"),
+                    Navigator.pop(context),
+                  },
+                )
+              ],
+            )
+          : AlertDialog(
+              title: Text("Report This User"),
+              content: Text(
+                  "Do you want to report this user? Your default email app will open."),
+              actions: [
+                FlatButton(
+                    child: Text(
+                      "No",
+                      style: TextStyle(
+                          fontSize: 18,
+                          color:
+                              !isDark(context) ? Colors.black : Colors.white),
+                    ),
+                    onPressed: () => {Navigator.pop(context)}),
+                FlatButton(
+                  child: Text(
+                    "Yes",
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: !isDark(context) ? Colors.black : Colors.white,
+                    ),
+                  ),
+                  onPressed: () => {
+                    customLaunch(
+                        "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20User:${this.widget.user}&body=Reason:"),
+                    Navigator.pop(context),
+                  },
+                )
+              ],
+            ),
+      barrierDismissible: true,
     );
   }
 
@@ -181,16 +282,19 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
       children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              image: DecorationImage(
-                fit: BoxFit.cover,
-                image: NetworkImage(this.widget.user.photo == null
-                    ? 'https://picsum.photos/200/300?grayscale'
-                    : this.widget.user.photo),
+          child: Hero(
+            tag: "profile-photo",
+            child: Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: NetworkImage(this.widget.user.photo == null
+                      ? 'https://picsum.photos/200/300?grayscale'
+                      : this.widget.user.photo),
+                ),
               ),
             ),
           ),
@@ -283,8 +387,11 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
             children: [
               FlatButton(
                 onPressed: () => {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => FollowingPage())),
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => UserListPage("Following",
+                              SnaxBackend.getFollowing(this.widget.user.uid)))),
                 },
                 child: _following(),
               ),
@@ -295,8 +402,11 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
             children: [
               FlatButton(
                 onPressed: () => {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => FollowersPage())),
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => UserListPage("Followers",
+                              SnaxBackend.getFollowers(this.widget.user.uid)))),
                 },
                 child: _followers(),
               )
@@ -307,43 +417,42 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
             children: [
               Container(
                 child: RaisedButton(
-                    color: Colors.transparent,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      side: BorderSide(color: Colors.white, width: 2),
-                    ),
-                    onPressed: () {
-                      if (this.widget.user.uid == SnaxBackend.currentUser.uid) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => EditProfile(),
-                          ),
-                        ).whenComplete(
-                          () => setState(() {}),
-                        );
-                      } else if (this.widget.user.userIsFollowing) {
-                        this.widget.user.unfollow().catchError((_) {
-                          //Unfollow Failed, reset isFollowing
-                          this.isFollowing = true;
-                          this.widget.user.followerCount++;
-                        });
-                        print("unfollowed");
-                        this.isFollowing = false;
-                        this.widget.user.followerCount--;
-                      } else {
-                        this.widget.user.follow().catchError((_) {
-                          this.isFollowing = false;
-                          this.widget.user.followerCount++;
-                        });
-                        print("followed");
+                  color: Colors.transparent,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    side: BorderSide(color: Colors.white, width: 2),
+                  ),
+                  onPressed: () {
+                    if (this.widget.user.uid == SnaxBackend.currentUser.uid) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EditProfile(),
+                        ),
+                      ).whenComplete(
+                        () => setState(() {}),
+                      );
+                    } else if (this.widget.user.userIsFollowing) {
+                      this.widget.user.unfollow().catchError((_) {
+                        //Unfollow Failed, reset isFollowing
                         this.isFollowing = true;
                         this.widget.user.followerCount++;
-                      }
-                      this.setState(() {});
-                    },
-                    child: Text(() {
+                      });
+                      this.isFollowing = false;
+                      this.widget.user.followerCount--;
+                    } else {
+                      this.widget.user.follow().catchError((_) {
+                        this.isFollowing = false;
+                        this.widget.user.followerCount++;
+                      });
+                      this.isFollowing = true;
+                      this.widget.user.followerCount++;
+                    }
+                    this.setState(() {});
+                  },
+                  child: Text(
+                    () {
                       if (this.widget.user.uid == SnaxBackend.currentUser.uid) {
                         return "Edit Profile";
                       } else if (this.isFollowing) {
@@ -352,9 +461,11 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                         return "Follow";
                       }
                     }(),
-                        style: TextStyle(
-                          color: Colors.white,
-                        ))),
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
@@ -407,5 +518,15 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
         )
       ],
     );
+  }
+
+  //* URL Launcher
+  //* command can be any link
+  customLaunch(command) async {
+    if (await canLaunch(command)) {
+      await launch(command);
+    } else {
+      print("Could not work");
+    }
   }
 }

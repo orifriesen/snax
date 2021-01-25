@@ -42,12 +42,13 @@ dependencies:
   morpheus: ^1.2.2+1
 
   # firebase dependancies (1% chance of breaking everything)
-  firebase_core: ^0.5.2
-  firebase_auth: ^0.18.3
-  cloud_firestore: ^0.14.3
-  cloud_functions: ^0.7.0+1
-  firebase_storage: ^5.0.1
+  firebase_core: ^0.7.0
+  firebase_auth: ^0.20.0
+  cloud_firestore: ^0.16.0
+  cloud_functions: ^0.9.0
+  firebase_storage: ^7.0.0
   firebase_messaging: "^8.0.0-dev.11"
+  firebase_analytics: ^7.0.1
 
   # other native dependancies (99% chance of breaking everything)
   google_sign_in: ^4.5.6
@@ -102,6 +103,19 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
+  fonts: 
+    - family: MyFlutterApp
+      fonts: 
+        - asset: assets/fonts/MyFlutterApp.ttf
+    - family: Sourness
+      fonts: 
+        - asset: assets/fonts/Sourness.ttf
+    - family: Spiciness
+      fonts: 
+        - asset: assets/fonts/Spiciness.ttf
+    - family: MouthFeel
+      fonts: 
+        - asset: assets/fonts/MouthFeel.ttf
   # fonts:
   #   - family: Schyler
   #     fonts:

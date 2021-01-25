@@ -206,25 +206,34 @@ class _TopList extends State<TopList>
 
 Widget forYouTab(BuildContext context, List<SnackItem> snackList) {
   return snackList != null
-      ? ListView(
-          padding: EdgeInsets.only(top: 12),
-          children: [
-            snackOfTheWeek(context, snackList[0]),
-            FutureBuilder(
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return getHorizontalList(
-                        "Trending", context, snapshot.data);
-                  } else {
-                    return Container(child: Center(child: CircularProgressIndicator()));
-                  }
-                },
-                future: SnaxBackend.getSnacksInCategory(
-                    "cracker", SnackListSort.trending)),
-            getHorizontalList("Top", context, snackList),
-            getMiniHorizontalList("Test", context, snackList)
-          ],
-        )
+      ? FutureBuilder(
+          future: Future.wait([
+            SnaxBackend.snackOfTheWeek(),
+            SnaxBackend.chartTrending(),
+            SnaxBackend.chartTop(),
+            SnaxBackend.getSnacksInCategory("chip", SnackListSort.trending),
+            SnaxBackend.getSnacksInCategory("cracker", SnackListSort.top),
+          ]),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return ListView(
+                padding: EdgeInsets.only(top: 12),
+                children: [
+                  snackOfTheWeek(context, snapshot.data[0]),
+                  getHorizontalList("Trending", context, snapshot.data[1]),
+                  getHorizontalList("Top", context, snapshot.data[2]),
+                  getMiniHorizontalList(
+                      "Trending in Chips", context, snapshot.data[3]),
+                  getMiniHorizontalList(
+                      "Top in Crackers", context, snapshot.data[4]),
+                ],
+              );
+            } else {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+          })
       : Container(
           child: Center(
               child: CircularProgressIndicator(

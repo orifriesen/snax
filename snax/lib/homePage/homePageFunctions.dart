@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:number_display/number_display.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
@@ -38,143 +40,152 @@ Widget getHorizontalList(
                     itemBuilder: (context, index) {
                       return Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            width: 260,
-                            child: Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                borderRadius: BorderRadius.circular(16),
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => ProductPage(
-                                              item: snackList[index])));
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        // padding: EdgeInsets.all(1),
-                                        width: 240,
-                                        height: 114,
-                                        child: Stack(
-                                          children: [
-                                            ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                              child: (snackList[index].banner !=
-                                                      null)
-                                                  ? Image.network(
-                                                      snackList[index].banner)
-                                                  : Image.asset(
-                                                      "assets/placeholderImage.jpg",
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                            ),
-                                            Container(
-                                                child: Opacity(
-                                                  opacity: 0.5,
-                                                  child: Image.asset(
-                                                      'assets/snax-chip.png'),
-                                                ),
-                                                height: 21,
-                                                padding: EdgeInsets.only(
-                                                    left: 200, top: 10)),
-                                          ],
-                                        ),
-                                      ),
-                                      Container(height: 12),
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            width: 48,
-                                            height: 48,
-                                            clipBehavior: Clip.hardEdge,
-                                            padding: EdgeInsets.all(1),
-                                            decoration: BoxDecoration(
+                          child: Hero(
+                            tag: snackList[index].transitionId,
+                            child: Container(
+                              width: 260,
+                              child: Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(16),
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => ProductPage(
+                                                item: snackList[index])));
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          // padding: EdgeInsets.all(1),
+                                          width: 240,
+                                          height: 114,
+                                          child: Stack(
+                                            children: [
+                                              ClipRRect(
                                                 borderRadius:
                                                     BorderRadius.circular(8),
-                                                color: Colors.white),
-                                            child: AspectRatio(
-                                                aspectRatio: 1,
-                                                child: Image.network(
-                                                    snackList[index].image)),
-                                          ),
-                                          Container(width: 12),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                snackList[index].name,
-                                                style: TextStyle(
-                                                    fontSize: 15,
-                                                    fontWeight:
-                                                        FontWeight.w500),
+                                                child: (snackList[index]
+                                                            .banner !=
+                                                        null)
+                                                    ? Image.network(
+                                                        snackList[index].banner)
+                                                    : Image.asset(
+                                                        "assets/placeholderImage.jpg",
+                                                        fit: BoxFit.cover,
+                                                      ),
                                               ),
-                                              Row(
-                                                children: [
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            top: 2.0),
-                                                    child: Text(
-                                                        "${(snackList[index].averageRatings.overall ?? 0).toStringAsFixed(1)} ",
-                                                        style: TextStyle(
-                                                          color: SnaxColors
-                                                              .subtext,
-                                                        )),
+                                              Container(
+                                                  child: Opacity(
+                                                    opacity: 0.5,
+                                                    child: Image.asset(
+                                                        'assets/snax-chip.png'),
                                                   ),
-                                                  SmoothStarRating(
-                                                      allowHalfRating: true,
-                                                      starCount: 5,
-                                                      rating: snackList[index]
-                                                              .averageRatings
-                                                              .overall ??
-                                                          0,
-                                                      size: 17,
-                                                      isReadOnly: true,
-                                                      defaultIconData: Icons
-                                                          .star_border_rounded,
-                                                      filledIconData:
-                                                          Icons.star_rounded,
-                                                      halfFilledIconData: Icons
-                                                          .star_half_rounded,
-                                                      color:
-                                                          SnaxColors.redAccent,
-                                                      borderColor:
-                                                          SnaxColors.redAccent,
-                                                      spacing: 0.0),
+                                                  height: 21,
+                                                  padding: EdgeInsets.only(
+                                                      left: 200, top: 10)),
+                                            ],
+                                          ),
+                                        ),
+                                        Container(height: 12),
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                              width: 48,
+                                              height: 48,
+                                              clipBehavior: Clip.hardEdge,
+                                              padding: EdgeInsets.all(1),
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                  color: Colors.white),
+                                              child: AspectRatio(
+                                                  aspectRatio: 1,
+                                                  child: Image.network(
+                                                      snackList[index].image)),
+                                            ),
+                                            Container(width: 12),
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    snackList[index].name,
+                                                    overflow: TextOverflow.fade,
+                                                    softWrap: false,
+                                                    style: TextStyle(
+                                                        fontSize: 15,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(top: 2.0),
+                                                        child: Text(
+                                                            "${(snackList[index].averageRatings.overall ?? 0).toStringAsFixed(1)} ",
+                                                            style: TextStyle(
+                                                              color: SnaxColors
+                                                                  .subtext,
+                                                            )),
+                                                      ),
+                                                      SmoothStarRating(
+                                                          allowHalfRating: true,
+                                                          starCount: 5,
+                                                          rating: snackList[index]
+                                                                  .averageRatings
+                                                                  .overall ??
+                                                              0,
+                                                          size: 17,
+                                                          isReadOnly: true,
+                                                          defaultIconData: Icons
+                                                              .star_border_rounded,
+                                                          filledIconData: Icons
+                                                              .star_rounded,
+                                                          halfFilledIconData: Icons
+                                                              .star_half_rounded,
+                                                          color: SnaxColors
+                                                              .redAccent,
+                                                          borderColor:
+                                                              SnaxColors
+                                                                  .redAccent,
+                                                          spacing: 0.0),
+                                                    ],
+                                                  ),
+                                                  Container(height: 2),
+                                                  Text(
+                                                      "${snackList[index].numberOfRatings} Ratings",
+                                                      style: TextStyle(
+                                                          color: SnaxColors
+                                                              .subtext))
                                                 ],
                                               ),
-                                              Container(height: 2),
-                                              Text(
-                                                  "${snackList[index].numberOfRatings} Ratings",
-                                                  style: TextStyle(
-                                                      color:
-                                                          SnaxColors.subtext))
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    ],
+                                            )
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(16),
-                              color: isDark(context) ? null : Colors.white,
-                              gradient: isDark(context)
-                                  ? SnaxGradients.darkGreyCard
-                                  : null,
-                              boxShadow: [SnaxShadows.cardShadowSubtler],
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16),
+                                color: isDark(context) ? null : Colors.white,
+                                gradient: isDark(context)
+                                    ? SnaxGradients.darkGreyCard
+                                    : null,
+                                boxShadow: [SnaxShadows.cardShadowSubtler],
+                              ),
                             ),
                           ));
                     })
@@ -528,31 +539,56 @@ Widget snackOfTheWeek(BuildContext context, SnackItem snackItem) {
                 child: ClipRRect(
                     borderRadius: BorderRadius.circular(18),
                     child: Image.network(snackItem.banner))),
-            Padding(
-              padding: EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Snack of the Week:",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-                  Container(height: 2),
-                  Text(snackItem.name + "!",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
-                  Container(height: 2),
-                  Row(
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      SnaxColors.gradientStart.withAlpha(210),
+                      SnaxColors.gradientEnd.withAlpha(80)
+                    ]),
+                borderRadius: BorderRadius.circular(18),
+              ),
+              child: AspectRatio(
+                aspectRatio: 4 / 2,
+                child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(snackItem.averageRatings.overall.toStringAsFixed(1),
-                          style: TextStyle(fontSize: 20)),
-                      Icon(
-                        Icons.star_rounded,
-                        color: SnaxColors.redAccent,
-                        size: 28,
+                      Text("Snack of the Week:",
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white)),
+                      Container(height: 2),
+                      Text(snackItem.name + "!",
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white)),
+                      Container(height: 2),
+                      Row(
+                        children: [
+                          Text(
+                              ((snackItem.averageRatings != null)
+                                      ? snackItem.averageRatings.overall
+                                          .toStringAsFixed(1)
+                                      : "No Ratings") +
+                                  " ",
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.white)),
+                          Icon(
+                            Icons.star_rounded,
+                            color: Colors.white,
+                            size: 23,
+                          )
+                        ],
                       )
                     ],
-                  )
-                ],
+                  ),
+                ),
               ),
             )
           ])));

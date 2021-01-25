@@ -33,6 +33,7 @@ class MyApp extends StatelessWidget {
             accentColor: SnaxColors.redAccent,
             cursorColor: SnaxColors.redAccent,
             brightness: ThemeData.dark().brightness,
+            appBarTheme: AppBarTheme(color: SnaxColors.redAppBarColor),
             cupertinoOverrideTheme:
                 CupertinoThemeData(primaryColor: SnaxColors.redAccent)),
         theme: ThemeData(
@@ -40,7 +41,7 @@ class MyApp extends StatelessWidget {
             accentColor: SnaxColors.redAccent,
             cupertinoOverrideTheme:
                 CupertinoThemeData(primaryColor: SnaxColors.redAccent),
-            appBarTheme: AppBarTheme(brightness: Brightness.light)),
+            appBarTheme: AppBarTheme(brightness: Brightness.light, color: SnaxColors.redAppBarColor)),
       ),
     );
   }
@@ -52,20 +53,20 @@ void main() {
   //Initialize Firebase synchronously (has to happen after runApp)
   initializeFirebase().whenComplete(() {
     print("initialized firebase");
-    SnaxBackend.search("Cheet").then((value) {
-      DemoValues.items = value;
-    });
+    // SnaxBackend.search("Cheet").then((value) {
+    //   DemoValues.items = value;
+    // });
     if (fbAuth.currentUser != null)
       fbAuth.currentUser.getIdToken().then((token) => printWrapped(
           "USER REQUEST TOKEN =-=-=-=-=-=-=-=-=-=-=-\n" +
               token +
               "\n=-=-=-=-=-=-=-=-=-=-=-"));
 
-    SnaxBackend.getFollowing("92kBXfyxAKdkYcwYIRPo7SrKVKj1").then((users) {
-      users.forEach((u) {
-        print("${u.name} - ${u.username}");
-      });
-    });
+    // SnaxBackend.getFollowing("92kBXfyxAKdkYcwYIRPo7SrKVKj1").then((users) {
+    //   users.forEach((u) {
+    //     print("${u.name} - ${u.username}");
+    //   });
+    // });
 
     // SnaxBackend.updateProfile(username: "escher2",bio: "").then((_) {
     //     print("updated my bio from the app!");
@@ -82,7 +83,7 @@ void main() {
 
     // SnaxBackend.searchUsers("esc").then((value) => print(value.length));
 
-    //SnaxBackend.feedLikePost("rlUXJBRe1MfKXI49Ux8M").then((_) {});
+    // SnaxBackend.feedLikePost("rlUXJBRe1MfKXI49Ux8M").then((_) {});
 
     // SnaxUser("doesntmatter", "notimportant", "AF9IkBebqtSAtMprjipQglu6B1D2", null, 0, 0).unfollow().then((_) {
     //   print("followed a user");
@@ -92,7 +93,7 @@ void main() {
     //   print("GOT SNACKS FROM CATEGORY!");
     //   snacks.forEach((snack) { print(snack.name); });
     // });
-    //SnaxBackend.auth.logOut(restartApp: false).then((_) { print("logged out"); });
+    // SnaxBackend.auth.logOut(restartApp: false).then((_) { print("logged out"); });
     // SnaxBackend.feedCommentOnPost("rlUXJBRe1MfKXI49Ux8M", "fyp").then((_) {
     //   print("made a comment");
     // });

@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "551974726539",
+    "firebase_url": "https://snax-dde4e.firebaseio.com",
+    "project_id": "snax-dde4e",
+    "storage_bucket": "snax-dde4e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:551974726539:android:d12e579a6b33733032dd8e",
+        "android_client_info": {
+          "package_name": "us.eschr.snax"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "551974726539-upavju8q6ih411534khsn4ir3hh6nsnn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "us.eschr.snax",
+            "certificate_hash": "f04c4ade296d0f8280f74f07fecc44db6121c898"
+          }
+        },
+        {
+          "client_id": "551974726539-2gb5tf0thf4pra8aoepvlg18guugkkk0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "us.eschr.snax",
+            "certificate_hash": "fa1f7895f15d8cd65a9424039dc2d351dbd36472"
+          }
+        },
+        {
+          "client_id": "551974726539-vrhaa5mht2l2dh0g6tmviaqsf1vlg6p0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjPk3CkcKxaDW-B293rlRUfnKpJ4yewHk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "551974726539-vrhaa5mht2l2dh0g6tmviaqsf1vlg6p0.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "551974726539-98lmiqah2dhvodua5sgrgfjhsgc2dgr5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "us.eschr.snax"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
