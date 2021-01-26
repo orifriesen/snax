@@ -17,14 +17,6 @@ import 'package:snax/helpers.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
-class Items {
-  String name;
-  Items(this.name);
-  static List<Items> getItems() {
-    return <Items>[Items("hello"), Items("nope")];
-  }
-}
-
 class GlobalAccountPage extends StatefulWidget {
   GlobalAccountPage(this.user, {this.isAccountPage = false});
   SnaxUser user;
@@ -191,8 +183,6 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
   }
 
   //* Settings when viewing someone else's profile
-  //* For now, this only open a dialog for reporting a user.
-  //* A Block feature will be implemented later on
   Widget _globalSettings() {
     return PopupMenuButton(
       onSelected: (value) {
