@@ -40,8 +40,8 @@ class _UserListPageState extends State<UserListPage> {
                   itemBuilder: (context, index) {
                     SnaxUser user = snapshot.data[index];
                     return ListTile(
-                      title: Text(snapshot.data[index].username),
-                      subtitle: Text(snapshot.data[index].name),
+                      title: Text(snapshot.data[index].name),
+                      subtitle: Text("@" + snapshot.data[index].username),
                       leading: CircleAvatar(
                           radius: 25,
                           backgroundImage: (user.photo != null)
