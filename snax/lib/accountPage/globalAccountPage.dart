@@ -122,7 +122,8 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                 setState(() {});
               },
               child: ListView(
-                physics: AlwaysScrollableScrollPhysics(parent: ClampingScrollPhysics()),
+                physics: AlwaysScrollableScrollPhysics(
+                    parent: ClampingScrollPhysics()),
                 children: [
                   Container(
                     decoration: BoxDecoration(
@@ -308,7 +309,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
             ),
             SizedBox(height: 5),
             Text(
-              this.widget.user.username,
+              "@" + this.widget.user.username,
               style: TextStyle(fontSize: 15, color: Colors.grey[300]),
             ),
           ],
@@ -332,11 +333,14 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        (bioText != null) ? Text(
-                          bioText,
-                          style: TextStyle(color: Colors.white, fontSize: 15),
-                          maxLines: _maxLines,
-                        ) : Container(),
+                        (bioText != null)
+                            ? Text(
+                                bioText,
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 15),
+                                maxLines: _maxLines,
+                              )
+                            : Container(),
                         numLines >= 4
                             ? InkWell(
                                 onTap: () {
