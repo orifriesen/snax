@@ -35,8 +35,6 @@ class _EditProfileState extends State<EditProfile> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       resizeToAvoidBottomPadding: false,
@@ -85,7 +83,13 @@ class _EditProfileState extends State<EditProfile> {
           }
         },
         child: Container(
-          decoration: BoxDecoration(gradient: SnaxGradients.redBigThings),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.centerRight,
+              colors: [SnaxColors.gradientStart, SnaxColors.gradientEnd],
+            ),
+          ),
           child: Column(
             children: [
               _profileImage(),
@@ -160,7 +164,7 @@ class _EditProfileState extends State<EditProfile> {
           children: [
             Hero(
               tag: 'profile-photo',
-                          child: CircleAvatar(
+              child: CircleAvatar(
                 backgroundColor: Colors.grey,
                 radius: 80.0,
                 child: this.uploadingImage
@@ -171,7 +175,9 @@ class _EditProfileState extends State<EditProfile> {
                       )
                     : null,
                 backgroundImage: _imageFile == null
-                    ? (SnaxBackend.currentUser.photo != null) ? NetworkImage(SnaxBackend.currentUser.photo) : AssetImage("assets/blank_user.png")
+                    ? (SnaxBackend.currentUser.photo != null)
+                        ? NetworkImage(SnaxBackend.currentUser.photo)
+                        : AssetImage("assets/blank_user.png")
                     : FileImage(
                         File(_imageFile.path),
                       ),
@@ -251,6 +257,10 @@ class _EditProfileState extends State<EditProfile> {
         borderRadius: BorderRadius.circular(20),
       ),
       child: TextFormField(
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(
+              RegExp(r'([a-z])|([A-Z])|([0-9])|\_|\.|\s')),
+        ],
         controller: nameController,
         decoration: InputDecoration(
           border: OutlineInputBorder(
@@ -278,6 +288,10 @@ class _EditProfileState extends State<EditProfile> {
         borderRadius: BorderRadius.circular(20),
       ),
       child: TextFormField(
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(
+              RegExp(r'([a-z])|([A-Z])|([0-9])|\_|\.')),
+        ],
         controller: usernameController,
         decoration: InputDecoration(
           border: OutlineInputBorder(

@@ -17,14 +17,6 @@ import 'package:snax/helpers.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
-class Items {
-  String name;
-  Items(this.name);
-  static List<Items> getItems() {
-    return <Items>[Items("hello"), Items("nope")];
-  }
-}
-
 class GlobalAccountPage extends StatefulWidget {
   GlobalAccountPage(this.user, {this.isAccountPage = false});
   SnaxUser user;
@@ -62,8 +54,6 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -112,6 +102,8 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                   color: SnaxColors.redAccent,
                   onPressed: () {
                     SnaxBackend.auth.loginIfNotAlready().then((_) {
+                      if (this.widget.isAccountPage)
+                        this.widget.user = SnaxBackend.currentUser;
                       setState(() {});
                     }).catchError((err) {});
                   },
@@ -119,16 +111,18 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
               ],
             ))
           : RefreshIndicator(
-            onRefresh: () async {
-              try {
-              this.widget.user = await SnaxBackend.getUser(this.widget.uid ?? this.widget.user.uid);
-              } catch (err) {
-                print(err);
-                Fluttertoast.showToast(msg: "Couldn't Refresh");
-              }
-            },
-                      child: ListView(
-                        physics: ClampingScrollPhysics(),
+              onRefresh: () async {
+                try {
+                  this.widget.user = await SnaxBackend.getUser(
+                      this.widget.uid ?? this.widget.user.uid);
+                } catch (err) {
+                  print(err);
+                  Fluttertoast.showToast(msg: "Couldn't Refresh");
+                }
+                setState(() {});
+              },
+              child: ListView(
+                physics: AlwaysScrollableScrollPhysics(parent: ClampingScrollPhysics()),
                 children: [
                   Container(
                     decoration: BoxDecoration(
@@ -162,23 +156,18 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                   SizedBox(height: 5),
                   Padding(
                     padding: const EdgeInsets.only(left: 16.0, right: 16),
-                    child: ListView(
-                      shrinkWrap: true,
-                      children: [
-                        TabBar(
-                          controller: _tabController,
-                          indicatorColor: SnaxColors.redAccent,
-                          labelColor:
-                              !isDark(context) ? Colors.black : Colors.white,
-                          unselectedLabelColor: Colors.grey,
-                          tabs: [
-                            Tab(
-                              text: 'Posts',
-                            ),
-                            Tab(
-                              text: 'Reviewed',
-                            ),
-                          ],
+                    child: TabBar(
+                      controller: _tabController,
+                      indicatorColor: SnaxColors.redAccent,
+                      labelColor:
+                          !isDark(context) ? Colors.black : Colors.white,
+                      unselectedLabelColor: Colors.grey,
+                      tabs: [
+                        Tab(
+                          text: 'Posts',
+                        ),
+                        Tab(
+                          text: 'Reviewed',
                         ),
                       ],
                     ),
@@ -189,13 +178,11 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                   ][_tabController.index],
                 ],
               ),
-          ),
+            ),
     );
   }
 
   //* Settings when viewing someone else's profile
-  //* For now, this only open a dialog for reporting a user.
-  //* A Block feature will be implemented later on
   Widget _globalSettings() {
     return PopupMenuButton(
       onSelected: (value) {
@@ -248,7 +235,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                   ),
                   onPressed: () => {
                     customLaunch(
-                        "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20User:${this.widget.user}&body=Reason:"),
+                        "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20User: ${this.widget.user.username}&body= Reason: "),
                     Navigator.pop(context),
                   },
                 )
@@ -278,7 +265,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                   ),
                   onPressed: () => {
                     customLaunch(
-                        "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20User:${this.widget.user}&body=Reason:"),
+                        "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20User: ${this.widget.user.username}&body=Reason: "),
                     Navigator.pop(context),
                   },
                 )
@@ -303,17 +290,15 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                 shape: BoxShape.circle,
                 image: DecorationImage(
                   fit: BoxFit.cover,
-                  image: NetworkImage(this.widget.user.photo == null
-                      ? 'https://picsum.photos/200/300?grayscale'
-                      : this.widget.user.photo),
+                  image: (this.widget.user.photo != null)
+                      ? NetworkImage(this.widget.user.photo)
+                      : AssetImage("assets/blank_user.png"),
                 ),
               ),
             ),
           ),
         ),
-        SizedBox(
-          width: 10,
-        ),
+        SizedBox(width: 10),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -321,9 +306,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
               this.widget.user.name,
               style: TextStyle(fontSize: 20, color: Colors.white),
             ),
-            SizedBox(
-              height: 5,
-            ),
+            SizedBox(height: 5),
             Text(
               this.widget.user.username,
               style: TextStyle(fontSize: 15, color: Colors.grey[300]),
@@ -336,8 +319,8 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
 
 //* This displays the users bio
   Widget _profileBio() {
-    final bioText = "${this.widget.user.bio}";
-    final numLines = '\n'.allMatches(bioText).length + 1;
+    final bioText = this.widget.user.bio;
+    final numLines = '\n'.allMatches(bioText ?? "").length + 1;
     var _maxLines = bioShowTextFlag ? 4 : 8;
     return Container(
       child: Padding(
@@ -349,11 +332,11 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        (bioText != null) ? Text(
                           bioText,
                           style: TextStyle(color: Colors.white, fontSize: 15),
                           maxLines: _maxLines,
-                        ),
+                        ) : Container(),
                         numLines >= 4
                             ? InkWell(
                                 onTap: () {

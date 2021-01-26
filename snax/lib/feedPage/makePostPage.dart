@@ -75,114 +75,117 @@ class _MakePostPageState extends State<MakePostPage> {
           children: [
             Container(
                 child: SafeArea(
-                    left: false,
-                    right: false,
-                    bottom: false,
                     child: Container(
-                      height: 80,
-                    )),
+                  height: 80,
+                )),
                 height: 250,
                 decoration: BoxDecoration(
                   //color: SnaxColors.redAccent,
                   gradient: SnaxGradients.redBigThings,
                 )),
-            Padding(
-              padding: const EdgeInsets.only(top: 180),
-              child: Container(
-                height: 1000,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(32),
-                      topRight: Radius.circular(32)),
-                  color: Theme.of(context).canvasColor,
-                  boxShadow: [
-                    BoxShadow(
-                        color: Color.fromARGB(46, 0, 0, 0), blurRadius: 12)
-                  ],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 16),
-                  child: Column(
-                    children: [
-                      (snack == null)
-                          ? ListTile(
-                              title: Text(
-                                "Choose Snack",
-                                style: TextStyle(fontSize: 18),
-                              ),
-                              trailing: Icon(
-                                Icons.arrow_forward_ios_rounded,
-                                size: 18,
-                              ),
-                              onTap: chooseNewSnack,
-                            )
-                          : ListTile(
-                              leading: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(16),
-                                    color: Colors.white),
-                                clipBehavior: Clip.hardEdge,
-                                padding: EdgeInsets.all(2),
-                                height: 64,
-                                width: 58,
-                                child: AspectRatio(
-                                    aspectRatio: 1.0,
-                                    child: Image.network(snack.image)),
-                              ),
-                              title: Text(
-                                snack.name,
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              subtitle: Text(
-                                "Change Snack",
-                                style: TextStyle(fontSize: 15),
-                              ),
-                              trailing: Icon(Icons.arrow_drop_down_outlined),
-                              onTap: chooseNewSnack),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: TextField(
-                          style: TextStyle(fontSize: 18),
-                          decoration: InputDecoration(
-                              hintStyle: TextStyle(color: Colors.grey[400]),
-                              border: InputBorder.none,
-                              contentPadding: EdgeInsets.all(16.0),
-                              hintText: 'Post Title'),
-                          controller: titleController,
-                          minLines: 1,
-                          maxLines: 2,
-                        ),
-                      ),
-                      Expanded(
-                        child: TextField(
-                          style: TextStyle(fontSize: 18),
-                          decoration: InputDecoration(
-                              hintStyle: TextStyle(color: Colors.grey[400]),
-                              border: InputBorder.none,
-                              contentPadding: EdgeInsets.all(16.0),
-                              hintText: 'What\'s your opinion on this snack?'),
-                          controller: bodyController,
-                          minLines: 1,
-                          maxLines: 20,
-                          maxLength: 500,
-                        ),
-                      )
+            SafeArea(
+              bottom: false,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 116),
+                child: Container(
+                  height: 1000,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(32),
+                        topRight: Radius.circular(32)),
+                    color: Theme.of(context).canvasColor,
+                    boxShadow: [
+                      BoxShadow(
+                          color: Color.fromARGB(46, 0, 0, 0), blurRadius: 12)
                     ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 16),
+                    child: Column(
+                      children: [
+                        (snack == null)
+                            ? ListTile(
+                                title: Text(
+                                  "Choose Snack",
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                                trailing: Icon(
+                                  Icons.arrow_forward_ios_rounded,
+                                  size: 18,
+                                ),
+                                onTap: chooseNewSnack,
+                              )
+                            : ListTile(
+                                leading: Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(16),
+                                      color: Colors.white),
+                                  clipBehavior: Clip.hardEdge,
+                                  padding: EdgeInsets.all(2),
+                                  height: 64,
+                                  width: 58,
+                                  child: AspectRatio(
+                                      aspectRatio: 1.0,
+                                      child: Image.network(snack.image)),
+                                ),
+                                title: Text(
+                                  snack.name,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                subtitle: Text(
+                                  "Change Snack",
+                                  style: TextStyle(fontSize: 15),
+                                ),
+                                trailing: Icon(Icons.arrow_drop_down_outlined),
+                                onTap: chooseNewSnack),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: TextField(
+                            style: TextStyle(fontSize: 18),
+                            decoration: InputDecoration(
+                                hintStyle: TextStyle(color: Colors.grey[400]),
+                                border: InputBorder.none,
+                                contentPadding: EdgeInsets.all(16.0),
+                                hintText: 'Post Title'),
+                            controller: titleController,
+                            minLines: 1,
+                            maxLines: 2,
+                          ),
+                        ),
+                        Expanded(
+                          child: TextField(
+                            style: TextStyle(fontSize: 18),
+                            decoration: InputDecoration(
+                                hintStyle: TextStyle(color: Colors.grey[400]),
+                                border: InputBorder.none,
+                                contentPadding: EdgeInsets.all(16.0),
+                                hintText:
+                                    'What\'s your opinion on this snack?'),
+                            controller: bodyController,
+                            minLines: 1,
+                            maxLines: 20,
+                            maxLength: 500,
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 90, left: 18),
-              child: Text(
-                prompt,
-                style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 38,
-                    color: Colors.white),
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 22, left: 18),
+                child: Text(
+                  prompt,
+                  style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 38,
+                      color: Colors.white),
+                ),
               ),
             )
           ],

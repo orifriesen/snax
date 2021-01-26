@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
+
+import 'package:snax/customIcons/instagram_icons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class AboutPage extends StatefulWidget {
-  @override
-  _AboutPageState createState() => _AboutPageState();
-}
-
-class _AboutPageState extends State<AboutPage> {
+class AboutPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,17 +12,15 @@ class _AboutPageState extends State<AboutPage> {
         backgroundColor: Colors.transparent,
       ),
       body: ListView(
+        physics: ClampingScrollPhysics(),
         children: [
           //* Top Container
           Container(
             height: 200,
             width: double.infinity,
             decoration: BoxDecoration(
-              // gradient: SnaxGradients.redBigThings,
               image: DecorationImage(
-                image: AssetImage("assets/Artboard.jpeg") != null
-                    ? AssetImage("assets/Artboard.jpeg")
-                    : NetworkImage("https://picsum.photos/400/250"),
+                image: AssetImage("assets/Artboard.jpeg"),
                 fit: BoxFit.cover,
               ),
             ),
@@ -46,48 +41,63 @@ class _AboutPageState extends State<AboutPage> {
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Text(
-                      "Snax is a reviewing platform that allows all kinds of people from around the world to review their favorite snacks.",
+                      "Our goal is to bring everyone together to discuss all types of snack. No matter who you are, we believe that you should be able to express your feelings about your favorite foods.",
                     ),
                   ),
                 ],
               ),
             ),
           ),
+
           //* Section 2
           Container(
             padding: EdgeInsets.only(top: 16, right: 32, bottom: 8, left: 32),
-            child: Center(
-              child: Column(
-                children: [
-                  Text(
-                    "Meet The Team",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Meet The Team",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  _teamSocials(
-                      'Snax',
-                      () => customLaunch(
-                          "https://www.instagram.com/snaxappofficial/")),
-                  _teamSocials(
-                      'Ori',
-                      () => customLaunch(
-                          "https://www.instagram.com/orifriesen/")),
-                  _teamSocials(
-                      'Escher',
-                      () =>
-                          customLaunch("https://www.instagram.com/escherwd/")),
-                  _teamSocials(
-                      'Walt',
-                      () => customLaunch(
-                          "https://www.instagram.com/waltbringenberg/")),
-                  _teamSocials(
-                      'Brandon',
-                      () => customLaunch(
-                          "https://www.instagram.com/ramirez.brrandon/")),
-                ],
-              ),
+                  ],
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    teamSocials(
+                        context,
+                        'Snax',
+                        () => customLaunch(
+                            "https://www.instagram.com/snaxappofficial/")),
+                    teamSocials(
+                        context,
+                        'Ori',
+                        () => customLaunch(
+                            "https://www.instagram.com/orifriesen/")),
+                    teamSocials(
+                        context,
+                        'Escher',
+                        () => customLaunch(
+                            "https://www.instagram.com/escherwd/")),
+                    teamSocials(
+                        context,
+                        'Walt',
+                        () => customLaunch(
+                            "https://www.instagram.com/waltbringenberg/")),
+                    teamSocials(
+                        context,
+                        'Brandon',
+                        () => customLaunch(
+                            "https://www.instagram.com/ramirez.brrandon/")),
+                  ],
+                ),
+              ],
             ),
           )
         ],
@@ -95,7 +105,7 @@ class _AboutPageState extends State<AboutPage> {
     );
   }
 
-  Widget _teamSocials(String name, customLaunch()) {
+  Widget teamSocials(BuildContext context, String name, customLaunch()) {
     return Padding(
       padding: const EdgeInsets.only(left: 8, top: 16, bottom: 16, right: 8),
       child: Container(
@@ -113,15 +123,26 @@ class _AboutPageState extends State<AboutPage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              name,
-              style: TextStyle(fontSize: 15),
+            Padding(
+              padding: const EdgeInsets.only(left: 8),
+              child: Text(
+                name,
+                style: TextStyle(fontSize: 15),
+              ),
             ),
+            //* Instagram
             FlatButton(
               onPressed: () {
                 customLaunch();
               },
-              child: Text("Instagram"),
+              child: Icon(
+                Instagram.icons8_instagram,
+                size: 30,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              minWidth: 5,
             ),
           ],
         ),
@@ -133,7 +154,7 @@ class _AboutPageState extends State<AboutPage> {
     if (await canLaunch(command)) {
       await launch(command);
     } else {
-      print("Command did not work");
+      print("Could not work");
     }
   }
 }

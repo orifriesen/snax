@@ -3,14 +3,12 @@ import 'package:snax/backend/requests.dart';
 import 'package:snax/feedPage/post.dart';
 import 'package:snax/feedPage/feedPage.dart';
 
-
 import 'package:snax/backend/backend.dart';
 import 'package:sup/sup.dart';
 
 import '../../helpers.dart';
 
 class PostTab extends StatefulWidget {
-
   SnaxUser user;
   PostTab(this.user);
 
@@ -23,7 +21,8 @@ class _PostTabState extends State<PostTab>
   List<Post> posts;
 
   void getPosts() {
-    SnaxBackend.feedGetRecentPostsForUser(this.widget.user.uid).then((newPosts) {
+    SnaxBackend.feedGetRecentPostsForUser(this.widget.user.uid)
+        .then((newPosts) {
       setState(() {
         this.posts = newPosts;
       });
@@ -39,26 +38,34 @@ class _PostTabState extends State<PostTab>
   @override
   Widget build(BuildContext context) {
     return posts != null
-        ? posts.length > 0 ? Expanded(
-            child: ListView.builder(
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
+        ? posts.length > 0
+            ? ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
             padding: EdgeInsets.only(top: 16),
             itemCount: posts.length,
             itemBuilder: (context, index) {
               Post post = posts[index];
               return postWidget(context, post);
             },
-          )) : Padding(padding: EdgeInsets.only(top: 44),child: QuickSup.empty(title: "No Posts", subtitle: "@"+this.widget.user.username+" doesn't have a lot to say",))
+              )
+            : Padding(
+                padding: EdgeInsets.only(top: 44),
+                child: QuickSup.empty(
+                  title: "No Posts",
+                  subtitle: "@" +
+                      this.widget.user.username +
+                      " doesn't have a lot to say",
+                ))
         : Container(
-          padding: EdgeInsets.all(40),
-                  child: Center(
-            child: CircularProgressIndicator(
-              valueColor:
-                  new AlwaysStoppedAnimation<Color>(SnaxColors.redAccent),
+            padding: EdgeInsets.all(40),
+            child: Center(
+              child: CircularProgressIndicator(
+                valueColor:
+                    new AlwaysStoppedAnimation<Color>(SnaxColors.redAccent),
+              ),
             ),
-          ),
-        );
+          );
   }
 
   @override
