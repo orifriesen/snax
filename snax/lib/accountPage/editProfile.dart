@@ -285,7 +285,8 @@ class _EditProfileState extends State<EditProfile> {
       ),
       child: TextFormField(
         inputFormatters: [
-          FilteringTextInputFormatter.deny(RegExp(r'\s')),
+          FilteringTextInputFormatter.allow(
+              RegExp(r'([a-z])|([A-Z])|([0-9])|\_|\.')),
         ],
         controller: usernameController,
         decoration: InputDecoration(
