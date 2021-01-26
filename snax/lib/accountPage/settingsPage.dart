@@ -132,7 +132,9 @@ class _SettingsPageState extends State<SettingsPage> {
               ListView(
                 shrinkWrap: true,
                 children: [
-                  helpButton("Help", Icons.help_outline_rounded),
+                  // helpButton("Help", Icons.help_outline_rounded),
+                  reportButton(
+                      "Report a Problem", Icons.warning_amber_outlined),
                   aboutButton("About", Icons.info_outline_rounded),
                   appLibraries("Open Source Libraries", Icons.article_outlined),
                 ],
@@ -144,56 +146,140 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  FlatButton helpButton(String title, IconData iconData) {
+  // FlatButton helpButton(String title, IconData iconData) {
+  //   return FlatButton(
+  //     onPressed: () => {
+  //       Navigator.push(
+  //         context,
+  //         MaterialPageRoute(builder: (context) => HelpPage()),
+  //       ),
+  //       showCupertinoDialog(
+  //         context: context,
+  //         builder: (_) => Platform.isIOS
+  //             ? CupertinoAlertDialog(
+  //                 title: Text("Nothing To See Here"),
+  //                 content: RichText(
+  //                   textAlign: TextAlign.center,
+  //                   text: TextSpan(
+  //                     children: [
+  //                       TextSpan(
+  //                           text: "This page is currently under construction "),
+  //                       WidgetSpan(
+  //                         child: Icon(Icons.construction),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //               )
+  //             : AlertDialog(
+  //                 title: Text("Nothing To See Here"),
+  //                 content: RichText(
+  //                   text: TextSpan(
+  //                     children: [
+  //                       TextSpan(
+  //                           text: "This page is currently under construction "),
+  //                       WidgetSpan(
+  //                         child: Icon(Icons.construction),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //               ),
+  //         barrierDismissible: true,
+  //       ),
+  //     },
+  //     child: Row(
+  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //       children: [
+  //         Row(
+  //           children: [
+  //             Icon(
+  //               iconData,
+  //             ),
+  //             SizedBox(width: 8),
+  //             Text(
+  //               title,
+  //               style: TextStyle(
+  //                 fontSize: 18,
+  //                 fontWeight: FontWeight.bold,
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //         Icon(Icons.arrow_forward_ios, color: SnaxColors.subtext)
+  //       ],
+  //     ),
+  //   );
+  // }
+
+  FlatButton reportButton(String title, IconData iconData) {
     return FlatButton(
       onPressed: () => {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => HelpPage()),
-        )
-        // showCupertinoDialog(
-        //   context: context,
-        //   builder: (_) => Platform.isIOS
-        //       ? CupertinoAlertDialog(
-        //           title: Text("Nothing To See Here"),
-        //           content: RichText(
-        //             textAlign: TextAlign.center,
-        //             text: TextSpan(
-        //               children: [
-        //                 TextSpan(
-        //                     text: "This page is currently under construction "),
-        //                 WidgetSpan(
-        //                   child: Icon(Icons.construction),
-        //                 ),
-        //               ],
-        //             ),
-        //           ),
-        //         )
-        //       : AlertDialog(
-        //           title: Text("Nothing To See Here"),
-        //           content: RichText(
-        //             text: TextSpan(
-        //               children: [
-        //                 TextSpan(
-        //                     text: "This page is currently under construction "),
-        //                 WidgetSpan(
-        //                   child: Icon(Icons.construction),
-        //                 ),
-        //               ],
-        //             ),
-        //           ),
-        //         ),
-        //   barrierDismissible: true,
-        // ),
+        showCupertinoDialog(
+          context: context,
+          builder: (_) => Platform.isIOS
+              ? CupertinoAlertDialog(
+                  title: Text("Open Mail Application"),
+                  content: Text("Do you want to open your mail application?"),
+                  actions: [
+                    FlatButton(
+                        child: Text(
+                          "No",
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        onPressed: () => {Navigator.pop(context)}),
+                    FlatButton(
+                      child: Text(
+                        "Yes",
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      onPressed: () => {
+                        customLaunch(
+                            "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20Problem&body="),
+                        Navigator.pop(context),
+                      },
+                    )
+                  ],
+                )
+              : AlertDialog(
+                  title: Text("Open Mail Application"),
+                  content: Text("Do you want to open your mail application?"),
+                  actions: [
+                    FlatButton(
+                        child: Text(
+                          "No",
+                          style: TextStyle(
+                              fontSize: 18,
+                              color: !isDark(context)
+                                  ? Colors.black
+                                  : Colors.white),
+                        ),
+                        onPressed: () => {Navigator.pop(context)}),
+                    FlatButton(
+                      child: Text(
+                        "Yes",
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: !isDark(context) ? Colors.black : Colors.white,
+                        ),
+                      ),
+                      onPressed: () => {
+                        customLaunch(
+                            "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20Problem&body="),
+                        Navigator.pop(context),
+                      },
+                    )
+                  ],
+                ),
+          barrierDismissible: true,
+        ),
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
             children: [
-              Icon(
-                iconData,
-              ),
+              Icon(iconData),
               SizedBox(width: 8),
               Text(
                 title,
@@ -204,7 +290,10 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ],
           ),
-          Icon(Icons.arrow_forward_ios, color: SnaxColors.subtext)
+          Icon(
+            Icons.arrow_forward_ios,
+            color: SnaxColors.subtext,
+          )
         ],
       ),
     );
@@ -223,9 +312,7 @@ class _SettingsPageState extends State<SettingsPage> {
         children: [
           Row(
             children: [
-              Icon(
-                iconData,
-              ),
+              Icon(iconData),
               SizedBox(width: 8),
               Text(
                 title,
