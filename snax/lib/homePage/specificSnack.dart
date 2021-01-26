@@ -133,18 +133,22 @@ class _ProductPageState extends State<ProductPage> {
                                                 MaterialPageRoute(
                                                     builder: (BuildContext
                                                             context) =>
-                                                        CategoryPage()));
+                                                        CategoryPage(
+                                                            item: this
+                                                                .widget
+                                                                .item)));
                                           },
                                           child: Row(
                                             children: [
                                               Text(this.widget.item.type.name,
                                                   style: TextStyle(
                                                       fontSize: 14,
-                                                      color: Colors.grey[400])),
+                                                      color: SnaxColors
+                                                          .redAccent)),
                                               Icon(
                                                 Icons.arrow_forward_ios_rounded,
                                                 size: 14,
-                                                color: Colors.grey[400],
+                                                color: SnaxColors.redAccent,
                                               )
                                             ],
                                           )),

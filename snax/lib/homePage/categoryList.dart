@@ -9,6 +9,9 @@ import '../helpers.dart';
 import 'homePageFunctions.dart';
 
 class CategoryPage extends StatefulWidget {
+  CategoryPage({Key key, this.item}) : super(key: key);
+  final SnackItem item;
+
   @override
   _CategoryPage createState() => _CategoryPage();
 }
@@ -23,8 +26,9 @@ class _CategoryPage extends State<CategoryPage>
         extendBodyBehindAppBar: true,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
-          brightness: Brightness.dark,
+          //brightness: Brightness.light,
           elevation: 0,
+          title: Text(widget.item.type.name),
           actions: <Widget>[
             IconButton(
                 icon: Icon(Icons.search),
@@ -40,13 +44,34 @@ class _CategoryPage extends State<CategoryPage>
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    ProductPage(item: chosenSnack)));
+                                    ProductPage(item: widget.item)));
                       }, showCards: false, showUsers: true));
                 }),
-            IconButton(icon: const Icon(Icons.more_vert), onPressed: () {})
+            IconButton(
+                icon: const Icon(Icons.more_vert),
+                color: Colors.white,
+                onPressed: () {})
           ],
         ),
-        body: CategoryList());
+        body: Stack(children: [
+          Container(
+              child: SafeArea(
+                  left: false,
+                  right: false,
+                  bottom: false,
+                  child: Container(height: 80)),
+              decoration: BoxDecoration(
+                  color: SnaxColors.redAccent,
+                  gradient: SnaxGradients.redBigThings,
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(20),
+                      bottomRight: Radius.circular(20)))),
+          SafeArea(
+              left: false,
+              right: false,
+              bottom: false,
+              child: CategoryList(item: widget.item))
+        ]));
   }
 
   @override
@@ -54,34 +79,33 @@ class _CategoryPage extends State<CategoryPage>
 }
 
 class CategoryList extends StatefulWidget {
+  CategoryList({Key key, this.item}) : super(key: key);
+  final SnackItem item;
+
   @override
   _CategoryList createState() => _CategoryList();
 }
 
 class _CategoryList extends State<CategoryList>
     with AutomaticKeepAliveClientMixin<CategoryList> {
-  //_TrendingSnackItem({Key key, this.item}) : super(key: key);
-  List<SnackItem> trendingSnacks;
-
-  void hasResults(value) {
-    print("got snacks");
-
-    setState(() {
-      trendingSnacks = value;
-    });
-  }
+  List<SnackItem> categorySnacks;
 
   @override
   void initState() {
     print("getting charts");
-    SnaxBackend.chartTrending().then(hasResults);
+    SnaxBackend.getSnacksInCategory(widget.item.type.id, SnackListSort.trending)
+        .then((results) {
+      setState(() {
+        categorySnacks = results;
+      });
+    });
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return getList(context, trendingSnacks);
+    return getList(context, categorySnacks);
   }
 
   @override
