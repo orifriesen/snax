@@ -20,9 +20,7 @@ class AboutPage extends StatelessWidget {
             width: double.infinity,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage("assets/Artboard.jpeg") != null
-                    ? AssetImage("assets/Artboard.jpeg")
-                    : NetworkImage("https://picsum.photos/400/250"),
+                image: AssetImage("assets/Artboard.jpeg"),
                 fit: BoxFit.cover,
               ),
             ),
