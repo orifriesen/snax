@@ -54,18 +54,6 @@ class _PostDetailsPage extends State<PostDetailsPage> {
                   borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(20),
                       bottomRight: Radius.circular(20)))),
-          // Padding(
-          //   padding: const EdgeInsets.only(top: 28, left: 8.0),
-          //   child: IconButton(
-          //       icon: Icon(
-          //         Icons.close_rounded,
-          //         color: Colors.white,
-          //       ),
-          //       iconSize: 28,
-          //       onPressed: () {
-          //         Navigator.pop(context);
-          //       }),
-          // ),
           SafeArea(
             bottom: false,
             child: Padding(
@@ -144,6 +132,24 @@ class _PostDetailsPage extends State<PostDetailsPage> {
                   //Text(comment.user.name),
                   Row(
                     children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 16.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    GlobalAccountPage(comment.user),
+                              ),
+                            );
+                          },
+                          child: CircleAvatar(
+                              backgroundImage: (comment.user.photo != null)
+                                  ? NetworkImage(comment.user.photo)
+                                  : AssetImage("assets/blank_user.png")),
+                        ),
+                      ),
                       Expanded(
                         child: RichText(
                             text: TextSpan(

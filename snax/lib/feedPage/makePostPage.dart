@@ -178,7 +178,7 @@ class _MakePostPageState extends State<MakePostPage> {
             ),
             SafeArea(
               child: Padding(
-                padding: const EdgeInsets.only(top: 26, left: 18),
+                padding: const EdgeInsets.only(top: 22, left: 18),
                 child: Text(
                   prompt,
                   style: TextStyle(

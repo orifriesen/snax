@@ -42,9 +42,9 @@ class _FeedPageState extends State<FeedPage>
     try {
       //make the posts null to show the loading animation (pull has its own loading animation)
       if (!pull)
-      setState(() {
-        this.posts = null;
-      });
+        setState(() {
+          this.posts = null;
+        });
 
       List<Post> newPosts = await this
           .options
