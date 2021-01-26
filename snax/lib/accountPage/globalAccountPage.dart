@@ -298,9 +298,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
             ),
           ),
         ),
-        SizedBox(
-          width: 10,
-        ),
+        SizedBox(width: 10),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -308,9 +306,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
               this.widget.user.name,
               style: TextStyle(fontSize: 20, color: Colors.white),
             ),
-            SizedBox(
-              height: 5,
-            ),
+            SizedBox(height: 5),
             Text(
               this.widget.user.username,
               style: TextStyle(fontSize: 15, color: Colors.grey[300]),
