@@ -122,7 +122,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                 setState(() {});
               },
               child: ListView(
-                physics: ClampingScrollPhysics(),
+                physics: AlwaysScrollableScrollPhysics(parent: ClampingScrollPhysics()),
                 children: [
                   Container(
                     decoration: BoxDecoration(
@@ -319,8 +319,8 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
 
 //* This displays the users bio
   Widget _profileBio() {
-    final bioText = "${this.widget.user.bio}";
-    final numLines = '\n'.allMatches(bioText).length + 1;
+    final bioText = this.widget.user.bio;
+    final numLines = '\n'.allMatches(bioText ?? "").length + 1;
     var _maxLines = bioShowTextFlag ? 4 : 8;
     return Container(
       child: Padding(
@@ -332,11 +332,11 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        (bioText != null) ? Text(
                           bioText,
                           style: TextStyle(color: Colors.white, fontSize: 15),
                           maxLines: _maxLines,
-                        ),
+                        ) : Container(),
                         numLines >= 4
                             ? InkWell(
                                 onTap: () {
