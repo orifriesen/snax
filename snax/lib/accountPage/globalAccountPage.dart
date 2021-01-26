@@ -112,6 +112,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                   color: SnaxColors.redAccent,
                   onPressed: () {
                     SnaxBackend.auth.loginIfNotAlready().then((_) {
+                      if (this.widget.isAccountPage) this.widget.user = SnaxBackend.currentUser;
                       setState(() {});
                     }).catchError((err) {});
                   },
@@ -126,6 +127,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                 print(err);
                 Fluttertoast.showToast(msg: "Couldn't Refresh");
               }
+              setState(() {});
             },
                       child: ListView(
                         physics: ClampingScrollPhysics(),
