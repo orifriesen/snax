@@ -8,6 +8,7 @@ import 'package:snax/feedPage/post.dart';
 import 'package:like_button/like_button.dart';
 import 'package:snax/feedPage/postDetailsPage.dart';
 import 'package:snax/helpers.dart';
+import 'package:snax/homePage/specificSnack.dart';
 import 'package:sup/sup.dart';
 
 class FeedPage extends StatefulWidget {
@@ -42,9 +43,9 @@ class _FeedPageState extends State<FeedPage>
     try {
       //make the posts null to show the loading animation (pull has its own loading animation)
       if (!pull)
-      setState(() {
-        this.posts = null;
-      });
+        setState(() {
+          this.posts = null;
+        });
 
       List<Post> newPosts = await this
           .options
@@ -243,9 +244,17 @@ Widget postWidget(BuildContext context, Post post,
                         padding: EdgeInsets.all(2),
                         height: 64,
                         width: 64,
-                        child: AspectRatio(
-                            aspectRatio: 1.0,
-                            child: Image.network(post.snack.image)),
+                        child: GestureDetector(
+                          onTap: () {
+                            //             Navigator.push(
+                            // context,
+                            // MaterialPageRoute(
+                            //     builder: (context) => ProductPage(item: post.snack.)));
+                          },
+                          child: AspectRatio(
+                              aspectRatio: 1.0,
+                              child: Image.network(post.snack.image)),
+                        ),
                       ),
                       Expanded(
                           child: Padding(
