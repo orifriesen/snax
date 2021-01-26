@@ -2,14 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:snax/accountPage/settingsTabs/helpPage.dart';
-import 'package:snax/backend/requests.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'settingsTabs/aboutPage.dart';
-
 import 'package:snax/helpers.dart';
+import 'package:snax/backend/requests.dart';
+
+import 'package:url_launcher/url_launcher.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
