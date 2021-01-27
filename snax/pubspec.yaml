@@ -21,6 +21,7 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
+  flutter_linkify: ^4.0.2
   webview_flutter: ^1.0.7
   flappy_search_bar: ^1.7.2
   smooth_star_rating: ^1.1.1

@@ -2,19 +2,20 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:snax/accountPage/editProfile.dart';
 
+import 'package:snax/accountPage/editProfile.dart';
 import 'package:snax/accountPage/userListPage.dart';
 import 'package:snax/accountPage/settingsPage.dart';
-import 'package:snax/backend/backend.dart';
 
 import 'accountBottomTabs/postTab.dart';
 import 'accountBottomTabs/secondTab.dart';
 
 import 'package:snax/backend/requests.dart';
 import 'package:snax/helpers.dart';
+import 'package:snax/backend/backend.dart';
 
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class GlobalAccountPage extends StatefulWidget {
@@ -175,7 +176,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                   ),
                   [
                     PostTab(widget.user),
-                    ReviewedTab(),
+                    ReviewedTab(widget.user),
                   ][_tabController.index],
                 ],
               ),
@@ -236,7 +237,8 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                   ),
                   onPressed: () => {
                     customLaunch(
-                        "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20User: ${this.widget.user.username}&body= Reason: "),
+                      "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20User&body=",
+                    ),
                     Navigator.pop(context),
                   },
                 )
@@ -325,7 +327,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
     var _maxLines = bioShowTextFlag ? 4 : 8;
     return Container(
       child: Padding(
-        padding: const EdgeInsets.only(left: 16.0, right: 16),
+        padding: const EdgeInsets.only(left: 16, right: 16),
         child: Column(
           children: [
             (SnaxBackend.currentUser.bio != null)
@@ -334,11 +336,16 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         (bioText != null)
-                            ? Text(
-                                bioText,
+                            ? Linkify(
+                                onOpen: (link) => customLaunch(link.url),
+                                text: bioText,
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 15),
+                                linkStyle: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    decoration: TextDecoration.none),
                                 maxLines: _maxLines,
+                                options: LinkifyOptions(looseUrl: true),
                               )
                             : Container(),
                         numLines >= 4
@@ -347,7 +354,6 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                                   setState(() {
                                     bioShowTextFlag = !bioShowTextFlag;
                                   });
-                                  print(numLines);
                                 },
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
@@ -520,7 +526,6 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
   }
 
   //* URL Launcher
-  //* command can be any link
   customLaunch(command) async {
     if (await canLaunch(command)) {
       await launch(command);

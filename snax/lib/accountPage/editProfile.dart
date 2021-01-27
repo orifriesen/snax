@@ -21,6 +21,7 @@ class _EditProfileState extends State<EditProfile> {
   final nameController = TextEditingController();
   final bioController = TextEditingController();
   final usernameController = TextEditingController();
+  final webController = TextEditingController();
 
   bool uploadingImage = false;
   bool error = false;
@@ -129,7 +130,6 @@ class _EditProfileState extends State<EditProfile> {
                       child: Column(
                         children: [
                           Container(
-                            // color: Colors.blue,
                             height: 400,
                             width: double.infinity,
                             padding: EdgeInsets.only(left: 16, right: 16),
@@ -315,7 +315,6 @@ class _EditProfileState extends State<EditProfile> {
   Widget _bioTextField() {
     return Material(
       elevation: 0,
-      // color: Colors.blue,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
