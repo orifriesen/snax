@@ -39,11 +39,39 @@ class _AppTabsState extends State<AppTabs>
       child: DefaultTabController(
         length: 4,
         child: Scaffold(
-          bottomNavigationBar: BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
-            onTap: onTabTapped, // new
-            currentIndex: _currentIndex,
-            items: [
+          extendBody: true,
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+          floatingActionButton: FloatingActionButton(
+            child: const Icon(Icons.add),
+            onPressed: () {},
+          ),
+          bottomNavigationBar: BottomAppBar(
+            child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  IconButton(
+                      icon: _currentIndex == 0
+                          ? Icon(Icons.home_rounded)
+                          : Icon(Icons.home_outlined),
+                      onPressed: () {}),
+                  IconButton(
+                      icon: _currentIndex == 1
+                          ? Icon(Icons.chat_rounded)
+                          : Icon(Icons.chat_outlined),
+                      onPressed: () {}),
+                  IconButton(
+                      icon: Icon(Icons.inbox_outlined),
+                      onPressed: () {
+                        _currentIndex = 1;
+                      }),
+                  IconButton(
+                      icon: Icon(Icons.person_outlined), onPressed: () {})
+                ]),
+            shape: CircularNotchedRectangle(),
+            notchMargin: 4.0,
+            /*items: [
               new BottomNavigationBarItem(
                 icon: _currentIndex == 0
                     ? Icon(Icons.home_rounded, color: SnaxColors.redAccent)
@@ -67,8 +95,7 @@ class _AppTabsState extends State<AppTabs>
                     : Icon(Icons.person_outline, color: SnaxColors.subtext),
                 label: "Profile",
               )
-            ],
-            showUnselectedLabels: false,
+            ],*/
           ),
           body: [
             DefaultTabController(
