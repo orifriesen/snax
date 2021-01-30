@@ -258,9 +258,9 @@ class _EditProfileState extends State<EditProfile> {
           SizedBox(height: 20),
           CircleAvatar(
             radius: 80,
-            backgroundImage: SnaxBackend.currentUser.photo != null
-                ? NetworkImage(SnaxBackend.currentUser.photo)
-                : Text("NO PHOTO"),
+            backgroundImage: _imageFile == null
+                ? AssetImage("assets/blank_user.png")
+                : Image.file(_imageFile as File),
           ),
           SizedBox(height: 20),
           Row(
@@ -290,6 +290,7 @@ class _EditProfileState extends State<EditProfile> {
         borderRadius: BorderRadius.circular(20),
       ),
       child: TextFormField(
+        autocorrect: false,
         inputFormatters: [
           FilteringTextInputFormatter.allow(
               RegExp(r'([a-z])|([A-Z])|([0-9])|\_|\.|\s')),
@@ -321,6 +322,7 @@ class _EditProfileState extends State<EditProfile> {
         borderRadius: BorderRadius.circular(20),
       ),
       child: TextFormField(
+        autocorrect: false,
         inputFormatters: [
           FilteringTextInputFormatter.allow(
               RegExp(r'([a-z])|([A-Z])|([0-9])|\_|\.')),
@@ -346,19 +348,18 @@ class _EditProfileState extends State<EditProfile> {
 
   //* This allows the user to change their bio
   Widget _bioTextField() {
-    return Material(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
+    return Container(
+      height: 100,
       child: TextFormField(
+        autocorrect: false,
         inputFormatters: [
           LengthLimitingTextInputFormatter(150),
         ],
         controller: bioController,
         minLines: 1,
-        maxLines: 10,
-        scrollPhysics: BouncingScrollPhysics(),
+        maxLines: 8,
+        maxLength: 150,
+        scrollPhysics: ClampingScrollPhysics(),
         decoration: InputDecoration(
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),
