@@ -55,19 +55,49 @@ class _AppTabsState extends State<AppTabs>
                       icon: _currentIndex == 0
                           ? Icon(Icons.home_rounded)
                           : Icon(Icons.home_outlined),
-                      onPressed: () {}),
+                      color: _currentIndex == 0
+                          ? Theme.of(context).accentColor
+                          : Theme.of(context).bottomAppBarTheme.color,
+                      onPressed: () {
+                        setState(() {
+                          _currentIndex = 0;
+                        });
+                      }),
                   IconButton(
                       icon: _currentIndex == 1
                           ? Icon(Icons.chat_rounded)
                           : Icon(Icons.chat_outlined),
-                      onPressed: () {}),
-                  IconButton(
-                      icon: Icon(Icons.inbox_outlined),
+                      color: _currentIndex == 1
+                          ? Theme.of(context).accentColor
+                          : Theme.of(context).bottomAppBarTheme.color,
                       onPressed: () {
-                        _currentIndex = 1;
+                        setState(() {
+                          _currentIndex = 1;
+                        });
+                      }),
+                  Container(height: 20, width: 20),
+                  IconButton(
+                      icon: Icon(_currentIndex == 2
+                          ? Icons.inbox
+                          : Icons.inbox_outlined),
+                      color: _currentIndex == 2
+                          ? Theme.of(context).accentColor
+                          : Theme.of(context).bottomAppBarTheme.color,
+                      onPressed: () {
+                        setState(() {
+                          _currentIndex = 2;
+                        });
                       }),
                   IconButton(
-                      icon: Icon(Icons.person_outlined), onPressed: () {})
+                      icon: Icon(_currentIndex == 3
+                          ? Icons.person
+                          : Icons.person_outlined),
+                          color: _currentIndex == 3 ? Theme.of(context).accentColor : Theme.of(context).bottomAppBarTheme.color,
+                      onPressed: () {
+                        setState(() {
+                          _currentIndex = 3;
+                        });
+                      })
                 ]),
             shape: CircularNotchedRectangle(),
             notchMargin: 4.0,
