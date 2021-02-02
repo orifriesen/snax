@@ -17,7 +17,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     globalContext = context;
-    return Phoenix(
+    return GestureDetector(
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+        print("tapped");
+        if (!currentFocus.hasPrimaryFocus &&
+            currentFocus.focusedChild != null) {
+          FocusManager.instance.primaryFocus.unfocus();
+        }
+      },
       child: MaterialApp(
         navigatorKey: navigatorKey,
         routes: {
@@ -41,7 +49,9 @@ class MyApp extends StatelessWidget {
             accentColor: SnaxColors.redAccent,
             cupertinoOverrideTheme:
                 CupertinoThemeData(primaryColor: SnaxColors.redAccent),
-            appBarTheme: AppBarTheme(brightness: Brightness.light, color: SnaxColors.redAppBarColor)),
+            appBarTheme: AppBarTheme(
+                brightness: Brightness.light,
+                color: SnaxColors.redAppBarColor)),
       ),
     );
   }

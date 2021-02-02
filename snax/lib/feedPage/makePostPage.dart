@@ -29,6 +29,10 @@ class _MakePostPageState extends State<MakePostPage> {
 
   final prompt = postPrompt();
 
+  bool keyboardIsVisible() {
+    return !(MediaQuery.of(context).viewInsets.bottom == 0.0);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,9 +88,21 @@ class _MakePostPageState extends State<MakePostPage> {
                   gradient: SnaxGradients.redBigThings,
                 )),
             SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 22, left: 18),
+                child: Text(
+                  prompt,
+                  style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 38,
+                      color: Colors.white),
+                ),
+              ),
+            ),
+            SafeArea(
               bottom: false,
               child: Padding(
-                padding: const EdgeInsets.only(top: 116),
+                padding: EdgeInsets.only(top: keyboardIsVisible() ? 28 : 116),
                 child: Container(
                   height: 1000,
                   decoration: BoxDecoration(
@@ -176,18 +192,6 @@ class _MakePostPageState extends State<MakePostPage> {
                 ),
               ),
             ),
-            SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 22, left: 18),
-                child: Text(
-                  prompt,
-                  style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 38,
-                      color: Colors.white),
-                ),
-              ),
-            )
           ],
         ));
   }
