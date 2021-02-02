@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+
 import 'package:smooth_star_rating/smooth_star_rating.dart';
+import 'package:sup/quick_sup.dart';
 
 import 'package:snax/backend/backend.dart';
-import 'package:sup/quick_sup.dart';
+import 'package:snax/backend/requests.dart';
 import '../../helpers.dart';
 
 class ReviewedTab extends StatefulWidget {
@@ -33,41 +35,46 @@ class _ReviewedTabState extends State<ReviewedTab> {
           gradient: isDark(context) ? SnaxGradients.darkGreyCard : null,
           color: Theme.of(context).canvasColor,
         ),
-        child: ListTile(
-          contentPadding: EdgeInsets.symmetric(horizontal: 8),
-          leading: Icon(
-            Icons.access_alarm,
-            size: 32,
-          ),
-          title: Text(
-            "This is the name of snack",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          subtitle: Row(
-            children: [
-              Text("4.5"),
-              SizedBox(width: 5),
-              SmoothStarRating(
-                allowHalfRating: true,
-                starCount: 5,
-                rating: 4.5,
-                size: 18,
-                isReadOnly: true,
-                defaultIconData: Icons.star_border_rounded,
-                filledIconData: Icons.star_rounded,
-                halfFilledIconData: Icons.star_half_rounded,
-                color: SnaxColors.redAccent,
-                borderColor: SnaxColors.redAccent,
-                spacing: 0.0,
-              ),
-            ],
-          ),
-          trailing: IconButton(
-            icon: Icon(Icons.arrow_forward_ios),
-            iconSize: 20,
-            onPressed: () => {
-              //* Opens up the users complete reviewed categories
-            },
+        child: GestureDetector(
+          onTap: () => {
+            //* Opens up the users complete reviewed categories
+          },
+          child: ListTile(
+            contentPadding: EdgeInsets.symmetric(horizontal: 8),
+            leading: Icon(
+              Icons.access_alarm,
+              size: 32,
+            ),
+            title: Text(
+              "This is the name of snack",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            subtitle: Row(
+              children: [
+                Text("4.5"),
+                SizedBox(width: 5),
+                SmoothStarRating(
+                  allowHalfRating: true,
+                  starCount: 5,
+                  rating: 4.5,
+                  size: 18,
+                  isReadOnly: true,
+                  defaultIconData: Icons.star_border_rounded,
+                  filledIconData: Icons.star_rounded,
+                  halfFilledIconData: Icons.star_half_rounded,
+                  color: SnaxColors.redAccent,
+                  borderColor: SnaxColors.redAccent,
+                  spacing: 0.0,
+                ),
+              ],
+            ),
+            trailing: IconButton(
+              icon: Icon(Icons.arrow_forward_ios),
+              iconSize: 20,
+              onPressed: () => {
+                //* Opens up the users complete reviewed categories
+              },
+            ),
           ),
         ),
       ),
