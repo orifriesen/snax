@@ -49,18 +49,18 @@ class _ActivityPageState extends State<ActivityPage>
               ],
           body: Column(
             children: [
-              likedComment(),
-              likedPost(),
-              followed(),
-              commentOnPost(),
-              mention()
+              likedComment(context),
+              likedPost(context),
+              followed(context),
+              commentOnPost(context),
+              mention(context)
             ],
           )),
     );
   }
 }
 
-Widget likedComment() {
+Widget likedComment(BuildContext context) {
   return Padding(
     padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 8.0),
     child: Column(
@@ -85,12 +85,13 @@ Widget likedComment() {
                     style: TextStyle(
                         height: 2,
                         fontWeight: FontWeight.w700,
-                        color: Colors.black),
+                        color: isDark(context) ? Colors.white : Colors.black),
                     recognizer: TapGestureRecognizer()..onTap = () {}),
                 TextSpan(
                     text: " liked your comment",
                     style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.normal)),
+                        color: isDark(context) ? Colors.white : Colors.black,
+                        fontWeight: FontWeight.normal)),
                 TextSpan(
                     text: " " + "2d",
                     style: TextStyle(
@@ -106,7 +107,7 @@ Widget likedComment() {
   );
 }
 
-Widget likedPost() {
+Widget likedPost(BuildContext context) {
   return Padding(
     padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 8.0),
     child: Column(
@@ -131,12 +132,13 @@ Widget likedPost() {
                     style: TextStyle(
                         height: 2,
                         fontWeight: FontWeight.w700,
-                        color: Colors.black),
+                        color: isDark(context) ? Colors.white : Colors.black),
                     recognizer: TapGestureRecognizer()..onTap = () {}),
                 TextSpan(
                     text: " liked your post",
                     style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.normal)),
+                        color: isDark(context) ? Colors.white : Colors.black,
+                        fontWeight: FontWeight.normal)),
                 TextSpan(
                     text: " " + "2d",
                     style: TextStyle(
@@ -152,7 +154,7 @@ Widget likedPost() {
   );
 }
 
-Widget followed() {
+Widget followed(BuildContext context) {
   return Padding(
     padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 8.0),
     child: Column(
@@ -177,12 +179,13 @@ Widget followed() {
                     style: TextStyle(
                         height: 2,
                         fontWeight: FontWeight.w700,
-                        color: Colors.black),
+                        color: isDark(context) ? Colors.white : Colors.black),
                     recognizer: TapGestureRecognizer()..onTap = () {}),
                 TextSpan(
                     text: " started following you",
                     style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.normal)),
+                        color: isDark(context) ? Colors.white : Colors.black,
+                        fontWeight: FontWeight.normal)),
                 TextSpan(
                     text: " " + "2d",
                     style: TextStyle(
@@ -213,7 +216,7 @@ Widget followed() {
   );
 }
 
-Widget commentOnPost() {
+Widget commentOnPost(BuildContext context) {
   return Padding(
     padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 8.0),
     child: Column(
@@ -238,13 +241,14 @@ Widget commentOnPost() {
                     style: TextStyle(
                         height: 2,
                         fontWeight: FontWeight.w700,
-                        color: Colors.black),
+                        color: isDark(context) ? Colors.white : Colors.black),
                     recognizer: TapGestureRecognizer()..onTap = () {}),
                 TextSpan(
                     text:
                         " commented on your post: haha this is so funny and so relatable. You are so cool.",
                     style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.normal)),
+                        color: isDark(context) ? Colors.white : Colors.black,
+                        fontWeight: FontWeight.normal)),
                 TextSpan(
                     text: " " + "2d",
                     style: TextStyle(
@@ -260,7 +264,7 @@ Widget commentOnPost() {
   );
 }
 
-Widget mention() {
+Widget mention(BuildContext context) {
   return Padding(
     padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 8.0),
     child: Column(
@@ -285,13 +289,14 @@ Widget mention() {
                     style: TextStyle(
                         height: 2,
                         fontWeight: FontWeight.w700,
-                        color: Colors.black),
+                        color: isDark(context) ? Colors.white : Colors.black),
                     recognizer: TapGestureRecognizer()..onTap = () {}),
                 TextSpan(
                     text:
                         " mentioned you in a comment: @ori literally me. Im actually dying",
                     style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.normal)),
+                        color: isDark(context) ? Colors.white : Colors.black,
+                        fontWeight: FontWeight.normal)),
                 TextSpan(
                     text: " " + "2d",
                     style: TextStyle(

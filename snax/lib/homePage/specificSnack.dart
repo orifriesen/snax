@@ -293,6 +293,7 @@ class _ProductPageState extends State<ProductPage> {
         divider(),
         returnSpecificCriteria(
             "Spiciness", this.widget.item.averageRatings.spicyness, false),
+        distributionData(this.widget.item)
       ],
     );
   }
@@ -352,5 +353,142 @@ class _ProductPageState extends State<ProductPage> {
             ])),
       ]),
     );
+  }
+
+  Widget distributionData(SnackItem snack) {
+    return Padding(
+        padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Rating Distribution",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Padding(
+              padding: const EdgeInsets.only(top: 16.0, bottom: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    children: [
+                      Text(snack.averageRatings.overall.toStringAsFixed(1),
+                          style: TextStyle(fontSize: 48)),
+                      SmoothStarRating(
+                          allowHalfRating: true,
+                          starCount: 5,
+                          rating: snack.averageRatings.overall,
+                          size: 16,
+                          isReadOnly: true,
+                          filledIconData: Icons.star_rounded,
+                          halfFilledIconData: Icons.star_half_rounded,
+                          defaultIconData: Icons.star_outline_rounded,
+                          color: SnaxColors.redAccent,
+                          borderColor: SnaxColors.redAccent,
+                          spacing: 0.0)
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      LinearPercentIndicator(
+                        leading: Text("5",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600)),
+                        width: 250.0,
+                        lineHeight: 10.0,
+                        percent: .6,
+                        progressColor: SnaxColors.redAccent,
+                        backgroundColor: isDark(context)
+                            ? Colors.grey[800]
+                            : Colors.grey[200],
+                        animation: true,
+                        animationDuration: 750,
+                      ),
+                      LinearPercentIndicator(
+                        leading: Text("4",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600)),
+                        width: 250.0,
+                        lineHeight: 10.0,
+                        percent: .25,
+                        progressColor: SnaxColors.redAccent,
+                        backgroundColor: isDark(context)
+                            ? Colors.grey[800]
+                            : Colors.grey[200],
+                        animation: true,
+                        animationDuration: 750,
+                      ),
+                      LinearPercentIndicator(
+                        leading: Text("3",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600)),
+                        width: 250.0,
+                        lineHeight: 10.0,
+                        percent: .05,
+                        progressColor: SnaxColors.redAccent,
+                        backgroundColor: isDark(context)
+                            ? Colors.grey[800]
+                            : Colors.grey[200],
+                        animation: true,
+                        animationDuration: 750,
+                      ),
+                      LinearPercentIndicator(
+                        leading: Text("2",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600)),
+                        width: 250.0,
+                        lineHeight: 10.0,
+                        percent: .05,
+                        progressColor: SnaxColors.redAccent,
+                        backgroundColor: isDark(context)
+                            ? Colors.grey[800]
+                            : Colors.grey[200],
+                        animation: true,
+                        animationDuration: 750,
+                      ),
+                      LinearPercentIndicator(
+                        leading: Text("1",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600)),
+                        width: 250.0,
+                        lineHeight: 10.0,
+                        percent: .15,
+                        progressColor: SnaxColors.redAccent,
+                        backgroundColor: isDark(context)
+                            ? Colors.grey[800]
+                            : Colors.grey[200],
+                        animation: true,
+                        animationDuration: 750,
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            )
+          ],
+        ));
+  }
+
+  Widget distributionDataRow() {
+    return SmoothStarRating(
+        allowHalfRating: true,
+        starCount: 5,
+        rating: 4,
+        size: 20,
+        isReadOnly: true,
+        filledIconData: Icons.star_rounded,
+        halfFilledIconData: Icons.star_half_rounded,
+        defaultIconData: Icons.star_outline_rounded,
+        color: SnaxColors.redAccent,
+        borderColor: SnaxColors.redAccent,
+        spacing: 0.0);
   }
 }
