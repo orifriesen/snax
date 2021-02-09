@@ -188,7 +188,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
   Widget _globalSettings() {
     return PopupMenuButton(
       onSelected: (value) {
-        value == 1 ? reportButton() : Container();
+        reportButton();
       },
       itemBuilder: (context) => [
         PopupMenuItem(
@@ -221,7 +221,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
           ? CupertinoAlertDialog(
               title: Text("Report This User"),
               content: Text(
-                "Do you want to report this user? Your default email app will open.",
+                "Your default mail application will open to report a user. \n(If this fails, you can send us a message on Instagram!)",
               ),
               actions: [
                 FlatButton(
@@ -236,8 +236,8 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                     style: TextStyle(fontSize: 18),
                   ),
                   onPressed: () => {
-                    customLaunch(
-                      "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20User&body=",
+                    reportLink(
+                      "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20Username:&body=Reason:",
                     ),
                     Navigator.pop(context),
                   },
@@ -247,7 +247,8 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
           : AlertDialog(
               title: Text("Report This User"),
               content: Text(
-                  "Do you want to report this user? Your default email app will open."),
+                "Your default mail application will open to report a user. \n(If this fails, you can send us a message on Instagram!)",
+              ),
               actions: [
                 FlatButton(
                     child: Text(
@@ -267,8 +268,8 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                     ),
                   ),
                   onPressed: () => {
-                    customLaunch(
-                        "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20User: ${this.widget.user.username}&body=Reason: "),
+                    reportLink(
+                        "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20Username:&body=Reason:"),
                     Navigator.pop(context),
                   },
                 )
@@ -337,7 +338,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                       children: [
                         (bioText != null)
                             ? Linkify(
-                                onOpen: (link) => customLaunch(link.url),
+                                onOpen: (link) => bioLink(link.url),
                                 text: bioText,
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 15),
@@ -526,11 +527,20 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
   }
 
   //* URL Launcher
-  customLaunch(command) async {
+  bioLink(command) async {
     if (await canLaunch(command)) {
       await launch(command);
     } else {
-      print("Could not work");
+      print("Command could not work");
+    }
+  }
+
+  reportLink(command) async {
+    if (await canLaunch(command)) {
+      await launch(command);
+    } else {
+      // await launch("https://www.instagram.com/snaxappofficial/");
+      print("Reporting did not work");
     }
   }
 }

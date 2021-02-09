@@ -10,7 +10,7 @@ class AboutPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "About Snax",
+          "About",
           style:
               TextStyle(color: isDark(context) ? Colors.white : Colors.black),
         ),

@@ -124,27 +124,19 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.only(left: 4, top: 8, right: 4),
-        child: Container(
-          height: size.height,
-          child: Column(
-            children: [
-              ListView(
-                shrinkWrap: true,
-                children: [
-                  // helpButton("Help", Icons.help_outline_rounded),
-                  reportButton(
-                      "Report a Problem", Icons.warning_amber_outlined),
-                  aboutButton("About", Icons.info_outline_rounded),
-                  appLibraries("Open Source Libraries", Icons.article_outlined),
-                ],
-              ),
-            ],
-          ),
+        child: ListView(
+          shrinkWrap: true,
+          children: [
+            // helpButton("Help", Icons.help_outline_rounded),
+            reportButton("Report a Problem", Icons.warning_amber_outlined),
+            aboutButton("About", Icons.info_outline_rounded),
+            appLibraries("Open Source Libraries", Icons.article_outlined),
+          ],
         ),
       ),
     );
   }
-
+  //todo "Help" page to be added later on
   // FlatButton helpButton(String title, IconData iconData) {
   //   return FlatButton(
   //     onPressed: () => {
@@ -219,7 +211,9 @@ class _SettingsPageState extends State<SettingsPage> {
           builder: (_) => Platform.isIOS
               ? CupertinoAlertDialog(
                   title: Text("Open Mail Application"),
-                  content: Text("Do you want to open your mail application?"),
+                  content: Text(
+                    "Do you want to open your mail application? \n(If this fails, you can message us on Instagram!)",
+                  ),
                   actions: [
                     FlatButton(
                         child: Text(
@@ -234,7 +228,8 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                       onPressed: () => {
                         customLaunch(
-                            "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20Problem&body="),
+                          "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20Problem&body=",
+                        ),
                         Navigator.pop(context),
                       },
                     )
@@ -242,7 +237,9 @@ class _SettingsPageState extends State<SettingsPage> {
                 )
               : AlertDialog(
                   title: Text("Open Mail Application"),
-                  content: Text("Do you want to open your mail application?"),
+                  content: Text(
+                    "Do you want to open your mail application? \n(If this fails, you can message us on Instagram!)",
+                  ),
                   actions: [
                     FlatButton(
                         child: Text(
@@ -264,7 +261,8 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                       onPressed: () => {
                         customLaunch(
-                            "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20Problem&body="),
+                          "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20Problem&body=",
+                        ),
                         Navigator.pop(context),
                       },
                     )
@@ -338,11 +336,7 @@ class _SettingsPageState extends State<SettingsPage> {
           context: context,
           applicationName: "Snax",
           applicationLegalese: "Developed by Snax Co.",
-          applicationVersion: "0.0.01",
-          applicationIcon: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: FlutterLogo(size: 50),
-          ),
+          // applicationIcon:
         );
       },
       child: Row(
@@ -377,7 +371,8 @@ class _SettingsPageState extends State<SettingsPage> {
     if (await canLaunch(command)) {
       await launch(command);
     } else {
-      print("Could not work");
+      await launch("https://www.instagram.com/snaxappofficial/");
+      print("Command could not work");
     }
   }
 }

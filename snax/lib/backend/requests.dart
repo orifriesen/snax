@@ -973,14 +973,14 @@ class SnaxBackend {
     var doc = await fbStore.collection("users").doc(uid).get();
     print(doc.id);
     //Get the image
-     String imgUrl;
-        try {
-          imgUrl = await fbStorage
-              .ref()
-              .child("user-profiles")
-              .child(uid + ".jpg")
-              .getDownloadURL();
-        } catch (error) {}
+    String imgUrl;
+    try {
+      imgUrl = await fbStorage
+          .ref()
+          .child("user-profiles")
+          .child(uid + ".jpg")
+          .getDownloadURL();
+    } catch (error) {}
     //Get following list
     var followingBox = await Hive.openBox('user_following');
 
@@ -991,7 +991,8 @@ class SnaxBackend {
         doc.data()["bio"],
         doc.data()["followerCount"],
         doc.data()["followingCount"],
-        userIsFollowing: followingBox.values.contains(doc.id),photo: imgUrl);
+        userIsFollowing: followingBox.values.contains(doc.id),
+        photo: imgUrl);
   }
 
   static Future<List<SnackSearchResultItem>> search(String query) async {
