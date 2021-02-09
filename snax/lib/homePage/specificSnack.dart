@@ -1,3 +1,4 @@
+import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:number_display/number_display.dart';
@@ -7,6 +8,7 @@ import 'package:snax/backend/backend.dart';
 import 'package:snax/backend/requests.dart';
 import 'package:snax/barcodeScanner/barcodeAddCode.dart';
 import 'package:snax/helpers.dart';
+import 'package:snax/homePage/homePageFunctions.dart';
 import 'package:snax/homePage/userReview.dart';
 import 'package:sup/sup.dart';
 
@@ -229,73 +231,86 @@ class _ProductPageState extends State<ProductPage> {
   }
 
   Widget criteriaList() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 24, left: 16, right: 16),
-          child:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Padding(
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Padding(
+        padding: const EdgeInsets.only(bottom: 24, left: 16, right: 16),
+        child:
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text("Overall",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          ),
+          Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text("Overall",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            ),
-            Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(children: [
-                  Text(
-                      this
-                              .widget
-                              .item
-                              .averageRatings
-                              .overall
-                              .toStringAsFixed(1) +
-                          " ",
-                      style: TextStyle(fontSize: 16, color: Colors.grey)),
-                  SmoothStarRating(
-                      allowHalfRating: true,
-                      starCount: 5,
-                      rating: this.widget.item.averageRatings.overall,
-                      size: 20,
-                      isReadOnly: true,
-                      filledIconData: Icons.star_rounded,
-                      halfFilledIconData: Icons.star_half_rounded,
-                      defaultIconData: Icons.star_outline_rounded,
-                      color: SnaxColors.redAccent,
-                      borderColor: SnaxColors.redAccent,
-                      spacing: 0.0)
-                ])),
-          ]),
+              child: Row(children: [
+                Text(
+                    this.widget.item.averageRatings.overall.toStringAsFixed(1) +
+                        " ",
+                    style: TextStyle(fontSize: 16, color: Colors.grey)),
+                SmoothStarRating(
+                    allowHalfRating: true,
+                    starCount: 5,
+                    rating: this.widget.item.averageRatings.overall,
+                    size: 20,
+                    isReadOnly: true,
+                    filledIconData: Icons.star_rounded,
+                    halfFilledIconData: Icons.star_half_rounded,
+                    defaultIconData: Icons.star_outline_rounded,
+                    color: SnaxColors.redAccent,
+                    borderColor: SnaxColors.redAccent,
+                    spacing: 0.0)
+              ])),
+        ]),
+      ),
+      Padding(
+          padding: const EdgeInsets.only(left: 24.0),
+          child: Text("CRITERIA",
+              style: TextStyle(fontSize: 14, color: Colors.grey[600]))),
+      divider(),
+      returnSpecificCriteria(
+          "Snackability", this.widget.item.averageRatings.snackability, true),
+      divider(),
+      returnSpecificCriteria(
+          "Mouthfeel", this.widget.item.averageRatings.mouthfeel, true),
+      divider(),
+      returnSpecificCriteria(
+          "Accessibility", this.widget.item.averageRatings.accessibility, true),
+      divider(),
+      returnSpecificCriteria(
+          "Sweetness", this.widget.item.averageRatings.sweetness, false),
+      divider(),
+      returnSpecificCriteria(
+          "Saltiness", this.widget.item.averageRatings.saltiness, false),
+      divider(),
+      returnSpecificCriteria(
+          "Sourness", this.widget.item.averageRatings.sourness, false),
+      divider(),
+      returnSpecificCriteria(
+          "Spiciness", this.widget.item.averageRatings.spicyness, false),
+      Padding(
+        padding: const EdgeInsets.only(left: 16.0, top: 16),
+        child: Text("Rating Distribution",
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+      ),
+      Container(
+        height: 200,
+        child: PageView(
+          children: <Widget>[
+            distributionData("Overall", this.widget.item.averageRatings.overall,
+                this.widget.item),
+            distributionData("Snackability",
+                this.widget.item.averageRatings.snackability, this.widget.item),
+            distributionData("Mouthfeel",
+                this.widget.item.averageRatings.mouthfeel, this.widget.item),
+            distributionData(
+                "Accessibility",
+                this.widget.item.averageRatings.accessibility,
+                this.widget.item),
+          ],
         ),
-        Padding(
-            padding: const EdgeInsets.only(left: 24.0),
-            child: Text("CRITERIA",
-                style: TextStyle(fontSize: 14, color: Colors.grey[600]))),
-        divider(),
-        returnSpecificCriteria(
-            "Snackability", this.widget.item.averageRatings.snackability, true),
-        divider(),
-        returnSpecificCriteria(
-            "Mouthfeel", this.widget.item.averageRatings.mouthfeel, true),
-        divider(),
-        returnSpecificCriteria("Accessibility",
-            this.widget.item.averageRatings.accessibility, true),
-        divider(),
-        returnSpecificCriteria(
-            "Sweetness", this.widget.item.averageRatings.sweetness, false),
-        divider(),
-        returnSpecificCriteria(
-            "Saltiness", this.widget.item.averageRatings.saltiness, false),
-        divider(),
-        returnSpecificCriteria(
-            "Sourness", this.widget.item.averageRatings.sourness, false),
-        divider(),
-        returnSpecificCriteria(
-            "Spiciness", this.widget.item.averageRatings.spicyness, false),
-        distributionData(this.widget.item)
-      ],
-    );
+      ),
+    ]);
   }
 
   Widget divider() {
@@ -355,27 +370,27 @@ class _ProductPageState extends State<ProductPage> {
     );
   }
 
-  Widget distributionData(SnackItem snack) {
+  Widget distributionData(String title, double data, SnackItem snack) {
     return Padding(
-        padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16),
+        padding: const EdgeInsets.only(left: 20.0, right: 16.0, top: 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Rating Distribution",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text(title,
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
             Padding(
-              padding: const EdgeInsets.only(top: 16.0, bottom: 16),
+              padding: const EdgeInsets.only(bottom: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Column(
                     children: [
-                      Text(snack.averageRatings.overall.toStringAsFixed(1),
+                      Text(data.toStringAsFixed(1),
                           style: TextStyle(fontSize: 48)),
                       SmoothStarRating(
                           allowHalfRating: true,
                           starCount: 5,
-                          rating: snack.averageRatings.overall,
+                          rating: data,
                           size: 16,
                           isReadOnly: true,
                           filledIconData: Icons.star_rounded,
