@@ -188,7 +188,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
   Widget _globalSettings() {
     return PopupMenuButton(
       onSelected: (value) {
-        reportButton();
+        value == 1 ? reportButton() : print("failed");
       },
       itemBuilder: (context) => [
         PopupMenuItem(
