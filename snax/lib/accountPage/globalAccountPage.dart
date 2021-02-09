@@ -237,7 +237,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                   ),
                   onPressed: () => {
                     reportLink(
-                      "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20Username: ${this.widget.user.username}&body=Reason:",
+                      "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20User:%20a%20${this.widget.user.username}&body=Reason:",
                     ),
                     Navigator.pop(context),
                   },
