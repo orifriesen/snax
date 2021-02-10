@@ -221,7 +221,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
           ? CupertinoAlertDialog(
               title: Text("Report This User"),
               content: Text(
-                "Your default mail application will open to report a user. \n(If this fails, you can send us a message on Instagram!)",
+                "Are you sure you want to report this user?",
               ),
               actions: [
                 FlatButton(
@@ -237,7 +237,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                   ),
                   onPressed: () => {
                     reportLink(
-                      "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20User:%20@${this.widget.user.username}&body=Reason:",
+                      "mailto:thesnaxofficial@gmail.com?subject=Reporting%20User:%20@${this.widget.user.username}&body=Reason:",
                     ),
                     Navigator.pop(context),
                   },
@@ -247,7 +247,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
           : AlertDialog(
               title: Text("Report This User"),
               content: Text(
-                "Your default mail application will open to report a user. \n(If this fails, you can send us a message on Instagram!)",
+                "Are you sure you want to report this user?",
               ),
               actions: [
                 FlatButton(
@@ -269,7 +269,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                   ),
                   onPressed: () => {
                     reportLink(
-                        "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20Username:&body=Reason:"),
+                        "mailto:thesnaxofficial@gmail.com?subject=Reporting%20User:%20@${this.widget.user.username}&body=Reason:"),
                     Navigator.pop(context),
                   },
                 )
@@ -336,19 +336,16 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        (bioText != null)
-                            ? Linkify(
-                                onOpen: (link) => bioLink(link.url),
-                                text: bioText,
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 15),
-                                linkStyle: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    decoration: TextDecoration.none),
-                                maxLines: _maxLines,
-                                options: LinkifyOptions(looseUrl: true),
-                              )
-                            : Container(),
+                        Linkify(
+                          onOpen: (link) => {bioLink(link.url)},
+                          text: bioText,
+                          style: TextStyle(color: Colors.white, fontSize: 15),
+                          linkStyle: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              decoration: TextDecoration.none),
+                          maxLines: _maxLines,
+                          options: LinkifyOptions(looseUrl: true),
+                        ),
                         numLines >= 4
                             ? InkWell(
                                 onTap: () {
@@ -539,7 +536,6 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
     if (await canLaunch(command)) {
       await launch(command);
     } else {
-      // await launch("https://www.instagram.com/snaxappofficial/");
       print("Reporting did not work");
     }
   }

@@ -210,9 +210,9 @@ class _SettingsPageState extends State<SettingsPage> {
           context: context,
           builder: (_) => Platform.isIOS
               ? CupertinoAlertDialog(
-                  title: Text("Open Mail Application"),
+                  title: Text("Report a Problem"),
                   content: Text(
-                    "Do you want to open your mail application? \n(If this fails, you can message us on Instagram!)",
+                    "Do you want to open your mail application to report?",
                   ),
                   actions: [
                     FlatButton(
@@ -236,9 +236,9 @@ class _SettingsPageState extends State<SettingsPage> {
                   ],
                 )
               : AlertDialog(
-                  title: Text("Open Mail Application"),
+                  title: Text("Report a Problem"),
                   content: Text(
-                    "Do you want to open your mail application? \n(If this fails, you can message us on Instagram!)",
+                    "Do you want to open your mail application to report?",
                   ),
                   actions: [
                     FlatButton(
@@ -371,7 +371,6 @@ class _SettingsPageState extends State<SettingsPage> {
     if (await canLaunch(command)) {
       await launch(command);
     } else {
-      await launch("https://www.instagram.com/snaxappofficial/");
       print("Command could not work");
     }
   }
