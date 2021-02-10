@@ -72,6 +72,8 @@ void main() {
     //     print("updated my bio from the app!");
     // });
 
+    //SnaxBackend.getRecentReviewsForUser(SnaxBackend.currentUser).then((_) {});
+
     // SnaxBackend.followUser("aWBb2fFQL5as5QiUs9leo3DiA1C3").then((_) {});
 
     // SnaxBackend.feedGetTrendingPosts().then((posts) {
@@ -81,7 +83,15 @@ void main() {
     //   }
     // });
 
-    // SnaxBackend.searchUsers("esc").then((value) => print(value.length));
+    SnaxBackend.searchUsers("esc").then((r) {
+      r.first.ratings().then((rs) {
+        rs.forEach((element) {
+          print(element.snack.name);
+          print(element.snack.image);
+          print(element.overall);
+        });
+      });
+    });
 
     // SnaxBackend.feedLikePost("rlUXJBRe1MfKXI49Ux8M").then((_) {});
 

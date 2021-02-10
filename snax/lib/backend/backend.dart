@@ -100,6 +100,8 @@ class SnaxUser {
   SnaxUser(this.username, this.name, this.uid, this.bio, this.followerCount,
       this.followingCount,
       {this.photo, this.userIsFollowing = false});
+
+  Future<List<SnackUserRating>> ratings({ int limit = 10 }) => SnaxBackend.getRecentReviewsForUser(this,limit: limit);
 }
 
 class SnackSearchResultItem {
@@ -170,6 +172,15 @@ class SnackRating {
       this.spicyness);
 }
 
+// class SnackUserRatingSnackInfo {
+//     String name;
+//   String id;
+//   SnackItemType type;
+//   int upc;
+//   String image;
+//   String banner;
+// }
+
 //A snack rating that a user submitted, user data is attached
 class SnackUserRating {
   double overall;
@@ -180,9 +191,13 @@ class SnackUserRating {
   double sourness;
   double sweetness;
   double spicyness;
-  //TODO: add user item
+  //The attached data
+  SnackItem snack;
+  SnaxUser user;
 
   SnackUserRating(
+    this.user,
+    this.snack,
       this.overall,
       this.mouthfeel,
       this.accessibility,
