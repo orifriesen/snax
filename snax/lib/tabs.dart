@@ -4,6 +4,7 @@ import 'package:snax/backend/requests.dart';
 import 'package:snax/feedPage/FeedPage.dart';
 import 'package:snax/homePage/homePage.dart';
 import 'package:snax/activityPage/activityPage.dart';
+import 'package:snax/feedPage/makePostPage.dart';
 
 import 'helpers.dart';
 
@@ -44,7 +45,11 @@ class _AppTabsState extends State<AppTabs>
               FloatingActionButtonLocation.centerDocked,
           floatingActionButton: FloatingActionButton(
             child: const Icon(Icons.add),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => MakePostPage(),
+                  fullscreenDialog: true));
+            },
           ),
           bottomNavigationBar: BottomAppBar(
             child: Row(
@@ -92,7 +97,9 @@ class _AppTabsState extends State<AppTabs>
                       icon: Icon(_currentIndex == 3
                           ? Icons.person
                           : Icons.person_outlined),
-                          color: _currentIndex == 3 ? Theme.of(context).accentColor : Theme.of(context).bottomAppBarTheme.color,
+                      color: _currentIndex == 3
+                          ? Theme.of(context).accentColor
+                          : Theme.of(context).bottomAppBarTheme.color,
                       onPressed: () {
                         setState(() {
                           _currentIndex = 3;
