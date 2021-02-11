@@ -6,6 +6,7 @@ import 'package:snax/backend/backend.dart';
 import 'package:snax/backend/requests.dart';
 import 'package:snax/barcodeScanner/barcodeAddCode.dart';
 import 'package:snax/helpers.dart';
+import 'package:snax/themes.dart';
 
 class MakePostPage extends StatefulWidget {
   @override
@@ -85,8 +86,7 @@ class _MakePostPageState extends State<MakePostPage> {
                 )),
                 height: 250,
                 decoration: BoxDecoration(
-                  //color: SnaxColors.redAccent,
-                  gradient: SnaxGradients.redBigThings,
+                  gradient: getTheme(context).bigGradient(),
                 )),
             // Prompt Text
             SafeArea(

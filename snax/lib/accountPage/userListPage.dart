@@ -8,6 +8,8 @@ import 'package:snax/backend/requests.dart';
 import 'package:snax/helpers.dart';
 import 'package:sup/quick_sup.dart';
 
+import '../themes.dart';
+
 class UserListPage extends StatefulWidget {
   Future fetcher;
   String pageTitle;
@@ -40,8 +42,8 @@ class _UserListPageState extends State<UserListPage> {
                   itemBuilder: (context, index) {
                     SnaxUser user = snapshot.data[index];
                     return ListTile(
-                      title: Text(snapshot.data[index].username),
-                      subtitle: Text(snapshot.data[index].name),
+                      title: Text(snapshot.data[index].name),
+                      subtitle: Text("@" + snapshot.data[index].username),
                       leading: CircleAvatar(
                           radius: 25,
                           backgroundImage: (user.photo != null)
@@ -101,7 +103,7 @@ class _UserListPageState extends State<UserListPage> {
                                           : Colors.white)),
                               color: user.userIsFollowing
                                   ? Colors.transparent
-                                  : SnaxColors.redAccent,
+                                  : getTheme(context).bigGradient(),
                             )
                           : Container(child: Text("")),
                     );

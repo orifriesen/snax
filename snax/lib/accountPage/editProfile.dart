@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:snax/backend/backend.dart';
 import 'package:snax/backend/requests.dart';
 import 'package:snax/helpers.dart';
+import 'package:snax/themes.dart';
 
 class EditProfile extends StatefulWidget {
   @override
@@ -40,7 +41,7 @@ class _EditProfileState extends State<EditProfile> {
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: SnaxColors.gradientStart,
+        backgroundColor: getTheme(context).gradientStart,
         leadingWidth: 90,
         brightness: Brightness.dark,
         leading: FlatButton(
@@ -87,7 +88,10 @@ class _EditProfileState extends State<EditProfile> {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.centerRight,
-              colors: [SnaxColors.gradientStart, SnaxColors.gradientEnd],
+              colors: [
+                getTheme(context).gradientStart,
+                getTheme(context).gradientEnd
+              ],
             ),
           ),
           child: Column(

@@ -1,7 +1,11 @@
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:snax/main.dart';
+import 'package:snax/themes.dart';
 
 import 'settingsTabs/aboutPage.dart';
 import 'package:snax/helpers.dart';
@@ -22,6 +26,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: getTheme(context).appBarColor,
         brightness: Brightness.dark,
         elevation: 1,
         title: Text('Settings'),
@@ -110,11 +115,12 @@ class _SettingsPageState extends State<SettingsPage> {
                 children: [
                   Icon(
                     Icons.logout,
-                    color: SnaxColors.redAccent,
+                    color: getTheme(context).accentColor,
                   ),
                   Text(
                     " Log Out",
-                    style: TextStyle(color: SnaxColors.redAccent, fontSize: 18),
+                    style: TextStyle(
+                        color: getTheme(context).accentColor, fontSize: 18),
                   ),
                 ],
               ),
@@ -136,6 +142,10 @@ class _SettingsPageState extends State<SettingsPage> {
                       "Report a Problem", Icons.warning_amber_outlined),
                   aboutButton("About", Icons.info_outline_rounded),
                   appLibraries("Open Source Libraries", Icons.article_outlined),
+                  themeSettingsButton(
+                      "Dark Theme", Icons.nightlight_round, context, true),
+                  themeSettingsButton(
+                      "Light Theme", Icons.brightness_5_rounded, context, false)
                 ],
               ),
             ],
@@ -367,6 +377,110 @@ class _SettingsPageState extends State<SettingsPage> {
             Icons.arrow_forward_ios,
             color: SnaxColors.subtext,
           )
+        ],
+      ),
+    );
+  }
+
+  FlatButton themeSettingsButton(
+      String title, IconData iconData, BuildContext context, bool dark) {
+    return FlatButton(
+      onPressed: () {
+        showModalBottomSheet<Void>(
+          context: context,
+          builder: (BuildContext context) {
+            if (dark)
+              return themeSettings(darkThemeList, currentDarkTheme.name, true);
+            else
+              return themeSettings(
+                  lightThemeList, currentLightTheme.name, false);
+          },
+        ).then((_) {
+          setState(() {});
+          themeUpdate.add(_);
+        });
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Icon(
+                iconData,
+              ),
+              SizedBox(width: 8),
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              Text(
+                dark ? currentDarkTheme.name : currentLightTheme.name,
+                style: TextStyle(fontSize: 16),
+              ),
+              Icon(
+                Icons.arrow_drop_down,
+                color: SnaxColors.subtext,
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Container themeSettings(
+      List<SnaxTheme> themes, String currentTheme, bool dark) {
+    return Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(24), topRight: Radius.circular(24))),
+        child: ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: themes.length,
+            itemBuilder: (BuildContext context, int index) {
+              bool current =
+                  (themes[index].name == currentTheme) ? true : false;
+              return themeButton(themes[index], current, dark);
+            }));
+  }
+
+  FlatButton themeButton(SnaxTheme theme, bool current, bool dark) {
+    return FlatButton(
+      onPressed: () async {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        if (dark) {
+          currentDarkTheme = theme;
+          await prefs.setString("dark-theme", theme.id);
+        } else {
+          currentLightTheme = theme;
+          await prefs.setString("light-theme", theme.id);
+        }
+
+        Navigator.pop(context);
+      },
+      child: Row(
+        children: [
+          Icon(
+            current ? Icons.check_circle_rounded : Icons.brightness_1_outlined,
+            color:
+                current ? getTheme(context).primaryColor : SnaxColors.subtext,
+          ),
+          Padding(
+            padding: EdgeInsets.only(right: 8),
+          ),
+          Text(theme.name,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: current ? FontWeight.normal : FontWeight.w300,
+              ))
         ],
       ),
     );
