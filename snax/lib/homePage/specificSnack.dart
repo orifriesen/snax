@@ -10,6 +10,8 @@ import 'package:snax/helpers.dart';
 import 'package:snax/homePage/userReview.dart';
 import 'package:sup/sup.dart';
 
+import '../themes.dart';
+
 class ProductPage extends StatefulWidget {
   ProductPage({Key key, this.item}) : super(key: key);
   final SnackItem item;
@@ -59,8 +61,8 @@ class _ProductPageState extends State<ProductPage> {
                 bottom: false,
                 child: Container(height: 80)),
             decoration: BoxDecoration(
-                color: SnaxColors.redAccent,
-                gradient: SnaxGradients.redBigThings,
+                color: getTheme(context).accentColor,
+                gradient: getTheme(context).bigGradient(),
                 borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(20),
                     bottomRight: Radius.circular(20)))),
@@ -185,7 +187,7 @@ class _ProductPageState extends State<ProductPage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: new FloatingActionButton.extended(
           highlightElevation: 1,
-          backgroundColor: SnaxColors.gradientStart,
+          backgroundColor: getTheme(context).gradientStart,
           onPressed: () {
             Navigator.push(
                 context,
@@ -247,8 +249,8 @@ class _ProductPageState extends State<ProductPage> {
                       filledIconData: Icons.star_rounded,
                       halfFilledIconData: Icons.star_half_rounded,
                       defaultIconData: Icons.star_outline_rounded,
-                      color: SnaxColors.redAccent,
-                      borderColor: SnaxColors.redAccent,
+                      color: getTheme(context).accentColor,
+                      borderColor: getTheme(context).accentColor,
                       spacing: 0.0)
                 ])),
           ]),
@@ -317,8 +319,8 @@ class _ProductPageState extends State<ProductPage> {
                       filledIconData: Icons.star_rounded,
                       halfFilledIconData: Icons.star_half_rounded,
                       defaultIconData: Icons.star_outline_rounded,
-                      color: SnaxColors.redAccent,
-                      borderColor: SnaxColors.redAccent,
+                      color: getTheme(context).accentColor,
+                      borderColor: getTheme(context).accentColor,
                       spacing: 0.0)
                   : Padding(
                       padding: const EdgeInsets.only(top: 6.0),
@@ -326,7 +328,7 @@ class _ProductPageState extends State<ProductPage> {
                         width: 100.0,
                         lineHeight: 12.0,
                         percent: snackItemData / 5,
-                        progressColor: SnaxColors.redAccent,
+                        progressColor: getTheme(context).accentColor,
                         backgroundColor: isDark(context)
                             ? Colors.grey[800]
                             : Colors.grey[200],

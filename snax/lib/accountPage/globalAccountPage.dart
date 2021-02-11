@@ -8,6 +8,7 @@ import 'package:snax/accountPage/editProfile.dart';
 import 'package:snax/accountPage/userListPage.dart';
 import 'package:snax/accountPage/settingsPage.dart';
 import 'package:snax/backend/backend.dart';
+import 'package:snax/themes.dart';
 
 import 'accountBottomTabs/postTab.dart';
 import 'accountBottomTabs/secondTab.dart';
@@ -28,9 +29,6 @@ class GlobalAccountPage extends StatefulWidget {
 
 class _GlobalAccountPageState extends State<GlobalAccountPage>
     with TickerProviderStateMixin {
-  Color burningOrangeStart = const Color.fromRGBO(255, 65, 108, 1.0);
-  Color burningOrangeEnd = const Color.fromRGBO(255, 75, 43, 1.0);
-
   bool bioShowTextFlag = true;
 
   TabController _tabController;
@@ -57,7 +55,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: burningOrangeEnd,
+        backgroundColor: getTheme(context).gradientStart,
         brightness: Brightness.dark,
         title: Text(this.widget.isAccountPage
             ? "My Profile"
@@ -99,7 +97,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                   ),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(32)),
-                  color: SnaxColors.redAccent,
+                  color: getTheme(context).accentColor,
                   onPressed: () {
                     SnaxBackend.auth.loginIfNotAlready().then((_) {
                       if (this.widget.isAccountPage)
@@ -126,15 +124,21 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                            color: Color.fromARGB(60, 0, 0, 0), blurRadius: 12)
-                      ],
-                      borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(40),
-                          bottomRight: Radius.circular(40)),
-                      gradient: SnaxGradients.redBigThings,
-                    ),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Color.fromARGB(60, 0, 0, 0),
+                              blurRadius: 12)
+                        ],
+                        borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(40),
+                            bottomRight: Radius.circular(40)),
+                        gradient: LinearGradient(
+                            colors: [
+                              getTheme(context).gradientStart,
+                              getTheme(context).gradientEnd
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomLeft)),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
@@ -158,7 +162,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                     padding: const EdgeInsets.only(left: 16.0, right: 16),
                     child: TabBar(
                       controller: _tabController,
-                      indicatorColor: SnaxColors.redAccent,
+                      indicatorColor: getTheme(context).accentColor,
                       labelColor:
                           !isDark(context) ? Colors.black : Colors.white,
                       unselectedLabelColor: Colors.grey,
@@ -198,7 +202,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
               ),
               Text(
                 'Report',
-                style: TextStyle(color: SnaxColors.redAccent),
+                style: TextStyle(color: getTheme(context).accentColor),
               )
             ],
           ),

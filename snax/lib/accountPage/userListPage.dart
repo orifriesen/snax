@@ -8,6 +8,8 @@ import 'package:snax/backend/requests.dart';
 import 'package:snax/helpers.dart';
 import 'package:sup/quick_sup.dart';
 
+import '../themes.dart';
+
 class UserListPage extends StatefulWidget {
   Future fetcher;
   String pageTitle;
@@ -101,7 +103,7 @@ class _UserListPageState extends State<UserListPage> {
                                           : Colors.white)),
                               color: user.userIsFollowing
                                   ? Colors.transparent
-                                  : SnaxColors.redAccent,
+                                  : getTheme(context).bigGradient(),
                             )
                           : Container(child: Text("")),
                     );

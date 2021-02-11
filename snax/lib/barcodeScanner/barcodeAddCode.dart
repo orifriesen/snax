@@ -7,6 +7,8 @@ import 'package:snax/backend/requests.dart';
 import 'package:snax/helpers.dart';
 import 'package:sup/quick_sup.dart';
 
+import '../themes.dart';
+
 class BarcodeAddSearch extends SearchDelegate<String> {
   Function callback;
   bool confirmDialog = false;
@@ -282,12 +284,18 @@ class BarcodeAddSearch extends SearchDelegate<String> {
                                   List<SnaxUser> users = snapshot.data;
 
                                   if (users.length == 0 && snacks.length == 0)
-                                    return Padding(padding: EdgeInsets.only(top: 44),child: Center(
-                                      child: QuickSup.empty(
-                                          image: Icon(Icons.search,size: 25,),
-                                          title: "No Results",
-                                          subtitle: "No snacks or users found"),
-                                    ));
+                                    return Padding(
+                                        padding: EdgeInsets.only(top: 44),
+                                        child: Center(
+                                          child: QuickSup.empty(
+                                              image: Icon(
+                                                Icons.search,
+                                                size: 25,
+                                              ),
+                                              title: "No Results",
+                                              subtitle:
+                                                  "No snacks or users found"),
+                                        ));
 
                                   return users.length > 0
                                       ? Column(
@@ -481,8 +489,8 @@ Widget searchPageLilCard(
                               defaultIconData: Icons.star_border_rounded,
                               filledIconData: Icons.star_rounded,
                               halfFilledIconData: Icons.star_half_rounded,
-                              color: SnaxColors.redAccent,
-                              borderColor: SnaxColors.redAccent,
+                              color: getTheme(context).accentColor,
+                              borderColor: getTheme(context).accentColor,
                               spacing: 0.0),
                         ],
                       ),

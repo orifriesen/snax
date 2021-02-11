@@ -10,6 +10,8 @@ import 'package:snax/feedPage/postDetailsPage.dart';
 import 'package:snax/helpers.dart';
 import 'package:sup/sup.dart';
 
+import '../themes.dart';
+
 class FeedPage extends StatefulWidget {
   @override
   _FeedPageState createState() => _FeedPageState();
@@ -55,7 +57,7 @@ class _FeedPageState extends State<FeedPage>
         this.posts = newPosts;
       });
     } catch (err) {
-      Fluttertoast.showToast(msg: err);
+      Fluttertoast.showToast(msg: err.toString());
     }
   }
 
@@ -92,11 +94,11 @@ class _FeedPageState extends State<FeedPage>
                           value: dropDownValue,
                           icon: Icon(
                             Icons.arrow_drop_down_rounded,
-                            color: Color.fromARGB(255, 255, 75, 43),
+                            color: getTheme(context).accentColor,
                           ),
                           iconSize: 0,
                           style: TextStyle(
-                              color: Color.fromARGB(255, 255, 75, 43),
+                              color: getTheme(context).accentColor,
                               fontWeight: FontWeight.w600,
                               fontSize: 16.0),
                           selectedItemBuilder: (BuildContext context) {
@@ -105,7 +107,7 @@ class _FeedPageState extends State<FeedPage>
                                 padding: const EdgeInsets.only(top: 14),
                                 child: Text(value['title'],
                                     style: TextStyle(
-                                        color: Color.fromARGB(255, 255, 75, 43),
+                                        color: getTheme(context).accentColor,
                                         fontWeight: FontWeight.w600,
                                         fontSize: 20.0)),
                               );
@@ -128,7 +130,7 @@ class _FeedPageState extends State<FeedPage>
                     IconButton(
                       padding: EdgeInsets.only(right: 4),
                       icon: Icon(Icons.add_rounded),
-                      color: Color.fromARGB(255, 255, 75, 43),
+                      color: getTheme(context).accentColor,
                       iconSize: 28,
                       onPressed: () {
                         Navigator.of(context).push(MaterialPageRoute(
@@ -265,7 +267,7 @@ Widget postWidget(BuildContext context, Post post,
                                   "@" + post.user.username,
                                   style: TextStyle(
                                       fontSize: 14,
-                                      color: Color.fromARGB(255, 255, 75, 43)),
+                                      color: getTheme(context).accentColor),
                                 ),
                                 onTap: () => {
                                   Navigator.push(

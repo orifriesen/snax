@@ -10,6 +10,8 @@ import 'package:snax/feedPage/post.dart';
 import 'package:intl/intl.dart';
 import 'package:snax/helpers.dart';
 
+import '../themes.dart';
+
 class PostDetailsPage extends StatefulWidget {
   final Post post;
   const PostDetailsPage({
@@ -49,8 +51,8 @@ class _PostDetailsPage extends State<PostDetailsPage> {
                     width: double.infinity,
                   )),
               decoration: BoxDecoration(
-                  color: SnaxColors.redAccent,
-                  gradient: SnaxGradients.redBigThings,
+                  color: getTheme(context).accentColor,
+                  gradient: getTheme(context).bigGradient(),
                   borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(20),
                       bottomRight: Radius.circular(20)))),
@@ -227,7 +229,7 @@ class _PostDetailsPage extends State<PostDetailsPage> {
                 child: Center(
                     child: CircularProgressIndicator(
                         valueColor: new AlwaysStoppedAnimation<Color>(
-                            SnaxColors.redAccent))));
+                            getTheme(context).accentColor))));
         },
         future: post.getComments(),
       );

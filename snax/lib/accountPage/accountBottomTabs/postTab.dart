@@ -7,6 +7,7 @@ import 'package:snax/backend/backend.dart';
 import 'package:sup/sup.dart';
 
 import '../../helpers.dart';
+import '../../themes.dart';
 
 class PostTab extends StatefulWidget {
   SnaxUser user;
@@ -62,8 +63,8 @@ class _PostTabState extends State<PostTab>
             padding: EdgeInsets.all(40),
             child: Center(
               child: CircularProgressIndicator(
-                valueColor:
-                    new AlwaysStoppedAnimation<Color>(SnaxColors.redAccent),
+                valueColor: new AlwaysStoppedAnimation<Color>(
+                    getTheme(context).accentColor),
               ),
             ),
           );
