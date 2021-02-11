@@ -33,6 +33,7 @@ class _MainPageState extends State<MainPage>
                           highlightColor: Colors.transparent,
                           splashColor: Colors.transparent),
                       child: new SliverAppBar(
+                        brightness: isDark(context) ? Brightness.dark : Brightness.light,
                         /*flexibleSpace: Container(
                             decoration: BoxDecoration(
                                 gradient: SnaxGradients.redBigThings),
@@ -50,11 +51,13 @@ class _MainPageState extends State<MainPage>
                           unselectedLabelColor: getTheme(context).accentColor,
                           indicatorSize: TabBarIndicatorSize.tab,
                           indicator: BoxDecoration(
-                              gradient: getTheme(context).bigGradient(),
+                              //gradient: getTheme(context).littleGradient(),
                               borderRadius:
                                   BorderRadius.all(Radius.circular(50)),
-                              color: Colors.redAccent),
+                              color: getTheme(context).primaryColor,
+                          ),
                           labelStyle: TextStyle(fontSize: 18),
+                          labelColor: getTheme(context).primaryContrastForText(),
                           tabs: [
                             Container(width: 80, child: Tab(text: "For You")),
                             Container(width: 80, child: Tab(text: "Trending")),

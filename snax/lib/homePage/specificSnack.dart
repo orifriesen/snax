@@ -34,12 +34,11 @@ class _ProductPageState extends State<ProductPage> {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        brightness: Brightness.dark,
+        brightness: getTheme(context).appBarBrightness(),
         elevation: 0,
         actions: <Widget>[
           IconButton(
               icon: Icon(Icons.search),
-              color: Colors.white,
               onPressed: () {
                 showSearch(
                     context: context,
@@ -146,12 +145,11 @@ class _ProductPageState extends State<ProductPage> {
                                               Text(this.widget.item.type.name,
                                                   style: TextStyle(
                                                       fontSize: 14,
-                                                      color: SnaxColors
-                                                          .redAccent)),
+                                                      color: getTheme(context).accentColor)),
                                               Icon(
                                                 Icons.arrow_forward_ios_rounded,
                                                 size: 14,
-                                                color: SnaxColors.redAccent,
+                                                color: getTheme(context).accentColor,
                                               )
                                             ],
                                           )),
@@ -203,7 +201,7 @@ class _ProductPageState extends State<ProductPage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: new FloatingActionButton.extended(
           highlightElevation: 1,
-          backgroundColor: getTheme(context).gradientStart,
+          backgroundColor: getTheme(context).primaryColor,
           onPressed: () {
             Navigator.push(
                 context,
@@ -221,6 +219,7 @@ class _ProductPageState extends State<ProductPage> {
                   Icon(Icons.star),
                   Text("  Rate Snack ",
                       style: TextStyle(
+                        color: getTheme(context).primaryContrastForText(),
                           fontSize: 16,
                           letterSpacing: 0.1,
                           fontWeight: FontWeight.bold)),
@@ -397,8 +396,8 @@ class _ProductPageState extends State<ProductPage> {
                           filledIconData: Icons.star_rounded,
                           halfFilledIconData: Icons.star_half_rounded,
                           defaultIconData: Icons.star_outline_rounded,
-                          color: SnaxColors.redAccent,
-                          borderColor: SnaxColors.redAccent,
+                          color: getTheme(context).accentColor,
+                          borderColor: getTheme(context).accentColor,
                           spacing: 0.0)
                     ],
                   ),
@@ -407,13 +406,13 @@ class _ProductPageState extends State<ProductPage> {
                       LinearPercentIndicator(
                         leading: Text("5",
                             style: TextStyle(
-                                color: Colors.black,
+                                color: SnaxColors.subtext,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600)),
                         width: 250.0,
                         lineHeight: 10.0,
                         percent: .6,
-                        progressColor: SnaxColors.redAccent,
+                        progressColor: getTheme(context).accentColor,
                         backgroundColor: isDark(context)
                             ? Colors.grey[800]
                             : Colors.grey[200],
@@ -423,13 +422,13 @@ class _ProductPageState extends State<ProductPage> {
                       LinearPercentIndicator(
                         leading: Text("4",
                             style: TextStyle(
-                                color: Colors.black,
+                                color: SnaxColors.subtext,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600)),
                         width: 250.0,
                         lineHeight: 10.0,
                         percent: .25,
-                        progressColor: SnaxColors.redAccent,
+                        progressColor: getTheme(context).accentColor,
                         backgroundColor: isDark(context)
                             ? Colors.grey[800]
                             : Colors.grey[200],
@@ -439,13 +438,13 @@ class _ProductPageState extends State<ProductPage> {
                       LinearPercentIndicator(
                         leading: Text("3",
                             style: TextStyle(
-                                color: Colors.black,
+                                color: SnaxColors.subtext,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600)),
                         width: 250.0,
                         lineHeight: 10.0,
                         percent: .05,
-                        progressColor: SnaxColors.redAccent,
+                        progressColor: getTheme(context).accentColor,
                         backgroundColor: isDark(context)
                             ? Colors.grey[800]
                             : Colors.grey[200],
@@ -455,13 +454,13 @@ class _ProductPageState extends State<ProductPage> {
                       LinearPercentIndicator(
                         leading: Text("2",
                             style: TextStyle(
-                                color: Colors.black,
+                                color: SnaxColors.subtext,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600)),
                         width: 250.0,
                         lineHeight: 10.0,
                         percent: .05,
-                        progressColor: SnaxColors.redAccent,
+                        progressColor: getTheme(context).accentColor,
                         backgroundColor: isDark(context)
                             ? Colors.grey[800]
                             : Colors.grey[200],
@@ -471,13 +470,13 @@ class _ProductPageState extends State<ProductPage> {
                       LinearPercentIndicator(
                         leading: Text("1",
                             style: TextStyle(
-                                color: Colors.black,
+                                color: SnaxColors.subtext,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600)),
                         width: 250.0,
                         lineHeight: 10.0,
                         percent: .15,
-                        progressColor: SnaxColors.redAccent,
+                        progressColor: getTheme(context).accentColor,
                         backgroundColor: isDark(context)
                             ? Colors.grey[800]
                             : Colors.grey[200],
@@ -503,8 +502,8 @@ class _ProductPageState extends State<ProductPage> {
         filledIconData: Icons.star_rounded,
         halfFilledIconData: Icons.star_half_rounded,
         defaultIconData: Icons.star_outline_rounded,
-        color: SnaxColors.redAccent,
-        borderColor: SnaxColors.redAccent,
+        color: getTheme(context).accentColor,
+        borderColor: getTheme(context).accentColor,
         spacing: 0.0);
   }
 }

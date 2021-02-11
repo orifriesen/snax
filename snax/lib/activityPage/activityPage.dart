@@ -6,6 +6,7 @@ import 'package:snax/feedPage/makePostPage.dart';
 import 'package:snax/backend/backend.dart';
 import 'package:snax/feedPage/post.dart';
 import 'package:snax/helpers.dart';
+import 'package:snax/themes.dart';
 
 class ActivityPage extends StatefulWidget {
   @override
@@ -34,13 +35,14 @@ class _ActivityPageState extends State<ActivityPage>
                   snap: true,
                   backgroundColor: Theme.of(context).canvasColor,
                   elevation: 0,
+                  brightness: isDark(context) ? Brightness.dark : Brightness.light,
                   centerTitle: true,
                   leadingWidth: double.infinity,
                   leading: Padding(
                       padding: const EdgeInsets.only(left: 20.0, top: 16.0),
                       child: Text("Activity",
                           style: TextStyle(
-                            color: Color.fromARGB(255, 255, 75, 43),
+                            color: getTheme(context).primaryColor,
                             fontSize: 20.0,
                             fontWeight: FontWeight.w600,
                           ))),
@@ -194,6 +196,7 @@ Widget followed(BuildContext context) {
                         color: SnaxColors.subtext))
               ])),
             ),
+            Container(width:12),
             FlatButton(
               onPressed: () {},
               height: 30,
@@ -204,10 +207,10 @@ Widget followed(BuildContext context) {
               child: Text(
                 "Follow",
                 style: TextStyle(
-                  color: Colors.white,
+                  color: getTheme(context).accentColor.computeLuminance() < 0.5 ? Colors.white : Colors.black,
                 ),
               ),
-              color: SnaxColors.redAccent,
+              color: getTheme(context).accentColor,
             ),
           ],
         ),

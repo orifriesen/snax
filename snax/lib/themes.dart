@@ -20,8 +20,16 @@ class SnaxTheme {
         begin: Alignment(-0.5, -1.5),
         end: Alignment(1.5, 2.5),
       );
+
+  Color primaryContrastForText() => primaryColor.computeLuminance() > 0.5 ? Colors.black : Colors.white;
+  Color accentContrastForText() => accentColor.computeLuminance() > 0.5 ? Colors.black : Colors.white;
+  Color appBarContrastForText() => appBarColor.computeLuminance() > 0.5 ? Colors.black : Colors.white;
+  Brightness appBarBrightness() => appBarColor.computeLuminance() < 0.5 ? Brightness.dark : Brightness.light;
+
   SnaxTheme(this.id, this.name, this.primaryColor, this.accentColor,
       this.gradientStart, this.gradientEnd, this.appBarColor);
+
+  
 }
 
 final List<SnaxTheme> lightThemeList = [
@@ -41,6 +49,7 @@ final List<SnaxTheme> lightThemeList = [
       HexColor.fromHex("38EF7D"),
       HexColor.fromHex("56B28D"),
       HexColor.fromHex("74E987")),
+     
 ];
 
 final List<SnaxTheme> darkThemeList = [
@@ -60,6 +69,16 @@ final List<SnaxTheme> darkThemeList = [
       HexColor.fromHex("614385"),
       HexColor.fromHex("516395"),
       HexColor.fromHex("5B4F8B")),
+       SnaxTheme(
+      "escher",
+      "Escher's Theme",
+      HexColor.fromHex("FED8DD"),
+      HexColor.fromHex("FED8DD"),
+      HexColor.fromHex("ee9ca7"),
+      HexColor.fromHex("ffdde1"),
+      HexColor.fromHex("F7BCC3"),
+      )
+    
 ];
 
 SnaxTheme currentLightTheme = lightThemeList[0];

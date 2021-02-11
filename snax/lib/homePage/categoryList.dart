@@ -4,6 +4,7 @@ import 'package:snax/backend/requests.dart';
 import 'package:snax/barcodeScanner/barcodeAddCode.dart';
 import 'package:snax/barcodeScanner/barcodeScanner.dart';
 import 'package:snax/homePage/specificSnack.dart';
+import 'package:snax/themes.dart';
 
 import '../helpers.dart';
 import 'homePageFunctions.dart';
@@ -32,7 +33,7 @@ class _CategoryPage extends State<CategoryPage>
           actions: <Widget>[
             IconButton(
                 icon: Icon(Icons.search),
-                color: Colors.white,
+                color: getTheme(context).appBarContrastForText(),
                 onPressed: () {
                   showSearch(
                       context: context,
@@ -49,7 +50,7 @@ class _CategoryPage extends State<CategoryPage>
                 }),
             IconButton(
                 icon: const Icon(Icons.more_vert),
-                color: Colors.white,
+                color: getTheme(context).appBarContrastForText(),
                 onPressed: () {})
           ],
         ),
@@ -62,7 +63,7 @@ class _CategoryPage extends State<CategoryPage>
                   child: Container(height: 80)),
               decoration: BoxDecoration(
                   color: SnaxColors.redAccent,
-                  gradient: SnaxGradients.redBigThings,
+                  gradient: getTheme(context).bigGradient(),
                   borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(20),
                       bottomRight: Radius.circular(20)))),

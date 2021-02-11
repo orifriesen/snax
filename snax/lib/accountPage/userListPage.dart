@@ -30,7 +30,7 @@ class _UserListPageState extends State<UserListPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(this.widget.pageTitle),
-        brightness: Brightness.dark,
+        brightness: getTheme(context).appBarBrightness(),
       ),
       body: FutureBuilder(
           future: this.widget.fetcher,
@@ -100,10 +100,10 @@ class _UserListPageState extends State<UserListPage> {
                                               .textTheme
                                               .bodyText1
                                               .color
-                                          : Colors.white)),
+                                          : getTheme(context).accentContrastForText())),
                               color: user.userIsFollowing
                                   ? Colors.transparent
-                                  : getTheme(context).bigGradient(),
+                                  : getTheme(context).accentColor,
                             )
                           : Container(child: Text("")),
                     );

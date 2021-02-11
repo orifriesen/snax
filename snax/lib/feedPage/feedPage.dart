@@ -86,6 +86,7 @@ class _FeedPageState extends State<FeedPage>
                   snap: true,
                   backgroundColor: Theme.of(context).canvasColor,
                   elevation: 0,
+                  brightness: isDark(context) ? Brightness.dark : Brightness.light,
                   centerTitle: true,
                   leadingWidth: double.infinity,
                   leading: Padding(
