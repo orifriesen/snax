@@ -1,3 +1,4 @@
+import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:number_display/number_display.dart';
@@ -7,10 +8,12 @@ import 'package:snax/backend/backend.dart';
 import 'package:snax/backend/requests.dart';
 import 'package:snax/barcodeScanner/barcodeAddCode.dart';
 import 'package:snax/helpers.dart';
+import 'package:snax/homePage/homePageFunctions.dart';
 import 'package:snax/homePage/userReview.dart';
 import 'package:sup/sup.dart';
 
 import '../themes.dart';
+import 'categoryList.dart';
 
 class ProductPage extends StatefulWidget {
   ProductPage({Key key, this.item}) : super(key: key);
@@ -126,19 +129,32 @@ class _ProductPageState extends State<ProductPage> {
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.all(1.0),
-                                      child: Row(
-                                        children: [
-                                          Text(this.widget.item.type.name,
-                                              style: TextStyle(
-                                                  fontSize: 14,
-                                                  color: Colors.grey[400])),
-                                          Icon(
-                                            Icons.arrow_forward_ios_rounded,
-                                            size: 14,
-                                            color: Colors.grey[400],
-                                          )
-                                        ],
-                                      ),
+                                      child: InkWell(
+                                          onTap: () {
+                                            //Present Widget
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (BuildContext
+                                                            context) =>
+                                                        CategoryPage(
+                                                            item: this
+                                                                .widget
+                                                                .item)));
+                                          },
+                                          child: Row(
+                                            children: [
+                                              Text(this.widget.item.type.name,
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      color: SnaxColors
+                                                          .redAccent)),
+                                              Icon(
+                                                Icons.arrow_forward_ios_rounded,
+                                                size: 14,
+                                                color: SnaxColors.redAccent,
+                                              )
+                                            ],
+                                          )),
                                     ),
                                     Padding(
                                       padding: const EdgeInsets.all(1.0),
@@ -216,72 +232,86 @@ class _ProductPageState extends State<ProductPage> {
   }
 
   Widget criteriaList() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 24, left: 16, right: 16),
-          child:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Padding(
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Padding(
+        padding: const EdgeInsets.only(bottom: 24, left: 16, right: 16),
+        child:
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text("Overall",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          ),
+          Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text("Overall",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            ),
-            Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(children: [
-                  Text(
-                      this
-                              .widget
-                              .item
-                              .averageRatings
-                              .overall
-                              .toStringAsFixed(1) +
-                          " ",
-                      style: TextStyle(fontSize: 16, color: Colors.grey)),
-                  SmoothStarRating(
-                      allowHalfRating: true,
-                      starCount: 5,
-                      rating: this.widget.item.averageRatings.overall,
-                      size: 20,
-                      isReadOnly: true,
-                      filledIconData: Icons.star_rounded,
-                      halfFilledIconData: Icons.star_half_rounded,
-                      defaultIconData: Icons.star_outline_rounded,
-                      color: getTheme(context).accentColor,
-                      borderColor: getTheme(context).accentColor,
-                      spacing: 0.0)
-                ])),
-          ]),
+              child: Row(children: [
+                Text(
+                    this.widget.item.averageRatings.overall.toStringAsFixed(1) +
+                        " ",
+                    style: TextStyle(fontSize: 16, color: Colors.grey)),
+                SmoothStarRating(
+                    allowHalfRating: true,
+                    starCount: 5,
+                    rating: this.widget.item.averageRatings.overall,
+                    size: 20,
+                    isReadOnly: true,
+                    filledIconData: Icons.star_rounded,
+                    halfFilledIconData: Icons.star_half_rounded,
+                    defaultIconData: Icons.star_outline_rounded,
+                    color: getTheme(context).accentColor,
+                    borderColor: getTheme(context).accentColor,
+                    spacing: 0.0)
+              ])),
+        ]),
+      ),
+      Padding(
+          padding: const EdgeInsets.only(left: 24.0),
+          child: Text("CRITERIA",
+              style: TextStyle(fontSize: 14, color: Colors.grey[600]))),
+      divider(),
+      returnSpecificCriteria(
+          "Snackability", this.widget.item.averageRatings.snackability, true),
+      divider(),
+      returnSpecificCriteria(
+          "Mouthfeel", this.widget.item.averageRatings.mouthfeel, true),
+      divider(),
+      returnSpecificCriteria(
+          "Accessibility", this.widget.item.averageRatings.accessibility, true),
+      divider(),
+      returnSpecificCriteria(
+          "Sweetness", this.widget.item.averageRatings.sweetness, false),
+      divider(),
+      returnSpecificCriteria(
+          "Saltiness", this.widget.item.averageRatings.saltiness, false),
+      divider(),
+      returnSpecificCriteria(
+          "Sourness", this.widget.item.averageRatings.sourness, false),
+      divider(),
+      returnSpecificCriteria(
+          "Spiciness", this.widget.item.averageRatings.spicyness, false),
+      Padding(
+        padding: const EdgeInsets.only(left: 16.0, top: 16),
+        child: Text("Rating Distribution",
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+      ),
+      Container(
+        height: 200,
+        child: PageView(
+          children: <Widget>[
+            distributionData("Overall", this.widget.item.averageRatings.overall,
+                this.widget.item),
+            distributionData("Snackability",
+                this.widget.item.averageRatings.snackability, this.widget.item),
+            distributionData("Mouthfeel",
+                this.widget.item.averageRatings.mouthfeel, this.widget.item),
+            distributionData(
+                "Accessibility",
+                this.widget.item.averageRatings.accessibility,
+                this.widget.item),
+          ],
         ),
-        Padding(
-            padding: const EdgeInsets.only(left: 24.0),
-            child: Text("CRITERIA",
-                style: TextStyle(fontSize: 14, color: Colors.grey[600]))),
-        divider(),
-        returnSpecificCriteria(
-            "Snackability", this.widget.item.averageRatings.snackability, true),
-        divider(),
-        returnSpecificCriteria(
-            "Mouthfeel", this.widget.item.averageRatings.mouthfeel, true),
-        divider(),
-        returnSpecificCriteria("Accessibility",
-            this.widget.item.averageRatings.accessibility, true),
-        divider(),
-        returnSpecificCriteria(
-            "Sweetness", this.widget.item.averageRatings.sweetness, false),
-        divider(),
-        returnSpecificCriteria(
-            "Saltiness", this.widget.item.averageRatings.saltiness, false),
-        divider(),
-        returnSpecificCriteria(
-            "Sourness", this.widget.item.averageRatings.sourness, false),
-        divider(),
-        returnSpecificCriteria(
-            "Spiciness", this.widget.item.averageRatings.spicyness, false),
-      ],
-    );
+      ),
+    ]);
   }
 
   Widget divider() {
@@ -339,5 +369,142 @@ class _ProductPageState extends State<ProductPage> {
             ])),
       ]),
     );
+  }
+
+  Widget distributionData(String title, double data, SnackItem snack) {
+    return Padding(
+        padding: const EdgeInsets.only(left: 20.0, right: 16.0, top: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title,
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    children: [
+                      Text(data.toStringAsFixed(1),
+                          style: TextStyle(fontSize: 48)),
+                      SmoothStarRating(
+                          allowHalfRating: true,
+                          starCount: 5,
+                          rating: data,
+                          size: 16,
+                          isReadOnly: true,
+                          filledIconData: Icons.star_rounded,
+                          halfFilledIconData: Icons.star_half_rounded,
+                          defaultIconData: Icons.star_outline_rounded,
+                          color: SnaxColors.redAccent,
+                          borderColor: SnaxColors.redAccent,
+                          spacing: 0.0)
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      LinearPercentIndicator(
+                        leading: Text("5",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600)),
+                        width: 250.0,
+                        lineHeight: 10.0,
+                        percent: .6,
+                        progressColor: SnaxColors.redAccent,
+                        backgroundColor: isDark(context)
+                            ? Colors.grey[800]
+                            : Colors.grey[200],
+                        animation: true,
+                        animationDuration: 750,
+                      ),
+                      LinearPercentIndicator(
+                        leading: Text("4",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600)),
+                        width: 250.0,
+                        lineHeight: 10.0,
+                        percent: .25,
+                        progressColor: SnaxColors.redAccent,
+                        backgroundColor: isDark(context)
+                            ? Colors.grey[800]
+                            : Colors.grey[200],
+                        animation: true,
+                        animationDuration: 750,
+                      ),
+                      LinearPercentIndicator(
+                        leading: Text("3",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600)),
+                        width: 250.0,
+                        lineHeight: 10.0,
+                        percent: .05,
+                        progressColor: SnaxColors.redAccent,
+                        backgroundColor: isDark(context)
+                            ? Colors.grey[800]
+                            : Colors.grey[200],
+                        animation: true,
+                        animationDuration: 750,
+                      ),
+                      LinearPercentIndicator(
+                        leading: Text("2",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600)),
+                        width: 250.0,
+                        lineHeight: 10.0,
+                        percent: .05,
+                        progressColor: SnaxColors.redAccent,
+                        backgroundColor: isDark(context)
+                            ? Colors.grey[800]
+                            : Colors.grey[200],
+                        animation: true,
+                        animationDuration: 750,
+                      ),
+                      LinearPercentIndicator(
+                        leading: Text("1",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600)),
+                        width: 250.0,
+                        lineHeight: 10.0,
+                        percent: .15,
+                        progressColor: SnaxColors.redAccent,
+                        backgroundColor: isDark(context)
+                            ? Colors.grey[800]
+                            : Colors.grey[200],
+                        animation: true,
+                        animationDuration: 750,
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            )
+          ],
+        ));
+  }
+
+  Widget distributionDataRow() {
+    return SmoothStarRating(
+        allowHalfRating: true,
+        starCount: 5,
+        rating: 4,
+        size: 20,
+        isReadOnly: true,
+        filledIconData: Icons.star_rounded,
+        halfFilledIconData: Icons.star_half_rounded,
+        defaultIconData: Icons.star_outline_rounded,
+        color: SnaxColors.redAccent,
+        borderColor: SnaxColors.redAccent,
+        spacing: 0.0);
   }
 }

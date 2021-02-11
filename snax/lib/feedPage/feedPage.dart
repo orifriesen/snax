@@ -8,6 +8,7 @@ import 'package:snax/feedPage/post.dart';
 import 'package:like_button/like_button.dart';
 import 'package:snax/feedPage/postDetailsPage.dart';
 import 'package:snax/helpers.dart';
+import 'package:snax/homePage/specificSnack.dart';
 import 'package:sup/sup.dart';
 
 import '../themes.dart';
@@ -245,9 +246,17 @@ Widget postWidget(BuildContext context, Post post,
                         padding: EdgeInsets.all(2),
                         height: 64,
                         width: 64,
-                        child: AspectRatio(
-                            aspectRatio: 1.0,
-                            child: Image.network(post.snack.image)),
+                        child: GestureDetector(
+                          onTap: () {
+                            //             Navigator.push(
+                            // context,
+                            // MaterialPageRoute(
+                            //     builder: (context) => ProductPage(item: post.snack.)));
+                          },
+                          child: AspectRatio(
+                              aspectRatio: 1.0,
+                              child: Image.network(post.snack.image)),
+                        ),
                       ),
                       Expanded(
                           child: Padding(

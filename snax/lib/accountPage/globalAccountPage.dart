@@ -120,7 +120,8 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                 setState(() {});
               },
               child: ListView(
-                physics: ClampingScrollPhysics(),
+                physics: AlwaysScrollableScrollPhysics(
+                    parent: ClampingScrollPhysics()),
                 children: [
                   Container(
                     decoration: BoxDecoration(
@@ -302,9 +303,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
             ),
           ),
         ),
-        SizedBox(
-          width: 10,
-        ),
+        SizedBox(width: 10),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -312,11 +311,9 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
               this.widget.user.name,
               style: TextStyle(fontSize: 20, color: Colors.white),
             ),
-            SizedBox(
-              height: 5,
-            ),
+            SizedBox(height: 5),
             Text(
-              this.widget.user.username,
+              "@" + this.widget.user.username,
               style: TextStyle(fontSize: 15, color: Colors.grey[300]),
             ),
           ],
@@ -327,8 +324,8 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
 
 //* This displays the users bio
   Widget _profileBio() {
-    final bioText = "${this.widget.user.bio}";
-    final numLines = '\n'.allMatches(bioText).length + 1;
+    final bioText = this.widget.user.bio;
+    final numLines = '\n'.allMatches(bioText ?? "").length + 1;
     var _maxLines = bioShowTextFlag ? 4 : 8;
     return Container(
       child: Padding(
@@ -340,11 +337,14 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          bioText,
-                          style: TextStyle(color: Colors.white, fontSize: 15),
-                          maxLines: _maxLines,
-                        ),
+                        (bioText != null)
+                            ? Text(
+                                bioText,
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 15),
+                                maxLines: _maxLines,
+                              )
+                            : Container(),
                         numLines >= 4
                             ? InkWell(
                                 onTap: () {
