@@ -83,15 +83,15 @@ void main() {
     //   }
     // });
 
-    SnaxBackend.searchUsers("esc").then((r) {
-      r.first.ratings().then((rs) {
-        rs.forEach((element) {
-          print(element.snack.name);
-          print(element.snack.image);
-          print(element.overall);
-        });
-      });
-    });
+    // SnaxBackend.searchUsers("esc").then((r) {
+    //   r.first.ratings().then((rs) {
+    //     rs.forEach((element) {
+    //       print(element.snack.name);
+    //       print(element.snack.image);
+    //       print(element.overall);
+    //     });
+    //   });
+    // });
 
     // SnaxBackend.feedLikePost("rlUXJBRe1MfKXI49Ux8M").then((_) {});
 
