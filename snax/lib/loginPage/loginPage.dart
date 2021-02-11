@@ -8,6 +8,8 @@ import 'package:snax/backend/backend.dart';
 
 import 'package:snax/helpers.dart';
 
+import '../themes.dart';
+
 /*
   Login Page
 
@@ -50,14 +52,21 @@ class _LoginPageState extends State<LoginPage> {
       extendBodyBehindAppBar: true,
       body: Stack(children: [
         Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: BoxDecoration(gradient: SnaxGradients.redBigThings),),
-            Container(
-            width: double.infinity,
-            height: double.infinity,
-            padding: EdgeInsets.only(bottom: 160),
-            child: Opacity(opacity:0.2,child: Image.asset("assets/login-splash-alt.jpg",fit: BoxFit.cover,)),),
+          width: double.infinity,
+          height: double.infinity,
+          decoration: BoxDecoration(gradient: getTheme(context).bigGradient()),
+        ),
+        Container(
+          width: double.infinity,
+          height: double.infinity,
+          padding: EdgeInsets.only(bottom: 160),
+          child: Opacity(
+              opacity: 0.2,
+              child: Image.asset(
+                "assets/login-splash-alt.jpg",
+                fit: BoxFit.cover,
+              )),
+        ),
         Container(
           child: Column(children: [
             Expanded(
@@ -68,9 +77,10 @@ class _LoginPageState extends State<LoginPage> {
             ),
             Container(
               decoration: BoxDecoration(
-                color: Theme.of(context).canvasColor,
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(29), topRight: Radius.circular(29))
-              ),
+                  color: Theme.of(context).canvasColor,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(29),
+                      topRight: Radius.circular(29))),
               child: Column(
                 children: [
                   Padding(
