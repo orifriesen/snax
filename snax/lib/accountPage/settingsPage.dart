@@ -27,7 +27,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: getTheme(context).appBarColor,
-        brightness: Brightness.dark,
+        brightness: getTheme(context).appBarBrightness(),
         elevation: 1,
         title: Text('Settings'),
       ),

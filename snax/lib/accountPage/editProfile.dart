@@ -43,11 +43,11 @@ class _EditProfileState extends State<EditProfile> {
         elevation: 0,
         backgroundColor: getTheme(context).gradientStart,
         leadingWidth: 90,
-        brightness: Brightness.dark,
+        brightness: getTheme(context).appBarBrightness(),
         leading: FlatButton(
             child: Text(
               'Cancel',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: getTheme(context).appBarContrastForText()),
             ),
             onPressed: () {
               Navigator.pop(context);
@@ -55,7 +55,7 @@ class _EditProfileState extends State<EditProfile> {
             shape: CircleBorder(side: BorderSide(color: Colors.transparent))),
         title: Text(
           'Edit Profile',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: getTheme(context).appBarContrastForText()),
         ),
         centerTitle: true,
         actions: [
@@ -69,7 +69,7 @@ class _EditProfileState extends State<EditProfile> {
             },
             child: Text(
               'Done',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: getTheme(context).appBarContrastForText()),
             ),
             shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
           ),
@@ -87,7 +87,7 @@ class _EditProfileState extends State<EditProfile> {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
-              end: Alignment.centerRight,
+              end: Alignment.bottomCenter,
               colors: [
                 getTheme(context).gradientStart,
                 getTheme(context).gradientEnd
@@ -103,7 +103,7 @@ class _EditProfileState extends State<EditProfile> {
                   child: InkWell(
                     child: Text(
                       'Change Profile Photo',
-                      style: TextStyle(fontSize: 15, color: Colors.white),
+                      style: TextStyle(fontSize: 15, color: getTheme(context).appBarContrastForText()),
                     ),
                     onTap: () => {
                       showModalBottomSheet(

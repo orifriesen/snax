@@ -33,7 +33,7 @@ class _PostDetailsPage extends State<PostDetailsPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         shadowColor: Colors.transparent,
-        brightness: Brightness.dark,
+        brightness: getTheme(context).appBarBrightness(),
       ),
       // appBar: AppBar(
       //   backgroundColor: Colors.transparent,

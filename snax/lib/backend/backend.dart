@@ -69,9 +69,23 @@ Future<void> initializeFirebase() async {
     }
   });
 
+  //Notifications (foreground)
+  fbMessaging.setForegroundNotificationPresentationOptions(
+      alert: true, sound: true);
+  FirebaseMessaging.onMessage.listen(handleNotification);
+  FirebaseMessaging.onBackgroundMessage(handleNotification);
+
   await Hive.initFlutter();
   //uncomment to show login screen on startup
   //navigatorKey.currentState.pushNamed("/login");
+}
+
+Future<void> handleNotification(RemoteMessage message) async {
+  print("🤠 got a notification! saving to the hive.");
+  var box = await Hive.openBox("notifications");
+  await box.add(message.data);
+  print(box.values);
+  await box.close();
 }
 
 //A user
@@ -100,6 +114,9 @@ class SnaxUser {
   SnaxUser(this.username, this.name, this.uid, this.bio, this.followerCount,
       this.followingCount,
       {this.photo, this.userIsFollowing = false});
+
+  Future<List<SnackUserRating>> ratings({int limit = 10}) =>
+      SnaxBackend.getRecentReviewsForUser(this, limit: limit);
 }
 
 class SnackSearchResultItem {
@@ -170,6 +187,15 @@ class SnackRating {
       this.spicyness);
 }
 
+// class SnackUserRatingSnackInfo {
+//     String name;
+//   String id;
+//   SnackItemType type;
+//   int upc;
+//   String image;
+//   String banner;
+// }
+
 //A snack rating that a user submitted, user data is attached
 class SnackUserRating {
   double overall;
@@ -180,9 +206,13 @@ class SnackUserRating {
   double sourness;
   double sweetness;
   double spicyness;
-  //TODO: add user item
+  //The attached data
+  SnackItem snack;
+  SnaxUser user;
 
   SnackUserRating(
+      this.user,
+      this.snack,
       this.overall,
       this.mouthfeel,
       this.accessibility,

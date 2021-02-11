@@ -35,6 +35,8 @@ class _ActivityPageState extends State<ActivityPage>
                   snap: true,
                   backgroundColor: Theme.of(context).canvasColor,
                   elevation: 0,
+                  brightness:
+                      isDark(context) ? Brightness.dark : Brightness.light,
                   centerTitle: true,
                   leadingWidth: double.infinity,
                   leading: Padding(
@@ -195,6 +197,7 @@ Widget followed(BuildContext context) {
                         color: SnaxColors.subtext))
               ])),
             ),
+            Container(width: 12),
             FlatButton(
               onPressed: () {},
               height: 30,
@@ -205,7 +208,9 @@ Widget followed(BuildContext context) {
               child: Text(
                 "Follow",
                 style: TextStyle(
-                  color: Colors.white,
+                  color: getTheme(context).accentColor.computeLuminance() < 0.5
+                      ? Colors.white
+                      : Colors.black,
                 ),
               ),
               color: getTheme(context).accentColor,

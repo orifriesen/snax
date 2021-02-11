@@ -5,6 +5,7 @@ import 'package:snax/feedPage/feedPage.dart';
 import 'package:snax/homePage/homePage.dart';
 import 'package:snax/activityPage/activityPage.dart';
 import 'package:snax/feedPage/makePostPage.dart';
+import 'package:snax/themes.dart';
 
 import 'helpers.dart';
 
@@ -45,6 +46,7 @@ class _AppTabsState extends State<AppTabs>
               FloatingActionButtonLocation.centerDocked,
           floatingActionButton: FloatingActionButton(
             child: const Icon(Icons.add),
+foregroundColor: getTheme(context).accentContrastForText(),
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => MakePostPage(),

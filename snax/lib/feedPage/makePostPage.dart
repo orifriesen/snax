@@ -40,7 +40,7 @@ class _MakePostPageState extends State<MakePostPage> {
         extendBodyBehindAppBar: true,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
-          brightness: Brightness.dark,
+          brightness: getTheme(context).appBarBrightness(),
           elevation: 0,
           actions: [
             TextButton(
@@ -60,7 +60,7 @@ class _MakePostPageState extends State<MakePostPage> {
                   Text(
                     "Post",
                     style: TextStyle(
-                        color: Colors.white,
+                        color: getTheme(context).appBarContrastForText(),
                         fontSize: 16.0,
                         fontWeight: FontWeight.bold),
                   ),
@@ -68,7 +68,7 @@ class _MakePostPageState extends State<MakePostPage> {
                     padding: const EdgeInsets.only(left: 8.0, right: 8),
                     child: Icon(
                       Icons.send_rounded,
-                      color: Colors.white,
+                      color: getTheme(context).appBarContrastForText(),
                     ),
                   ),
                 ],
@@ -101,7 +101,7 @@ class _MakePostPageState extends State<MakePostPage> {
                     style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 38,
-                        color: Colors.white),
+                        color: getTheme(context).appBarContrastForText(),),
                   ),
                 ),
               ),

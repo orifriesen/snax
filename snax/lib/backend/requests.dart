@@ -36,6 +36,10 @@ Map _snackTypes = {};
 
 enum SnackListSort { top, trending }
 
+//Use snackImageURLTemaplte.replace('#id#',id)
+final snackImageURLTemplate =
+    "https://firebasestorage.googleapis.com/v0/b/snax-dde4e.appspot.com/o/snacks%2F#id#.jpg?alt=media";
+
 extension SortRawStrings on SnackListSort {
   String get raw {
     switch (this) {
@@ -636,6 +640,66 @@ class SnaxBackend {
     return docs.isNotEmpty ? await _feedGrabRefs(docs) : [];
   }
 
+  static Future<List<SnackUserRating>> getRecentReviewsForUser(SnaxUser user,
+      {int limit = 10}) async {
+    await _waitWhile(() => (fbStore == null));
+    List<QueryDocumentSnapshot> docs = (await fbStore
+            .collectionGroup("ratings")
+            .where("user_id", isEqualTo: user.uid)
+            .orderBy("timestamp", descending: true)
+            .get())
+        .docs;
+    List<DocumentReference> snackRefs =
+        docs.map((element) => element.reference.parent.parent).toList();
+    //Get the snacks
+    List<QueryDocumentSnapshot> snackDocs = [];
+    (await Future.wait(partition(snackRefs, 10).map((e) => fbStore
+            .collection("snacks")
+            .where(FieldPath.documentId, whereIn: e.map((m) => m.id).toList())
+            .get())))
+        .forEach((element) {
+      snackDocs.addAll(element.docs);
+    });
+    //Return the data
+    return snackDocs
+        .asMap()
+        .entries
+        .map((e) => SnackUserRating(
+            user,
+            SnackItem(
+                e.value.data()["name"],
+                e.value.id,
+                SnackItemType(
+                    _snackTypes[
+                        (e.value.data()["type"] as DocumentReference).id],
+                    (e.value.data()["type"] as DocumentReference).id),
+                e.value.data()["upc"],
+                (e.value.data()["computed"] != null)
+                    ? SnackRating(
+                        toDouble(e.value.get("computed.score_overall")),
+                        toDouble(e.value.get("computed.score_mouthfeel")),
+                        toDouble(e.value.get("computed.score_accessibility")),
+                        toDouble(e.value.get("computed.score_snackability")),
+                        toDouble(e.value.get("computed.score_saltiness")),
+                        toDouble(e.value.get("computed.score_sourness")),
+                        toDouble(e.value.get("computed.score_sweetness")),
+                        toDouble(e.value.get("computed.score_spicyness")),
+                      )
+                    : null,
+                e.value.data()["computed_ratings"],
+                e.value.data()["computed_trend"],
+                snackImageURLTemplate.replaceFirst("#id#", e.value.id)),
+            toDouble(docs[e.key].get("ratings.score_overall")),
+            toDouble(docs[e.key].get("ratings.score_mouthfeel")),
+            toDouble(docs[e.key].get("ratings.score_accessibility")),
+            toDouble(docs[e.key].get("ratings.score_snackability")),
+            toDouble(docs[e.key].get("ratings.score_saltiness")),
+            toDouble(docs[e.key].get("ratings.score_sourness")),
+            toDouble(docs[e.key].get("ratings.score_sweetness")),
+            toDouble(docs[e.key].get("ratings.score_spicyness"))))
+        .toList();
+  }
+
   static Future<List<Comment>> feedGetComments(String postId) async {
     //Wait for firebase init
     await _waitWhile(() => (fbStore == null));
@@ -973,14 +1037,14 @@ class SnaxBackend {
     var doc = await fbStore.collection("users").doc(uid).get();
     print(doc.id);
     //Get the image
-     String imgUrl;
-        try {
-          imgUrl = await fbStorage
-              .ref()
-              .child("user-profiles")
-              .child(uid + ".jpg")
-              .getDownloadURL();
-        } catch (error) {}
+    String imgUrl;
+    try {
+      imgUrl = await fbStorage
+          .ref()
+          .child("user-profiles")
+          .child(uid + ".jpg")
+          .getDownloadURL();
+    } catch (error) {}
     //Get following list
     var followingBox = await Hive.openBox('user_following');
 
@@ -991,7 +1055,8 @@ class SnaxBackend {
         doc.data()["bio"],
         doc.data()["followerCount"],
         doc.data()["followingCount"],
-        userIsFollowing: followingBox.values.contains(doc.id),photo: imgUrl);
+        userIsFollowing: followingBox.values.contains(doc.id),
+        photo: imgUrl);
   }
 
   static Future<List<SnackSearchResultItem>> search(String query) async {
