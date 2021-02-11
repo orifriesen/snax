@@ -57,14 +57,18 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
         elevation: 0,
         backgroundColor: getTheme(context).gradientStart,
         brightness: Brightness.dark,
-        title: Text(this.widget.isAccountPage
-            ? "My Profile"
-            : "${this.widget.user.name}\'s Profile"),
+        title: Text(
+          this.widget.isAccountPage
+              ? "My Profile"
+              : "${this.widget.user.name}\'s Profile",
+          style: TextStyle(color: Colors.white),
+        ),
         actions: [
           //* Calls the settings pop up
           this.widget.isAccountPage
               ? IconButton(
                   icon: Icon(Icons.more_horiz_rounded),
+                  color: Colors.white,
                   onPressed: () => {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => SettingsPage()))

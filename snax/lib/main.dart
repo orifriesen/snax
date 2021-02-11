@@ -30,7 +30,6 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     themeUpdateStream.listen((_) {
       setState(() {});
-      print("stream update");
     });
 
     SharedPreferences.getInstance().then((prefs) {

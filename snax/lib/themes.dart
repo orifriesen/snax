@@ -36,11 +36,11 @@ final List<SnaxTheme> lightThemeList = [
   SnaxTheme(
       "green",
       "Kale",
-      HexColor.fromHex("6AD68B"),
-      HexColor.fromHex("6AD68B"),
-      HexColor.fromHex("38EF7D"),
-      HexColor.fromHex("56B28D"),
-      HexColor.fromHex("74E987")),
+      HexColor.fromHex("91C55D"),
+      HexColor.fromHex("91C55D"),
+      HexColor.fromHex("6CA944"),
+      HexColor.fromHex("B2DD73"),
+      HexColor.fromHex("6CA944")),
 ];
 
 final List<SnaxTheme> darkThemeList = [
