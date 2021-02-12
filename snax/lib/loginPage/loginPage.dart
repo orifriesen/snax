@@ -48,6 +48,7 @@ class _LoginPageState extends State<LoginPage> {
         brightness: Brightness.dark,
         backgroundColor: Colors.transparent,
         shadowColor: Colors.transparent,
+        iconTheme: IconThemeData(color: Colors.white),
       ),
       extendBodyBehindAppBar: true,
       body: Stack(children: [

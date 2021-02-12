@@ -11,7 +11,7 @@ class AboutPage extends StatelessWidget {
       appBar: AppBar(
         elevation: 0,
         brightness: getTheme(context).appBarBrightness(),
-        title: Text("About"),
+        title: Text("About", style: TextStyle(color: getTheme(context).appBarContrastForText())),
       ),
       body: ListView(
         physics: ClampingScrollPhysics(),
