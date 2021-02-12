@@ -10,6 +10,8 @@ class SnaxTheme {
   Color gradientStart;
   Color gradientEnd;
   Color appBarColor;
+  Color overrideTextColor;
+  Brightness overrideBrightness;
   LinearGradient bigGradient() => LinearGradient(
         colors: [gradientStart, gradientEnd],
         begin: Alignment(0, -0.5),
@@ -22,16 +24,23 @@ class SnaxTheme {
       );
 
   Color primaryContrastForText() =>
-      primaryColor.computeLuminance() > 0.5 ? Colors.black : Colors.white;
+      overrideTextColor ??
+      (primaryColor.computeLuminance() > 0.5 ? Colors.black : Colors.white);
   Color accentContrastForText() =>
-      accentColor.computeLuminance() > 0.5 ? Colors.black : Colors.white;
+      overrideTextColor ??
+      (accentColor.computeLuminance() > 0.5 ? Colors.black : Colors.white);
   Color appBarContrastForText() =>
-      appBarColor.computeLuminance() > 0.5 ? Colors.black : Colors.white;
+      overrideTextColor ??
+      (appBarColor.computeLuminance() > 0.5 ? Colors.black : Colors.white);
   Brightness appBarBrightness() =>
-      appBarColor.computeLuminance() < 0.5 ? Brightness.dark : Brightness.light;
+      overrideBrightness ??
+      (appBarColor.computeLuminance() < 0.5
+          ? Brightness.dark
+          : Brightness.light);
 
   SnaxTheme(this.id, this.name, this.primaryColor, this.accentColor,
-      this.gradientStart, this.gradientEnd, this.appBarColor);
+      this.gradientStart, this.gradientEnd, this.appBarColor,
+      {this.overrideTextColor, this.overrideBrightness});
 }
 
 final List<SnaxTheme> lightThemeList = [
@@ -60,14 +69,15 @@ final List<SnaxTheme> lightThemeList = [
       HexColor.fromHex("B2DD73"),
       HexColor.fromHex("6CA944")),
   SnaxTheme(
-    "escher",
-    "Escher's Theme",
-    HexColor.fromHex("ee9ca7"),
-    HexColor.fromHex("ee9ca7"),
-    HexColor.fromHex("ee9ca7"),
-    HexColor.fromHex("ffdde1"),
-    HexColor.fromHex("F7BCC3"),
-  )
+      "escher",
+      "Escher's Theme",
+      HexColor.fromHex("ee9ca7"),
+      HexColor.fromHex("ee9ca7"),
+      HexColor.fromHex("ee9ca7"),
+      HexColor.fromHex("ffdde1"),
+      HexColor.fromHex("F7BCC3"),
+      overrideTextColor: Colors.white,
+      overrideBrightness: Brightness.dark)
 ];
 
 final List<SnaxTheme> darkThemeList = [
