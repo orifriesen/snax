@@ -216,7 +216,7 @@ class _ProductPageState extends State<ProductPage> {
               padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
               child: Row(
                 children: [
-                  Icon(Icons.star),
+                  Icon(Icons.star, color: getTheme(context).primaryContrastForText()),
                   Text("  Rate Snack ",
                       style: TextStyle(
                         color: getTheme(context).primaryContrastForText(),

@@ -29,7 +29,7 @@ class _UserListPageState extends State<UserListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(this.widget.pageTitle),
+        title: Text(this.widget.pageTitle, style: TextStyle(color: getTheme(context).appBarContrastForText())),
         brightness: getTheme(context).appBarBrightness(),
       ),
       body: FutureBuilder(

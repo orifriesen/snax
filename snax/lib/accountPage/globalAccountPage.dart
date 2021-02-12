@@ -78,7 +78,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
         brightness: getTheme(context).appBarBrightness(),
         title: Text(this.widget.isAccountPage
             ? "My Profile"
-            : "${this.widget.user.name}\'s Profile"),
+            : "${this.widget.user.name}\'s Profile", style: TextStyle(color: getTheme(context).appBarContrastForText(),)),
         actions: [
           //* Calls the settings pop up
           this.widget.isAccountPage

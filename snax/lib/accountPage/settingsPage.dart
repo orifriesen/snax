@@ -29,7 +29,7 @@ class _SettingsPageState extends State<SettingsPage> {
         backgroundColor: getTheme(context).appBarColor,
         brightness: getTheme(context).appBarBrightness(),
         elevation: 1,
-        title: Text('Settings'),
+        title: Text('Settings', style: TextStyle(color: getTheme(context).appBarContrastForText()),),
       ),
       bottomNavigationBar: BottomAppBar(
         elevation: 0,

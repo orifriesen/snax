@@ -80,6 +80,7 @@ class _MyAppState extends State<MyApp> {
                 CupertinoThemeData(primaryColor: currentDarkTheme.primaryColor),
             appBarTheme: AppBarTheme(
                 brightness: Brightness.light,
+                iconTheme: IconThemeData(color: currentLightTheme.appBarContrastForText()),
                 color: currentLightTheme.appBarColor)),
       ),
     );

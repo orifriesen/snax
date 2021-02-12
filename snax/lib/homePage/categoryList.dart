@@ -27,9 +27,9 @@ class _CategoryPage extends State<CategoryPage>
         extendBodyBehindAppBar: true,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
-          //brightness: Brightness.light,
+          brightness: getTheme(context).appBarBrightness(),
           elevation: 0,
-          title: Text(widget.item.type.name),
+          title: Text(widget.item.type.name, style: TextStyle(color: getTheme(context).appBarContrastForText())),
           actions: <Widget>[
             IconButton(
                 icon: Icon(Icons.search),
