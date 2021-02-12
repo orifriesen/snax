@@ -74,7 +74,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
       appBar: AppBar(
         elevation: 0,
         backgroundColor:
-            showAppBar ? getTheme(context).appBarColor : Colors.transparent,
+            (showAppBar || (SnaxBackend.currentUser == null && this.widget.isAccountPage)) ? getTheme(context).appBarColor : Colors.transparent,
         brightness: getTheme(context).appBarBrightness(),
         title: Text(this.widget.isAccountPage
             ? "My Profile"
@@ -84,7 +84,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
           this.widget.isAccountPage
               ? IconButton(
                   icon: Icon(Icons.more_horiz_rounded),
-                  color: Colors.white,
+                  color: getTheme(context).appBarContrastForText(),
                   onPressed: () => {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => SettingsPage()))
@@ -108,10 +108,10 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.login, color: Colors.white),
+                        Icon(Icons.login, color: getTheme(context).accentContrastForText()),
                         Padding(padding: EdgeInsets.only(left: 16)),
                         Text("Sign In",
-                            style: TextStyle(fontSize: 15, color: Colors.white))
+                            style: TextStyle(fontSize: 15, color: getTheme(context).accentContrastForText()))
                       ],
                     ),
                   ),
