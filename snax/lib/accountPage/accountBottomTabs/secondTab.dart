@@ -44,7 +44,7 @@ class _ReviewedTabState extends State<ReviewedTab> {
                 padding: EdgeInsets.only(top: 16),
                 itemBuilder: (context, index) {
                   SnackUserRating ratings = rating[index];
-                  return reviewCards(ratings);
+                  return reviewedCards(ratings);
                 },
               )
             : Padding(
@@ -66,7 +66,7 @@ class _ReviewedTabState extends State<ReviewedTab> {
           );
   }
 
-  Widget reviewCards(SnackUserRating ratings) {
+  Widget reviewedCards(SnackUserRating ratings) {
     return GestureDetector(
       onTap: () {
         openSpecificSnack(ratings);

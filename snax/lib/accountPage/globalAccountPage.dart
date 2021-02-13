@@ -331,17 +331,19 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
           padding: const EdgeInsets.all(8.0),
           child: Hero(
             tag: this.widget.transitionId ?? 'profile-photo',
-                      child: Container(
-                        width: 80,
-                        height: 80,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                        clipBehavior: Clip.hardEdge,
-                        child: (this.widget.user.photo != null)
-                                ? FadeInImage.assetNetwork(placeholder: "assets/blank_user.png",image: this.widget.user.photo)
-                                : Image.asset("assets/blank_user.png"),
-                      ),
+            child: Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+              ),
+              clipBehavior: Clip.hardEdge,
+              child: (this.widget.user.photo != null)
+                  ? FadeInImage.assetNetwork(
+                      placeholder: "assets/blank_user.png",
+                      image: this.widget.user.photo)
+                  : Image.asset("assets/blank_user.png"),
+            ),
           ),
         ),
         SizedBox(width: 10),
@@ -593,7 +595,6 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
 }
 
 class FutureGlobalAccountPage extends StatefulWidget {
-
   String uid;
   bool isFollowing;
   String transitionId;
@@ -601,16 +602,18 @@ class FutureGlobalAccountPage extends StatefulWidget {
   FutureGlobalAccountPage(this.uid, this.isFollowing, {this.transitionId});
 
   @override
-  _FutureGlobalAccountPageState createState() => _FutureGlobalAccountPageState();
+  _FutureGlobalAccountPageState createState() =>
+      _FutureGlobalAccountPageState();
 }
 
 class _FutureGlobalAccountPageState extends State<FutureGlobalAccountPage> {
-
   SnaxUser userObject;
 
   @override
   void initState() {
-    this.userObject = SnaxUser("", "", this.widget.uid, "", 0, 0, photo: userImageURL(this.widget.uid), userIsFollowing: this.widget.isFollowing);
+    this.userObject = SnaxUser("", "", this.widget.uid, "", 0, 0,
+        photo: userImageURL(this.widget.uid),
+        userIsFollowing: this.widget.isFollowing);
     super.initState();
 
     SnaxBackend.getUser(this.widget.uid).then((user) {
@@ -622,6 +625,9 @@ class _FutureGlobalAccountPageState extends State<FutureGlobalAccountPage> {
 
   @override
   Widget build(BuildContext context) {
-    return GlobalAccountPage(userObject, transitionId: this.widget.transitionId,);
+    return GlobalAccountPage(
+      userObject,
+      transitionId: this.widget.transitionId,
+    );
   }
 }

@@ -46,7 +46,7 @@ class _AppTabsState extends State<AppTabs>
               FloatingActionButtonLocation.centerDocked,
           floatingActionButton: FloatingActionButton(
             child: const Icon(Icons.add),
-foregroundColor: getTheme(context).accentContrastForText(),
+            foregroundColor: getTheme(context).accentContrastForText(),
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => MakePostPage(),
