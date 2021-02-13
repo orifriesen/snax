@@ -10,6 +10,8 @@ import 'package:snax/feedPage/post.dart';
 import 'package:intl/intl.dart';
 import 'package:snax/helpers.dart';
 
+import '../themes.dart';
+
 class PostDetailsPage extends StatefulWidget {
   final Post post;
   const PostDetailsPage({
@@ -31,7 +33,7 @@ class _PostDetailsPage extends State<PostDetailsPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         shadowColor: Colors.transparent,
-        brightness: Brightness.dark,
+        brightness: getTheme(context).appBarBrightness(),
       ),
       // appBar: AppBar(
       //   backgroundColor: Colors.transparent,
@@ -49,23 +51,11 @@ class _PostDetailsPage extends State<PostDetailsPage> {
                     width: double.infinity,
                   )),
               decoration: BoxDecoration(
-                  color: SnaxColors.redAccent,
-                  gradient: SnaxGradients.redBigThings,
+                  color: getTheme(context).accentColor,
+                  gradient: getTheme(context).bigGradient(),
                   borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(20),
                       bottomRight: Radius.circular(20)))),
-          // Padding(
-          //   padding: const EdgeInsets.only(top: 28, left: 8.0),
-          //   child: IconButton(
-          //       icon: Icon(
-          //         Icons.close_rounded,
-          //         color: Colors.white,
-          //       ),
-          //       iconSize: 28,
-          //       onPressed: () {
-          //         Navigator.pop(context);
-          //       }),
-          // ),
           SafeArea(
             bottom: false,
             child: Padding(
@@ -144,6 +134,24 @@ class _PostDetailsPage extends State<PostDetailsPage> {
                   //Text(comment.user.name),
                   Row(
                     children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 16.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    GlobalAccountPage(comment.user),
+                              ),
+                            );
+                          },
+                          child: CircleAvatar(
+                              backgroundImage: (comment.user.photo != null)
+                                  ? NetworkImage(comment.user.photo)
+                                  : AssetImage("assets/blank_user.png")),
+                        ),
+                      ),
                       Expanded(
                         child: RichText(
                             text: TextSpan(
@@ -221,7 +229,7 @@ class _PostDetailsPage extends State<PostDetailsPage> {
                 child: Center(
                     child: CircularProgressIndicator(
                         valueColor: new AlwaysStoppedAnimation<Color>(
-                            SnaxColors.redAccent))));
+                            getTheme(context).accentColor))));
         },
         future: post.getComments(),
       );

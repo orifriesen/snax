@@ -6,6 +6,7 @@ import 'package:snax/backend/backend.dart';
 import 'package:snax/backend/requests.dart';
 import 'package:snax/barcodeScanner/barcodeAddCode.dart';
 import 'package:snax/helpers.dart';
+import 'package:snax/themes.dart';
 
 class MakePostPage extends StatefulWidget {
   @override
@@ -29,13 +30,17 @@ class _MakePostPageState extends State<MakePostPage> {
 
   final prompt = postPrompt();
 
+  bool keyboardIsVisible() {
+    return !(MediaQuery.of(context).viewInsets.bottom == 0.0);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
-          brightness: Brightness.dark,
+          brightness: getTheme(context).appBarBrightness(),
           elevation: 0,
           actions: [
             TextButton(
@@ -55,7 +60,7 @@ class _MakePostPageState extends State<MakePostPage> {
                   Text(
                     "Post",
                     style: TextStyle(
-                        color: Colors.white,
+                        color: getTheme(context).appBarContrastForText(),
                         fontSize: 16.0,
                         fontWeight: FontWeight.bold),
                   ),
@@ -63,7 +68,7 @@ class _MakePostPageState extends State<MakePostPage> {
                     padding: const EdgeInsets.only(left: 8.0, right: 8),
                     child: Icon(
                       Icons.send_rounded,
-                      color: Colors.white,
+                      color: getTheme(context).appBarContrastForText(),
                     ),
                   ),
                 ],
@@ -73,6 +78,7 @@ class _MakePostPageState extends State<MakePostPage> {
         ),
         body: Stack(
           children: [
+            // Background Gradient
             Container(
                 child: SafeArea(
                     child: Container(
@@ -80,13 +86,33 @@ class _MakePostPageState extends State<MakePostPage> {
                 )),
                 height: 250,
                 decoration: BoxDecoration(
-                  //color: SnaxColors.redAccent,
-                  gradient: SnaxGradients.redBigThings,
+                  gradient: getTheme(context).bigGradient(),
                 )),
+            // Prompt Text
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 22, left: 18),
+                child: AnimatedOpacity(
+                  duration: Duration(milliseconds: 500),
+                  curve: Curves.decelerate,
+                  opacity: keyboardIsVisible() ? 0.0 : 1.0,
+                  child: Text(
+                    prompt,
+                    style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 38,
+                        color: getTheme(context).appBarContrastForText(),),
+                  ),
+                ),
+              ),
+            ),
+            // Post info card
             SafeArea(
               bottom: false,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 116),
+              child: AnimatedPadding(
+                duration: Duration(milliseconds: 500),
+                curve: Curves.decelerate,
+                padding: EdgeInsets.only(top: keyboardIsVisible() ? 28 : 116),
                 child: Container(
                   height: 1000,
                   decoration: BoxDecoration(
@@ -176,18 +202,6 @@ class _MakePostPageState extends State<MakePostPage> {
                 ),
               ),
             ),
-            SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 26, left: 18),
-                child: Text(
-                  prompt,
-                  style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 38,
-                      color: Colors.white),
-                ),
-              ),
-            )
           ],
         ));
   }

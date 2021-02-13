@@ -8,6 +8,8 @@ import 'package:snax/backend/requests.dart';
 import 'package:snax/helpers.dart';
 import 'package:sup/quick_sup.dart';
 
+import '../themes.dart';
+
 class UserListPage extends StatefulWidget {
   Future fetcher;
   String pageTitle;
@@ -27,8 +29,8 @@ class _UserListPageState extends State<UserListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(this.widget.pageTitle),
-        brightness: Brightness.dark,
+        title: Text(this.widget.pageTitle, style: TextStyle(color: getTheme(context).appBarContrastForText())),
+        brightness: getTheme(context).appBarBrightness(),
       ),
       body: FutureBuilder(
           future: this.widget.fetcher,
@@ -98,10 +100,10 @@ class _UserListPageState extends State<UserListPage> {
                                               .textTheme
                                               .bodyText1
                                               .color
-                                          : Colors.white)),
+                                          : getTheme(context).accentContrastForText())),
                               color: user.userIsFollowing
                                   ? Colors.transparent
-                                  : SnaxColors.redAccent,
+                                  : getTheme(context).accentColor,
                             )
                           : Container(child: Text("")),
                     );

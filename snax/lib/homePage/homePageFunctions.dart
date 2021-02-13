@@ -7,6 +7,7 @@ import 'package:snax/backend/backend.dart';
 import 'package:snax/homePage/specificSnack.dart';
 
 import '../helpers.dart';
+import '../themes.dart';
 
 Widget getHorizontalList(
     String titleText, BuildContext context, List<SnackItem> snackList) {
@@ -74,7 +75,14 @@ Widget getHorizontalList(
                                                             .banner !=
                                                         null)
                                                     ? Image.network(
-                                                        snackList[index].banner)
+                                                        snackList[index].banner,
+                                                        errorBuilder: (context,
+                                                                obj, stack) =>
+                                                            Image.asset(
+                                                          "assets/placeholderImage.jpg",
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      )
                                                     : Image.asset(
                                                         "assets/placeholderImage.jpg",
                                                         fit: BoxFit.cover,
@@ -154,11 +162,12 @@ Widget getHorizontalList(
                                                               .star_rounded,
                                                           halfFilledIconData: Icons
                                                               .star_half_rounded,
-                                                          color: SnaxColors
-                                                              .redAccent,
+                                                          color:
+                                                              getTheme(context)
+                                                                  .accentColor,
                                                           borderColor:
-                                                              SnaxColors
-                                                                  .redAccent,
+                                                              getTheme(context)
+                                                                  .accentColor,
                                                           spacing: 0.0),
                                                     ],
                                                   ),
@@ -193,7 +202,7 @@ Widget getHorizontalList(
                     child: Center(
                         child: CircularProgressIndicator(
                       valueColor: new AlwaysStoppedAnimation<Color>(
-                          SnaxColors.redAccent),
+                          getTheme(context).accentColor),
                     )),
                   )),
       )
@@ -222,8 +231,8 @@ Widget getMiniHorizontalList(
         ),
       ),
       SizedBox(
-        height: 220,
-        child: Padding(
+          height: 220,
+          child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: snackList != null
                 ? ListView.builder(
@@ -296,7 +305,8 @@ Widget getMiniHorizontalList(
                                                       )),
                                                 ),
                                                 Icon(Icons.star_rounded,
-                                                    color: SnaxColors.redAccent,
+                                                    color: getTheme(context)
+                                                        .accentColor,
                                                     size: 16)
                                               ],
                                             ),
@@ -325,12 +335,12 @@ Widget getMiniHorizontalList(
                     })
                 : Container(
                     child: Center(
-                        child: CircularProgressIndicator(
-                      valueColor: new AlwaysStoppedAnimation<Color>(
-                          SnaxColors.redAccent),
+                    child: CircularProgressIndicator(
+                        valueColor: new AlwaysStoppedAnimation<Color>(
+                      getTheme(context).accentColor,
                     )),
                   )),
-      )
+          ))
     ],
   );
 }
@@ -481,8 +491,9 @@ Widget getList(BuildContext context, List<SnackItem> snackList) {
                                                                 Icons
                                                                     .star_rounded,
                                                                 size: 26,
-                                                                color: SnaxColors
-                                                                    .redAccent)
+                                                                color: getTheme(
+                                                                        context)
+                                                                    .accentColor)
                                                           ],
                                                         ))
                                                   ],
@@ -503,8 +514,8 @@ Widget getList(BuildContext context, List<SnackItem> snackList) {
               : Container(
                   child: Center(
                       child: CircularProgressIndicator(
-                    valueColor:
-                        new AlwaysStoppedAnimation<Color>(SnaxColors.redAccent),
+                    valueColor: new AlwaysStoppedAnimation<Color>(
+                        getTheme(context).accentColor),
                   )),
                 )),
     ],
@@ -538,15 +549,21 @@ Widget snackOfTheWeek(BuildContext context, SnackItem snackItem) {
                     ]),
                 child: ClipRRect(
                     borderRadius: BorderRadius.circular(18),
-                    child: Image.network(snackItem.banner))),
+                    child: Image.network(
+                      snackItem.banner,
+                      errorBuilder: (context, obj, stack) => Image.asset(
+                        "assets/placeholderImage.jpg",
+                        fit: BoxFit.cover,
+                      ),
+                    ))),
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      SnaxColors.gradientStart.withAlpha(210),
-                      SnaxColors.gradientEnd.withAlpha(80)
+                      getTheme(context).gradientStart.withAlpha(210),
+                      getTheme(context).gradientEnd.withAlpha(80)
                     ]),
                 borderRadius: BorderRadius.circular(18),
               ),

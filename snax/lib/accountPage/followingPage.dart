@@ -5,6 +5,7 @@ import 'package:snax/accountPage/globalAccountPage.dart';
 import 'package:snax/backend/backend.dart';
 import 'package:snax/backend/requests.dart';
 import 'package:snax/helpers.dart';
+import 'package:snax/themes.dart';
 
 class FollowingPage extends StatefulWidget {
   SnaxUser user;
@@ -70,7 +71,7 @@ class _FollowingPageState extends State<FollowingPage> {
                     ),
                     color: this.isFollowing
                         ? Colors.transparent
-                        : SnaxColors.redAccent,
+                        : getTheme(context).accentColor,
                   ),
                 );
               },

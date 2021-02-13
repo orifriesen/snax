@@ -8,6 +8,7 @@ import 'package:image_cropper/image_cropper.dart';
 
 import 'package:snax/backend/requests.dart';
 import 'package:snax/helpers.dart';
+import 'package:snax/themes.dart';
 
 class EditProfile extends StatefulWidget {
   @override
@@ -75,13 +76,14 @@ class _EditProfileState extends State<EditProfile> {
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: SnaxColors.gradientStart,
+        backgroundColor: getTheme(context).gradientStart,
         leadingWidth: 90,
-        brightness: Brightness.dark,
+        brightness: getTheme(context).appBarBrightness(),
         leading: FlatButton(
             child: Text(
               'Cancel',
-              style: TextStyle(color: Colors.white),
+              style:
+                  TextStyle(color: getTheme(context).appBarContrastForText()),
             ),
             onPressed: () {
               Navigator.pop(context);
@@ -89,7 +91,7 @@ class _EditProfileState extends State<EditProfile> {
             shape: CircleBorder(side: BorderSide(color: Colors.transparent))),
         title: Text(
           'Edit Profile',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: getTheme(context).appBarContrastForText()),
         ),
         centerTitle: true,
         actions: [
@@ -101,9 +103,11 @@ class _EditProfileState extends State<EditProfile> {
                   bio: bioController.text.trim());
               Navigator.pop(context);
             },
-            child: Text('Done',
-                style: TextStyle(
-                    color: Colors.white, fontWeight: FontWeight.bold)),
+            child: Text(
+              'Done',
+              style:
+                  TextStyle(color: getTheme(context).appBarContrastForText()),
+            ),
             shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
           ),
         ],
@@ -120,8 +124,11 @@ class _EditProfileState extends State<EditProfile> {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
-              end: Alignment.center,
-              colors: [SnaxColors.gradientStart, SnaxColors.gradientEnd],
+              end: Alignment.bottomCenter,
+              colors: [
+                getTheme(context).gradientStart,
+                getTheme(context).gradientEnd
+              ],
             ),
           ),
           child: Column(
@@ -133,7 +140,9 @@ class _EditProfileState extends State<EditProfile> {
                   child: InkWell(
                     child: Text(
                       'Change Profile Photo',
-                      style: TextStyle(fontSize: 15, color: Colors.white),
+                      style: TextStyle(
+                          fontSize: 15,
+                          color: getTheme(context).appBarContrastForText()),
                     ),
                     onTap: () => {
                       showModalBottomSheet(

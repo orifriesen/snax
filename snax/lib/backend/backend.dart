@@ -69,9 +69,23 @@ Future<void> initializeFirebase() async {
     }
   });
 
+  //Notifications (foreground)
+  fbMessaging.setForegroundNotificationPresentationOptions(
+      alert: true, sound: true);
+  FirebaseMessaging.onMessage.listen(handleNotification);
+  FirebaseMessaging.onBackgroundMessage(handleNotification);
+
   await Hive.initFlutter();
   //uncomment to show login screen on startup
   //navigatorKey.currentState.pushNamed("/login");
+}
+
+Future<void> handleNotification(RemoteMessage message) async {
+  print("🤠 got a notification! saving to the hive.");
+  var box = await Hive.openBox("notifications");
+  await box.add(message.data);
+  print(box.values);
+  await box.close();
 }
 
 //A user
@@ -101,7 +115,8 @@ class SnaxUser {
       this.followingCount,
       {this.photo, this.userIsFollowing = false});
 
-  Future<List<SnackUserRating>> ratings({ int limit = 10 }) => SnaxBackend.getRecentReviewsForUser(this,limit: limit);
+  Future<List<SnackUserRating>> ratings({int limit = 10}) =>
+      SnaxBackend.getRecentReviewsForUser(this, limit: limit);
 }
 
 class SnackSearchResultItem {
@@ -146,6 +161,10 @@ class SnackItem {
   SnackItem(this.name, this.id, this.type, this.upc, this.averageRatings,
       this.numberOfRatings, this.numberOfRatingsThisWeek, this.image,
       {this.banner}) {
+    this.transitionId = getRandomString(10);
+  }
+
+  void resetTransitionId() {
     this.transitionId = getRandomString(10);
   }
 }
@@ -196,8 +215,8 @@ class SnackUserRating {
   SnaxUser user;
 
   SnackUserRating(
-    this.user,
-    this.snack,
+      this.user,
+      this.snack,
       this.overall,
       this.mouthfeel,
       this.accessibility,

@@ -7,6 +7,7 @@ import 'package:snax/backend/backend.dart';
 import 'package:snax/backend/requests.dart';
 
 import '../helpers.dart';
+import '../themes.dart';
 import 'homePageFunctions.dart';
 
 class MainPage extends StatefulWidget {
@@ -27,63 +28,73 @@ class _MainPageState extends State<MainPage>
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxIsScrolled) {
                   return <Widget>[
-                    new SliverAppBar(
-                      /*flexibleSpace: Container(
-                          decoration: BoxDecoration(
-                              gradient: SnaxGradients.redBigThings),
-                        ),*/
-                      elevation: 2,
-                      backgroundColor: Theme.of(context).canvasColor,
-                      title: Text("SNAX",
-                          style: TextStyle(color: SnaxColors.redAccent)),
-                      floating: true,
-                      pinned: true,
-                      snap: true,
-                      bottom: TabBar(
-                        isScrollable: true,
-                        unselectedLabelColor: SnaxColors.redAccent,
-                        indicatorSize: TabBarIndicatorSize.tab,
-                        indicator: BoxDecoration(
-                            gradient: SnaxGradients.redBigThings,
-                            borderRadius: BorderRadius.all(Radius.circular(50)),
-                            color: Colors.redAccent),
-                        labelStyle: TextStyle(fontSize: 18),
-                        tabs: [
-                          Container(width: 80, child: Tab(text: "For You")),
-                          Container(width: 80, child: Tab(text: "Trending")),
-                          Container(width: 80, child: Tab(text: "Top"))
+                    Theme(
+                      data: ThemeData(
+                          highlightColor: Colors.transparent,
+                          splashColor: Colors.transparent),
+                      child: new SliverAppBar(
+                        brightness: isDark(context) ? Brightness.dark : Brightness.light,
+                        /*flexibleSpace: Container(
+                            decoration: BoxDecoration(
+                                gradient: SnaxGradients.redBigThings),
+                          ),*/
+                        elevation: 2,
+                        backgroundColor: Theme.of(context).canvasColor,
+                        //title: Text("SNAX", style: TextStyle(color: getTheme(context).accentColor)),
+                        title: Image.asset("assets/snax.png",height: 19,color: getTheme(context).accentColor,),
+                        centerTitle: false,
+                        floating: true,
+                        pinned: true,
+                        snap: true,
+                        bottom: TabBar(
+                          isScrollable: true,
+                          unselectedLabelColor: getTheme(context).accentColor,
+                          indicatorSize: TabBarIndicatorSize.tab,
+                          indicator: BoxDecoration(
+                              //gradient: getTheme(context).littleGradient(),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(50)),
+                              color: getTheme(context).primaryColor,
+                          ),
+                          labelStyle: TextStyle(fontSize: 18),
+                          labelColor: getTheme(context).primaryContrastForText(),
+                          tabs: [
+                            Container(width: 80, child: Tab(text: "For You")),
+                            Container(width: 80, child: Tab(text: "Trending")),
+                            Container(width: 80, child: Tab(text: "Top"))
+                          ],
+                        ),
+                        actions: <Widget>[
+                          IconButton(
+                              icon: Icon(Icons.search),
+                              color: getTheme(context).accentColor,
+                              onPressed: () {
+                                showSearch(
+                                    context: context,
+                                    delegate: BarcodeAddSearch(
+                                        (SnackSearchResultItem
+                                            returnSnack) async {
+                                      chosenSnack = await SnaxBackend.getSnack(
+                                          returnSnack.id);
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => ProductPage(
+                                                  item: chosenSnack)));
+                                    }, showCards: false, showUsers: true));
+                              }),
+                          IconButton(
+                              icon: Icon(Icons.qr_code_scanner),
+                              color: getTheme(context).accentColor,
+                              onPressed: () {
+                                //Present Widget
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        BarcodeScannerPage()));
+                              })
                         ],
+                        
                       ),
-                      actions: <Widget>[
-                        IconButton(
-                            icon: Icon(Icons.search),
-                            color: SnaxColors.redAccent,
-                            onPressed: () {
-                              showSearch(
-                                  context: context,
-                                  delegate: BarcodeAddSearch(
-                                      (SnackSearchResultItem
-                                          returnSnack) async {
-                                    chosenSnack = await SnaxBackend.getSnack(
-                                        returnSnack.id);
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => ProductPage(
-                                                item: chosenSnack)));
-                                  }, showCards: false, showUsers: true));
-                            }),
-                        IconButton(
-                            icon: Icon(Icons.qr_code_scanner),
-                            color: SnaxColors.redAccent,
-                            onPressed: () {
-                              //Present Widget
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      BarcodeScannerPage()));
-                            })
-                      ],
-                      centerTitle: true,
                     ),
                   ];
                 },

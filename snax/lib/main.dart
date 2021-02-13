@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:snax/feedPage/demoValues.dart';
 import 'package:snax/loginPage/loginPage.dart';
 import 'package:snax/tabs.dart';
+import 'package:snax/themes.dart';
 import 'backend/backend.dart';
 import 'backend/requests.dart';
 import 'package:snax/helpers.dart';
@@ -12,13 +16,47 @@ import 'package:flutter_phoenix/flutter_phoenix.dart';
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
 BuildContext globalContext;
+StreamController<void> themeUpdate = StreamController<void>();
+Stream themeUpdateStream = themeUpdate.stream;
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    themeUpdateStream.listen((_) {
+      setState(() {});
+    });
+
+    SharedPreferences.getInstance().then((prefs) {
+      if (prefs.containsKey("dark-theme"))
+        currentDarkTheme = darkThemeList
+            .firstWhere((t) => t.id == prefs.getString("dark-theme"));
+      if (prefs.containsKey("light-theme"))
+        currentLightTheme = lightThemeList
+            .firstWhere((t) => t.id == prefs.getString("light-theme"));
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     globalContext = context;
-    return Phoenix(
+    return GestureDetector(
+      onTap: () {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+        print("tapped");
+        if (!currentFocus.hasPrimaryFocus &&
+            currentFocus.focusedChild != null) {
+          FocusManager.instance.primaryFocus.unfocus();
+        }
+      },
       child: MaterialApp(
+        key: Key("app"),
         navigatorKey: navigatorKey,
         routes: {
           //Route the app will stay in most of the time
@@ -29,25 +67,27 @@ class MyApp extends StatelessWidget {
         initialRoute: "/",
         darkTheme: ThemeData(
             canvasColor: HexColor.fromHex("252525"),
-            primaryColor: SnaxColors.redAccent,
-            accentColor: SnaxColors.redAccent,
-            cursorColor: SnaxColors.redAccent,
+            primaryColor: currentDarkTheme.primaryColor,
+            accentColor: currentDarkTheme.accentColor,
             brightness: ThemeData.dark().brightness,
-            appBarTheme: AppBarTheme(color: SnaxColors.redAppBarColor),
-            cupertinoOverrideTheme:
-                CupertinoThemeData(primaryColor: SnaxColors.redAccent)),
+            appBarTheme: AppBarTheme(color: currentDarkTheme.appBarColor),
+            cupertinoOverrideTheme: CupertinoThemeData(
+                primaryColor: currentDarkTheme.primaryColor)),
         theme: ThemeData(
-            primaryColor: SnaxColors.redAccent,
-            accentColor: SnaxColors.redAccent,
+            primaryColor: currentLightTheme.primaryColor,
+            accentColor: currentLightTheme.accentColor,
             cupertinoOverrideTheme:
-                CupertinoThemeData(primaryColor: SnaxColors.redAccent),
-            appBarTheme: AppBarTheme(brightness: Brightness.light, color: SnaxColors.redAppBarColor)),
+                CupertinoThemeData(primaryColor: currentDarkTheme.primaryColor),
+            appBarTheme: AppBarTheme(
+                brightness: Brightness.light,
+                iconTheme: IconThemeData(color: currentLightTheme.appBarContrastForText()),
+                color: currentLightTheme.appBarColor)),
       ),
     );
   }
 }
 
-void main() {
+void main() async {
   runApp(MyApp());
 
   //Initialize Firebase synchronously (has to happen after runApp)
@@ -83,15 +123,15 @@ void main() {
     //   }
     // });
 
-    SnaxBackend.searchUsers("esc").then((r) {
-      r.first.ratings().then((rs) {
-        rs.forEach((element) {
-          print(element.snack.name);
-          print(element.snack.image);
-          print(element.overall);
-        });
-      });
-    });
+    // SnaxBackend.searchUsers("esc").then((r) {
+    //   r.first.ratings().then((rs) {
+    //     rs.forEach((element) {
+    //       print(element.snack.name);
+    //       print(element.snack.image);
+    //       print(element.overall);
+    //     });
+    //   });
+    // });
 
     // SnaxBackend.feedLikePost("rlUXJBRe1MfKXI49Ux8M").then((_) {});
 

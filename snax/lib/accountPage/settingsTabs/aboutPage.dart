@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 
 import 'package:snax/customIcons/instagram_icons.dart';
-import 'package:snax/helpers.dart';
+import 'package:snax/themes.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../../helpers.dart';
 
 class AboutPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          "About",
-          style:
-              TextStyle(color: isDark(context) ? Colors.white : Colors.black),
-        ),
+        title: Text("About",
+            style: TextStyle(color: getTheme(context).appBarContrastForText())),
         leading: FlatButton(
           child: Icon(
             Icons.arrow_back_ios,
@@ -24,7 +23,7 @@ class AboutPage extends StatelessWidget {
           },
         ),
         elevation: 0,
-        backgroundColor: Colors.transparent,
+        brightness: getTheme(context).appBarBrightness(),
       ),
       body: ListView(
         physics: ClampingScrollPhysics(),

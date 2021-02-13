@@ -43,6 +43,7 @@ dependencies:
   flutter_phoenix: ^0.1.0
   sup: ^1.1.1
   quiver: ^2.1.5
+  dots_indicator: ^1.2.0
 
   # firebase dependancies (1% chance of breaking everything)
   firebase_core: ^0.7.0
@@ -89,6 +90,7 @@ flutter:
     - assets/snax-chip.png
     - assets/Artboard.jpeg
     - assets/blank_user.png
+    - assets/snax.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

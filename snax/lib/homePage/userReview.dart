@@ -12,6 +12,8 @@ import 'package:snax/customIcons/sourness_icons.dart';
 import 'package:snax/customIcons/spiciness_icons.dart';
 import 'package:snax/helpers.dart';
 
+import '../themes.dart';
+
 class UserReviewPage extends StatefulWidget {
   UserReviewPage(this.snackID, this.item);
   String snackID;
@@ -44,6 +46,7 @@ class _UserReviewPageState extends State<UserReviewPage> {
           elevation: 0,
           backgroundColor: Theme.of(context).canvasColor,
           centerTitle: true,
+          brightness: isDark(context) ? Brightness.dark : Brightness.light,
           title: Text(
             'Review Snack',
             style: TextStyle(
@@ -776,11 +779,11 @@ class _UserReviewPageState extends State<UserReviewPage> {
       ratingWidget: RatingWidget(
         full: Icon(
           Icons.star,
-          color: SnaxColors.redAccent,
+          color: getTheme(context).accentColor,
         ),
         empty: Icon(
           Icons.star_outline,
-          color: SnaxColors.redAccent,
+          color: getTheme(context).accentColor,
         ),
         half: null,
       ),
@@ -801,11 +804,11 @@ class _UserReviewPageState extends State<UserReviewPage> {
       ratingWidget: RatingWidget(
         full: Icon(
           Icons.star,
-          color: SnaxColors.redAccent,
+          color: getTheme(context).accentColor,
         ),
         empty: Icon(
           Icons.star_outline,
-          color: SnaxColors.redAccent,
+          color: getTheme(context).accentColor,
         ),
         half: null,
       ),
@@ -826,11 +829,11 @@ class _UserReviewPageState extends State<UserReviewPage> {
       ratingWidget: RatingWidget(
         full: Icon(
           Icons.star,
-          color: SnaxColors.redAccent,
+          color: getTheme(context).accentColor,
         ),
         empty: Icon(
           Icons.star_outline,
-          color: SnaxColors.redAccent,
+          color: getTheme(context).accentColor,
         ),
         half: null,
       ),
@@ -851,11 +854,11 @@ class _UserReviewPageState extends State<UserReviewPage> {
       ratingWidget: RatingWidget(
         full: Icon(
           Icons.star,
-          color: SnaxColors.redAccent,
+          color: getTheme(context).accentColor,
         ),
         empty: Icon(
           Icons.star_outline,
-          color: SnaxColors.redAccent,
+          color: getTheme(context).accentColor,
         ),
         half: null,
       ),
@@ -882,7 +885,7 @@ class _UserReviewPageState extends State<UserReviewPage> {
               overlayColor: Colors.transparent,
               trackHeight: 10.0,
               thumbColor: Colors.white,
-              activeTrackColor: SnaxColors.redAccent,
+              activeTrackColor: getTheme(context).accentColor,
               inactiveTrackColor: Colors.grey[350],
             ),
             child: Slider(
@@ -922,7 +925,7 @@ class _UserReviewPageState extends State<UserReviewPage> {
                 overlayColor: Colors.transparent,
                 trackHeight: 10.0,
                 thumbColor: Colors.white,
-                activeTrackColor: SnaxColors.redAccent,
+                activeTrackColor: getTheme(context).accentColor,
                 inactiveTrackColor: Colors.grey[350],
               ),
               child: Slider(
@@ -963,7 +966,7 @@ class _UserReviewPageState extends State<UserReviewPage> {
                 overlayColor: Colors.transparent,
                 trackHeight: 10.0,
                 thumbColor: Colors.white,
-                activeTrackColor: SnaxColors.redAccent,
+                activeTrackColor: getTheme(context).accentColor,
                 inactiveTrackColor: Colors.grey[350],
               ),
               child: Slider(
@@ -1004,7 +1007,7 @@ class _UserReviewPageState extends State<UserReviewPage> {
                 overlayColor: Colors.transparent,
                 trackHeight: 10.0,
                 thumbColor: Colors.white,
-                activeTrackColor: SnaxColors.redAccent,
+                activeTrackColor: getTheme(context).accentColor,
                 inactiveTrackColor: Colors.grey[350],
               ),
               child: Slider(

@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:snax/accountPage/editProfile.dart';
 import 'package:snax/accountPage/userListPage.dart';
 import 'package:snax/accountPage/settingsPage.dart';
+import 'package:snax/backend/backend.dart';
+import 'package:snax/themes.dart';
 
 import 'accountBottomTabs/postTab.dart';
 import 'accountBottomTabs/secondTab.dart';
@@ -29,12 +31,11 @@ class GlobalAccountPage extends StatefulWidget {
 
 class _GlobalAccountPageState extends State<GlobalAccountPage>
     with TickerProviderStateMixin {
-  Color burningOrangeStart = const Color.fromRGBO(255, 65, 108, 1.0);
-  Color burningOrangeEnd = const Color.fromRGBO(255, 75, 43, 1.0);
-
   bool bioShowTextFlag = true;
 
   TabController _tabController;
+  ScrollController _scrollController;
+  bool showAppBar = false;
 
   @override
   void initState() {
@@ -42,7 +43,21 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
     _tabController = TabController(vsync: this, length: 2, initialIndex: 0);
     _tabController.addListener(handleTabSelection);
 
-    this.isFollowing = this.widget.user.userIsFollowing;
+    //this.isFollowing = this.widget.user.userIsFollowing;
+
+    this._scrollController = ScrollController()
+      ..addListener(() {
+        var height = MediaQuery.of(context).padding.top;
+        if (_scrollController.offset > height && showAppBar == false) {
+          setState(() {
+            showAppBar = true;
+          });
+        } else if (_scrollController.offset <= height && showAppBar == true) {
+          setState(() {
+            showAppBar = false;
+          });
+        }
+      });
   }
 
   handleTabSelection() {
@@ -56,18 +71,28 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      extendBody: true,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: burningOrangeEnd,
-        brightness: Brightness.dark,
-        title: Text(this.widget.isAccountPage
-            ? "My Profile"
-            : "${this.widget.user.name}\'s Profile"),
+        backgroundColor: (showAppBar ||
+                (SnaxBackend.currentUser == null && this.widget.isAccountPage))
+            ? getTheme(context).appBarColor
+            : Colors.transparent,
+        brightness: getTheme(context).appBarBrightness(),
+        title: Text(
+            this.widget.isAccountPage
+                ? "My Profile"
+                : "${this.widget.user.name}\'s Profile",
+            style: TextStyle(
+              color: getTheme(context).appBarContrastForText(),
+            )),
         actions: [
           //* Calls the settings pop up
           this.widget.isAccountPage
               ? IconButton(
                   icon: Icon(Icons.more_horiz_rounded),
+                  color: getTheme(context).appBarContrastForText(),
                   onPressed: () => {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => SettingsPage()))
@@ -91,16 +116,20 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.login, color: Colors.white),
+                        Icon(Icons.login,
+                            color: getTheme(context).accentContrastForText()),
                         Padding(padding: EdgeInsets.only(left: 16)),
                         Text("Sign In",
-                            style: TextStyle(fontSize: 15, color: Colors.white))
+                            style: TextStyle(
+                                fontSize: 15,
+                                color:
+                                    getTheme(context).accentContrastForText()))
                       ],
                     ),
                   ),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(32)),
-                  color: SnaxColors.redAccent,
+                  color: getTheme(context).accentColor,
                   onPressed: () {
                     SnaxBackend.auth.loginIfNotAlready().then((_) {
                       if (this.widget.isAccountPage)
@@ -123,6 +152,8 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                 setState(() {});
               },
               child: ListView(
+                padding: EdgeInsets.zero,
+                controller: _scrollController,
                 physics: AlwaysScrollableScrollPhysics(
                     parent: ClampingScrollPhysics()),
                 children: [
@@ -136,28 +167,25 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                         borderRadius: BorderRadius.only(
                             bottomLeft: Radius.circular(40),
                             bottomRight: Radius.circular(40)),
-                        gradient: LinearGradient(
-                          begin: Alignment.center,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            SnaxColors.gradientStart,
-                            SnaxColors.gradientEnd
-                          ],
-                        )),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        width: double.infinity,
-                        child: Column(
-                          children: [
-                            _profileInfo(),
-                            SizedBox(height: 10),
-                            Container(
-                                alignment: Alignment.centerLeft,
-                                child: _profileBio()),
-                            SizedBox(height: 10),
-                            _profileStats(),
-                          ],
+                        gradient: getTheme(context).bigGradient()),
+                    child: SafeArea(
+                      top: true,
+                      bottom: false,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          width: double.infinity,
+                          child: Column(
+                            children: [
+                              _profileInfo(),
+                              SizedBox(height: 10),
+                              Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: _profileBio()),
+                              SizedBox(height: 10),
+                              _profileStats(),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -167,7 +195,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                     padding: const EdgeInsets.only(left: 16.0, right: 16),
                     child: TabBar(
                       controller: _tabController,
-                      indicatorColor: SnaxColors.redAccent,
+                      indicatorColor: getTheme(context).accentColor,
                       labelColor:
                           !isDark(context) ? Colors.black : Colors.white,
                       unselectedLabelColor: Colors.grey,
@@ -207,7 +235,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
               ),
               Text(
                 'Report',
-                style: TextStyle(color: SnaxColors.redAccent),
+                style: TextStyle(color: getTheme(context).accentColor),
               )
             ],
           ),
@@ -315,12 +343,19 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
           children: [
             Text(
               this.widget.user.name,
-              style: TextStyle(fontSize: 20, color: Colors.white),
+              style: TextStyle(
+                  fontSize: 20,
+                  color: getTheme(context).appBarContrastForText()),
             ),
             SizedBox(height: 5),
             Text(
               "@" + this.widget.user.username,
-              style: TextStyle(fontSize: 15, color: Colors.grey[300]),
+              style: TextStyle(
+                  fontSize: 15,
+                  color:
+                      (getTheme(context).appBarBrightness() == Brightness.light)
+                          ? Colors.black54
+                          : Colors.white60),
             ),
           ],
         ),
@@ -343,16 +378,16 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Linkify(
-                          onOpen: (link) => {bioLink(link.url)},
-                          text: bioText,
-                          style: TextStyle(color: Colors.white, fontSize: 15),
-                          linkStyle: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              decoration: TextDecoration.none),
-                          maxLines: _maxLines,
-                          options: LinkifyOptions(looseUrl: true),
-                        ),
+                        (bioText != null)
+                            ? Text(
+                                bioText,
+                                style: TextStyle(
+                                    color: getTheme(context)
+                                        .appBarContrastForText(),
+                                    fontSize: 15),
+                                maxLines: _maxLines,
+                              )
+                            : Container(),
                         numLines >= 4
                             ? InkWell(
                                 onTap: () {
@@ -431,7 +466,9 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
-                    side: BorderSide(color: Colors.white, width: 2),
+                    side: BorderSide(
+                        color: getTheme(context).appBarContrastForText(),
+                        width: 2),
                   ),
                   onPressed: () {
                     if (this.widget.user.uid == SnaxBackend.currentUser.uid) {
@@ -472,7 +509,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                       }
                     }(),
                     style: TextStyle(
-                      color: Colors.white,
+                      color: getTheme(context).appBarContrastForText(),
                     ),
                   ),
                 ),
@@ -494,13 +531,13 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
           style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: getTheme(context).appBarContrastForText(),
           ),
         ),
         Text(
           'Following',
           style: TextStyle(
-            color: Colors.white,
+            color: getTheme(context).appBarContrastForText(),
           ),
         ),
       ],
@@ -517,13 +554,13 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
           style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: getTheme(context).appBarContrastForText(),
           ),
         ),
         Text(
           'Followers',
           style: TextStyle(
-            color: Colors.white,
+            color: getTheme(context).appBarContrastForText(),
           ),
         )
       ],
