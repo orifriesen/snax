@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:snax/accountPage/globalAccountPage.dart';
+import 'package:snax/backend/backend.dart';
 import 'package:snax/backend/requests.dart';
 import 'package:snax/feedPage/demoValues.dart';
 import 'package:snax/feedPage/makePostPage.dart';
@@ -322,7 +324,7 @@ Widget getFeed(BuildContext context, List<Post> posts, Function refresh) {
 }
 
 Widget postWidget(BuildContext context, Post post,
-    {bool opensDetails = true, Function refresh}) {
+    {bool opensDetails = true, Function refresh, String transitionId }) {
   return Padding(
     padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 16.0),
     child: GestureDetector(
@@ -337,10 +339,11 @@ Widget postWidget(BuildContext context, Post post,
           });
       },
       child: Hero(
-        tag: post.id,
+        tag: transitionId ?? post.id,
         child: Material(
           color: Colors.transparent,
-          child: Container(
+          child: AnimatedContainer(
+            duration: Duration(milliseconds: 500),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(16)),
                 boxShadow: [
@@ -497,6 +500,141 @@ Widget postWidget(BuildContext context, Post post,
                   )
                 ],
               ),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+Widget fakePostWidget(BuildContext context, { String transitionId }) {
+
+  Color baseColor = isDark(context) ? Colors.grey.shade600: Colors.grey.shade300;
+  Color highlightColor = isDark(context) ? Colors.grey : Colors.grey.shade50;
+
+  return Padding(
+    padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 16.0),
+    child: Hero(
+      tag: transitionId ?? getRandomString(9),
+      child: Material(
+        color: Colors.transparent,
+        child: AnimatedContainer(
+          duration: Duration(milliseconds: 500),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(16)),
+              boxShadow: [
+                BoxShadow(color: Color.fromARGB(36, 0, 0, 0), blurRadius: 12)
+              ],
+              gradient: isDark(context)
+                  ? LinearGradient(
+                      colors: [
+                        HexColor.fromHex("3C3C3C"),
+                        HexColor.fromHex("2C2C2C")
+                      ],
+                      begin: Alignment(0, -0.2),
+                      end: Alignment(0, 1.5),
+                    )
+                  : null,
+              color: isDark(context) ? null : Theme.of(context).canvasColor),
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(16, 24, 16, 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          color: Colors.grey[300]),
+                      clipBehavior: Clip.hardEdge,
+                      padding: EdgeInsets.all(2),
+                      height: 64,
+                      width: 64,
+                    ),
+                    Expanded(
+                        child: Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Shimmer.fromColors(child: Container(width: 150,height: 18, color: Colors.white), baseColor: baseColor, highlightColor: highlightColor),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5.0),
+                            child: Opacity(opacity: 0.5, child: Shimmer.fromColors(child: Container(width: 60,height: 14, color: Colors.white), baseColor: getTheme(context).gradientStart, highlightColor: getTheme(context).gradientEnd)),
+                          )
+                        ],
+                      ),
+                    ))
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 16.0),
+                  child: Shimmer.fromColors(child: Container(width: 150,height: 16, color: Colors.white), baseColor: baseColor, highlightColor: highlightColor),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[] + ([0,0,0].map((_) => Padding(
+                      padding: const EdgeInsets.only(bottom: 5.0),
+                      child: Shimmer.fromColors(child: Container(height: 16, color: Colors.white), baseColor: baseColor, highlightColor: highlightColor),
+                    )).toList()) + <Widget>[
+                      Shimmer.fromColors(child: Container(width: 100, height: 16, color: Colors.white), baseColor: baseColor, highlightColor: highlightColor)
+                    ],
+                      
+                  )
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 16.0, bottom: 8.0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      FittedBox(
+                          child: LikeButton(
+                        isLiked: false,
+                        likeBuilder: (bool isLiked) {
+                          return Icon(
+                            Icons.favorite_rounded,
+                            color: isLiked
+                                ? Theme.of(context).accentColor
+                                : Colors.grey[350],
+                            size: 26.0,
+                          );
+                        },
+                        likeCount: null,
+                        likeCountPadding: EdgeInsets.only(left: 8),
+                        countPostion: CountPostion.right,
+                      )),
+                      IgnorePointer(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 16.0),
+                          child: FittedBox(
+                            child: LikeButton(
+                              likeBuilder: (bool isLiked) {
+                                return Icon(
+                                  Icons.chat_rounded,
+                                  color: Colors.grey[350],
+                                );
+                              },
+                              animationDuration: Duration(milliseconds: 0),
+                              likeCount: null,
+                              likeCountPadding: EdgeInsets.only(left: 8),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(child: Container(),),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 7, right: 4),
+                        child: Shimmer.fromColors(child: Container(width: 40, height: 14, color: Colors.white), baseColor: baseColor, highlightColor: highlightColor),
+                      )
+                    ],
+                  ),
+                )
+              ],
             ),
           ),
         ),
