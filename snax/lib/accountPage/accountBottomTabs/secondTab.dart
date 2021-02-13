@@ -21,43 +21,71 @@ class _ReviewedTabState extends State<ReviewedTab> {
       future: SnaxBackend.getRecentReviewsForUser(this.widget.user),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          SnackUserRating ratings = snapshot.data;
-          return ListTile(
-            contentPadding: EdgeInsets.symmetric(horizontal: 8),
-            leading: Icon(
-              Icons.access_alarm,
-              size: 32,
-            ),
-            title: Text(
-              "${ratings.overall}",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            subtitle: Row(
-              children: [
-                Text("4.5"),
-                SizedBox(width: 5),
-                SmoothStarRating(
-                  allowHalfRating: true,
-                  starCount: 5,
-                  rating: 4.5,
-                  size: 18,
-                  isReadOnly: true,
-                  defaultIconData: Icons.star_border_rounded,
-                  filledIconData: Icons.star_rounded,
-                  halfFilledIconData: Icons.star_half_rounded,
-                  color: SnaxColors.redAccent,
-                  borderColor: SnaxColors.redAccent,
-                  spacing: 0.0,
+          return ListView.builder(
+            shrinkWrap: true,
+            itemCount: snapshot.data.length,
+            itemBuilder: (context, index) {
+              SnackUserRating ratings = snapshot.data[index];
+              return Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Color.fromARGB(36, 0, 0, 0), blurRadius: 12)
+                    ],
+                    gradient: isDark(context)
+                        ? LinearGradient(
+                            colors: [
+                              HexColor.fromHex("3C3C3C"),
+                              HexColor.fromHex("2C2C2C")
+                            ],
+                            begin: Alignment(0, -0.2),
+                            end: Alignment(0, 1.5),
+                          )
+                        : null,
+                    color:
+                        isDark(context) ? null : Theme.of(context).canvasColor),
+                child: Padding(
+                  padding: EdgeInsets.all(8),
+                  child: ListTile(
+                    contentPadding: EdgeInsets.symmetric(horizontal: 8),
+                    leading: AspectRatio(
+                        aspectRatio: 1.0,
+                        child: Image.network(ratings.snack.image)),
+                    title: Text(
+                      "${ratings.snack.name}",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Row(
+                      children: [
+                        Text("${ratings.snackability}"),
+                        SizedBox(width: 5),
+                        SmoothStarRating(
+                          allowHalfRating: true,
+                          starCount: 5,
+                          rating: ratings.snackability,
+                          size: 18,
+                          isReadOnly: true,
+                          defaultIconData: Icons.star_border_rounded,
+                          filledIconData: Icons.star_rounded,
+                          halfFilledIconData: Icons.star_half_rounded,
+                          color: SnaxColors.redAccent,
+                          borderColor: SnaxColors.redAccent,
+                          spacing: 0.0,
+                        ),
+                      ],
+                    ),
+                    trailing: IconButton(
+                      icon: Icon(Icons.arrow_forward_ios),
+                      iconSize: 20,
+                      onPressed: () => {
+                        //* Opens up the users complete reviewed categories
+                      },
+                    ),
+                  ),
                 ),
-              ],
-            ),
-            trailing: IconButton(
-              icon: Icon(Icons.arrow_forward_ios),
-              iconSize: 20,
-              onPressed: () => {
-                //* Opens up the users complete reviewed categories
-              },
-            ),
+              );
+            },
           );
         } else if (snapshot.hasError) {
           print("Failed to load Reviewed tab");
