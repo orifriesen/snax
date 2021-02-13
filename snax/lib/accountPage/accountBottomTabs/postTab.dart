@@ -40,14 +40,14 @@ class _PostTabState extends State<PostTab>
     return posts != null
         ? posts.length > 0
             ? ListView.builder(
-            physics: NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            padding: EdgeInsets.only(top: 16),
-            itemCount: posts.length,
-            itemBuilder: (context, index) {
-              Post post = posts[index];
-              return postWidget(context, post);
-            },
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                padding: EdgeInsets.only(top: 16),
+                itemCount: posts.length,
+                itemBuilder: (context, index) {
+                  Post post = posts[index];
+                  return postWidget(context, post);
+                },
               )
             : Padding(
                 padding: EdgeInsets.only(top: 44),
