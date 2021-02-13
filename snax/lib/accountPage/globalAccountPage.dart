@@ -159,15 +159,23 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                              color: Color.fromARGB(60, 0, 0, 0),
-                              blurRadius: 12)
+                      boxShadow: [
+                        BoxShadow(
+                            color: Color.fromARGB(60, 0, 0, 0), blurRadius: 12)
+                      ],
+                      borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(40),
+                          bottomRight: Radius.circular(40)),
+                      gradient: LinearGradient(
+                        begin: Alignment.center,
+                        // end: Alignment.bottomCenter,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          getTheme(context).gradientStart,
+                          getTheme(context).gradientEnd
                         ],
-                        borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(40),
-                            bottomRight: Radius.circular(40)),
-                        gradient: getTheme(context).bigGradient()),
+                      ),
+                    ),
                     child: SafeArea(
                       top: true,
                       bottom: false,

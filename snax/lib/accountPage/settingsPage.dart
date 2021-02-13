@@ -33,6 +33,13 @@ class _SettingsPageState extends State<SettingsPage> {
           'Settings',
           style: TextStyle(color: getTheme(context).appBarContrastForText()),
         ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios),
+          color: getTheme(context).appBarContrastForText(),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       bottomNavigationBar: BottomAppBar(
         elevation: 0,

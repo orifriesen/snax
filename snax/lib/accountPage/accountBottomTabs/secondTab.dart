@@ -7,6 +7,7 @@ import 'package:sup/quick_sup.dart';
 import 'package:snax/backend/backend.dart';
 import 'package:snax/backend/requests.dart';
 import '../../helpers.dart';
+import '../../themes.dart';
 
 class ReviewedTab extends StatefulWidget {
   SnaxUser user;
@@ -58,8 +59,8 @@ class _ReviewedTabState extends State<ReviewedTab> {
             padding: EdgeInsets.all(40),
             child: Center(
               child: CircularProgressIndicator(
-                valueColor:
-                    new AlwaysStoppedAnimation<Color>(SnaxColors.redAccent),
+                valueColor: new AlwaysStoppedAnimation<Color>(
+                    getTheme(context).accentColor),
               ),
             ),
           );
@@ -125,8 +126,8 @@ class _ReviewedTabState extends State<ReviewedTab> {
                     defaultIconData: Icons.star_border_rounded,
                     filledIconData: Icons.star_rounded,
                     halfFilledIconData: Icons.star_half_rounded,
-                    color: SnaxColors.redAccent,
-                    borderColor: SnaxColors.redAccent,
+                    color: getTheme(context).accentColor,
+                    borderColor: getTheme(context).accentColor,
                     spacing: 0.0,
                   ),
                 ],

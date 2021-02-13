@@ -124,7 +124,8 @@ class _EditProfileState extends State<EditProfile> {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
+              // end: Alignment.center,
+              end: Alignment.centerRight,
               colors: [
                 getTheme(context).gradientStart,
                 getTheme(context).gradientEnd
