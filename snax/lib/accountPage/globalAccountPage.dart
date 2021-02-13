@@ -128,15 +128,22 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                            color: Color.fromARGB(60, 0, 0, 0), blurRadius: 12)
-                      ],
-                      borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(40),
-                          bottomRight: Radius.circular(40)),
-                      gradient: SnaxGradients.redBigThings,
-                    ),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Color.fromARGB(60, 0, 0, 0),
+                              blurRadius: 12)
+                        ],
+                        borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(40),
+                            bottomRight: Radius.circular(40)),
+                        gradient: LinearGradient(
+                          begin: Alignment.center,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            SnaxColors.gradientStart,
+                            SnaxColors.gradientEnd
+                          ],
+                        )),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Container(

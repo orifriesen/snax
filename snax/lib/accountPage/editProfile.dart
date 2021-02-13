@@ -120,7 +120,7 @@ class _EditProfileState extends State<EditProfile> {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
-              end: Alignment.centerRight,
+              end: Alignment.center,
               colors: [SnaxColors.gradientStart, SnaxColors.gradientEnd],
             ),
           ),
