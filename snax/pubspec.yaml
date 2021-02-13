@@ -88,6 +88,7 @@ flutter:
     - assets/snax-chip.png
     - assets/Artboard.jpeg
     - assets/blank_user.png
+    - assets/snax.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

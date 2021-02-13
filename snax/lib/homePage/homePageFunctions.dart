@@ -75,7 +75,14 @@ Widget getHorizontalList(
                                                             .banner !=
                                                         null)
                                                     ? Image.network(
-                                                        snackList[index].banner)
+                                                        snackList[index].banner,
+                                                        errorBuilder: (context,
+                                                                obj, stack) =>
+                                                            Image.asset(
+                                                          "assets/placeholderImage.jpg",
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      )
                                                     : Image.asset(
                                                         "assets/placeholderImage.jpg",
                                                         fit: BoxFit.cover,
@@ -542,7 +549,13 @@ Widget snackOfTheWeek(BuildContext context, SnackItem snackItem) {
                     ]),
                 child: ClipRRect(
                     borderRadius: BorderRadius.circular(18),
-                    child: Image.network(snackItem.banner))),
+                    child: Image.network(
+                      snackItem.banner,
+                      errorBuilder: (context, obj, stack) => Image.asset(
+                        "assets/placeholderImage.jpg",
+                        fit: BoxFit.cover,
+                      ),
+                    ))),
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(

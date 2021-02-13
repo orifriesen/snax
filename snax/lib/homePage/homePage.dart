@@ -40,9 +40,9 @@ class _MainPageState extends State<MainPage>
                           ),*/
                         elevation: 2,
                         backgroundColor: Theme.of(context).canvasColor,
-                        title: Text("SNAX",
-                            style: TextStyle(
-                                color: getTheme(context).accentColor)),
+                        //title: Text("SNAX", style: TextStyle(color: getTheme(context).accentColor)),
+                        title: Image.asset("assets/snax.png",height: 19,color: getTheme(context).accentColor,),
+                        centerTitle: false,
                         floating: true,
                         pinned: true,
                         snap: true,
@@ -93,7 +93,7 @@ class _MainPageState extends State<MainPage>
                                         BarcodeScannerPage()));
                               })
                         ],
-                        centerTitle: true,
+                        
                       ),
                     ),
                   ];

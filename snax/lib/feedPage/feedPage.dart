@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:snax/accountPage/globalAccountPage.dart';
 import 'package:snax/backend/requests.dart';
@@ -147,100 +148,101 @@ class _FeedPageState extends State<FeedPage>
     super.build(context);
     return Scaffold(
         backgroundColor: Theme.of(context).canvasColor,
-        body: (posts == null)
-            ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SafeArea(
-                    bottom: false,
-                    child: Container(),
-                  ),
-                  sortWidget(),
-                  feedText(),
-                  Expanded(
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  ),
-                ],
-              )
-            : RefreshIndicator(
-                onRefresh: () async {
-                  await this.getPosts(pull: true);
-                  return;
-                },
-                child: ListView.builder(
-                  controller: scrollController,
-                  itemCount: posts.length + ((posts.length == 0) ? 3 : 2),
-                  itemBuilder: (context, index) {
-                    Post post;
-                    if (index == 0) {
-                      return sortWidget();
-                    }
-                    if (index == 1) {
-                      post = null;
-                      return feedText();
-                    } else if (posts.length == 0) {
-                      return Padding(
-                          padding: EdgeInsets.only(top: 44),
-                          child: Center(
-                            child: QuickSup.empty(
-                                image: Icon(
-                                  Icons.chat_rounded,
-                                  size: 25,
-                                ),
-                                title: "No Posts",
-                                subtitle: "It's awfully quiet..."),
-                          ));
-                    } else {
-                      post = posts[index - 1];
-                      return postWidget(context, post, refresh: refresh);
-                    }
-                  },
-                )
+        body: AnnotatedRegion<SystemUiOverlayStyle>(
+            value: isDark(context) ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+            child: (posts == null)
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SafeArea(
+                        bottom: false,
+                        child: Container(),
+                      ),
+                      sortWidget(),
+                      feedText(),
+                      Expanded(
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
+                    ],
+                  )
+                : RefreshIndicator(
+                    onRefresh: () async {
+                      await this.getPosts(pull: true);
+                      return;
+                    },
+                    child: ListView.builder(
+                      controller: scrollController,
+                      itemCount: posts.length + ((posts.length == 0) ? 3 : 2),
+                      itemBuilder: (context, index) {
+                        Post post;
+                        if (index == 0) {
+                          return sortWidget();
+                        }
+                        if (index == 1) {
+                          post = null;
+                          return feedText();
+                        } else if (posts.length == 0) {
+                          return Padding(
+                              padding: EdgeInsets.only(top: 44),
+                              child: Center(
+                                child: QuickSup.empty(
+                                    image: Icon(
+                                      Icons.chat_rounded,
+                                      size: 25,
+                                    ),
+                                    title: "No Posts",
+                                    subtitle: "It's awfully quiet..."),
+                              ));
+                        } else {
+                          post = posts[index - 1];
+                          return postWidget(context, post, refresh: refresh);
+                        }
+                      },
+                    )
 
-                //Expanded(child: getFeed(context, posts, refresh)),
+                    //Expanded(child: getFeed(context, posts, refresh)),
 
-                )
-        // Column(
-        //   children: [
-        // FlatButton(
-        //   onPressed: () async {
-        //     String value = await showModalBottomSheet<String>(
-        //         context: context,
-        //         shape: RoundedRectangleBorder(
-        //             borderRadius: BorderRadius.only(
-        //                 topLeft: Radius.circular(24),
-        //                 topRight: Radius.circular(24))),
-        //         builder: (BuildContext context) {
-        //           return sortSettings(options, dropDownValue);
-        //         });
-        //     setState(() {
-        //       dropDownValue = value;
-        //       print(value);
-        //       print(dropDownValue);
-        //     });
-        //     this.getPosts();
-        //   },
-        //   splashColor: Colors.transparent,
-        //   child: Row(
-        //     children: [
-        //       Text(
-        //         options.firstWhere(
-        //             (e) => e['value'] == dropDownValue)['title'],
-        //         style: TextStyle(
-        //             color: getTheme(context).accentColor,
-        //             fontSize: 20,
-        //             fontWeight: FontWeight.w600),
-        //       )
-        //     ],
-        //   ),
-        // ),
-        //     getFeed(context, posts, refresh),
-        //   ],
-        // )
-
-        );
+                    )
+            // Column(
+            //   children: [
+            // FlatButton(
+            //   onPressed: () async {
+            //     String value = await showModalBottomSheet<String>(
+            //         context: context,
+            //         shape: RoundedRectangleBorder(
+            //             borderRadius: BorderRadius.only(
+            //                 topLeft: Radius.circular(24),
+            //                 topRight: Radius.circular(24))),
+            //         builder: (BuildContext context) {
+            //           return sortSettings(options, dropDownValue);
+            //         });
+            //     setState(() {
+            //       dropDownValue = value;
+            //       print(value);
+            //       print(dropDownValue);
+            //     });
+            //     this.getPosts();
+            //   },
+            //   splashColor: Colors.transparent,
+            //   child: Row(
+            //     children: [
+            //       Text(
+            //         options.firstWhere(
+            //             (e) => e['value'] == dropDownValue)['title'],
+            //         style: TextStyle(
+            //             color: getTheme(context).accentColor,
+            //             fontSize: 20,
+            //             fontWeight: FontWeight.w600),
+            //       )
+            //     ],
+            //   ),
+            // ),
+            //     getFeed(context, posts, refresh),
+            //   ],
+            // )
+            ));
   }
 }
 

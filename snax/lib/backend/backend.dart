@@ -163,6 +163,10 @@ class SnackItem {
       {this.banner}) {
     this.transitionId = getRandomString(10);
   }
+
+  void resetTransitionId() {
+    this.transitionId = getRandomString(10);
+  }
 }
 
 //A snack rating that is calculated, no user data is attached
