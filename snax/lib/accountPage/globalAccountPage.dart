@@ -21,10 +21,11 @@ import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class GlobalAccountPage extends StatefulWidget {
-  GlobalAccountPage(this.user, {this.isAccountPage = false});
+  GlobalAccountPage(this.user, {this.isAccountPage = false, this.transitionId});
   SnaxUser user;
   String uid;
   bool isAccountPage;
+  String transitionId;
   @override
   _GlobalAccountPageState createState() => _GlobalAccountPageState();
 }
@@ -329,20 +330,18 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Hero(
-            tag: "profile-photo",
-            child: Container(
-              width: 80,
-              height: 80,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: (this.widget.user.photo != null)
-                      ? NetworkImage(this.widget.user.photo)
-                      : AssetImage("assets/blank_user.png"),
-                ),
-              ),
-            ),
+            tag: this.widget.transitionId ?? 'profile-photo',
+                      child: Container(
+                        width: 80,
+                        height: 80,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                        ),
+                        clipBehavior: Clip.hardEdge,
+                        child: (this.widget.user.photo != null)
+                                ? FadeInImage.assetNetwork(placeholder: "assets/blank_user.png",image: this.widget.user.photo)
+                                : Image.asset("assets/blank_user.png"),
+                      ),
           ),
         ),
         SizedBox(width: 10),
@@ -510,7 +509,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                     () {
                       if (this.widget.user.uid == SnaxBackend.currentUser.uid) {
                         return "Edit Profile";
-                      } else if (this.isFollowing) {
+                      } else if (this.widget.user.userIsFollowing) {
                         return "Unfollow";
                       } else {
                         return "Follow";
@@ -590,5 +589,39 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
     } else {
       print("Reporting did not work");
     }
+  }
+}
+
+class FutureGlobalAccountPage extends StatefulWidget {
+
+  String uid;
+  bool isFollowing;
+  String transitionId;
+
+  FutureGlobalAccountPage(this.uid, this.isFollowing, {this.transitionId});
+
+  @override
+  _FutureGlobalAccountPageState createState() => _FutureGlobalAccountPageState();
+}
+
+class _FutureGlobalAccountPageState extends State<FutureGlobalAccountPage> {
+
+  SnaxUser userObject;
+
+  @override
+  void initState() {
+    this.userObject = SnaxUser("", "", this.widget.uid, "", 0, 0, photo: userImageURL(this.widget.uid), userIsFollowing: this.widget.isFollowing);
+    super.initState();
+
+    SnaxBackend.getUser(this.widget.uid).then((user) {
+      setState(() {
+        this.userObject = user;
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GlobalAccountPage(userObject, transitionId: this.widget.transitionId,);
   }
 }

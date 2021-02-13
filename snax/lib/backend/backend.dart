@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:convert';
 import 'dart:ffi';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:hive/hive.dart';
@@ -69,23 +71,82 @@ Future<void> initializeFirebase() async {
     }
   });
 
+  await Hive.initFlutter();
+
   //Notifications (foreground)
   fbMessaging.setForegroundNotificationPresentationOptions(
       alert: true, sound: true);
-  FirebaseMessaging.onMessage.listen(handleNotification);
-  FirebaseMessaging.onBackgroundMessage(handleNotification);
-
-  await Hive.initFlutter();
+  FirebaseMessaging.onMessage.listen(SnaxNotificationsController.handleNotification);
+  FirebaseMessaging.onBackgroundMessage(SnaxNotificationsController.handleNotification);
+  //Get the notifications from storage
+  await SnaxNotificationsController.loadNotifications();
+  
   //uncomment to show login screen on startup
   //navigatorKey.currentState.pushNamed("/login");
 }
 
-Future<void> handleNotification(RemoteMessage message) async {
-  print("🤠 got a notification! saving to the hive.");
-  var box = await Hive.openBox("notifications");
-  await box.add(message.data);
-  print(box.values);
-  await box.close();
+enum SnaxNotificationType {
+  post,
+  user,
+}
+
+class SnaxNotification {
+  String title;
+  String body;
+  SnaxNotificationType type;
+  String value;
+  DateTime time;
+
+  SnaxNotification(Map<String,dynamic> fromStorage) {
+    this.title = fromStorage['notification']['title'];
+    this.body = fromStorage['notification']['body'];
+    this.value = fromStorage['data']['val'];
+    this.time = DateTime.fromMillisecondsSinceEpoch(fromStorage['timestamp']);
+    this.type = () {
+    switch (fromStorage['data']['type']) {
+      case "post":
+        return SnaxNotificationType.post;
+        case "user":
+        return SnaxNotificationType.user;
+      default:
+      return null;
+    }
+    }();
+  }
+}
+
+class SnaxNotificationsController {
+
+  static List<SnaxNotification> storedNotifications = [];
+  static StreamController<SnaxNotification> _notificationStream = StreamController<SnaxNotification>();
+  static Stream stream = _notificationStream.stream.asBroadcastStream();
+
+  static Future<void> handleNotification(RemoteMessage message) async {
+    //Some notifications don't need to be shown in the app. Those ones won't have any data.
+    if (message.data == null) return;
+    print("🤠 got a notification! saving to the hive.");
+    var box = await Hive.openBox("notifications");
+    //await box.clear();
+    Map<String,dynamic> obj = { 'data': message.data, 'notification': { 'title': message.notification.title, 'body': message.notification.body }, 'timestamp': int.tryParse(message.data['timestamp']) ?? DateTime.now().millisecondsSinceEpoch };
+    //Add to storage
+    await box.add(jsonEncode(obj));
+    //Add to stream
+    _notificationStream.add(SnaxNotification(obj));
+    //await box.close();
+  }
+
+  static Future<void> loadNotifications() async {
+    //Create the listener for notifications
+    stream.listen((n) { storedNotifications.add(n); });
+    //Add the exisiting ones
+    var box = await Hive.openBox("notifications");
+    List<String> values = box.values.map((e) => e.toString()).toList();
+    List<SnaxNotification> notifications = values.map((e) => SnaxNotification(jsonDecode(e))).toList();
+    print(notifications);
+    notifications.forEach((n) { 
+      _notificationStream.add(n);
+    });
+  }
 }
 
 //A user

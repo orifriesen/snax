@@ -37,9 +37,9 @@ Map _snackTypes = {};
 
 
 //Lazy (but way faster) way to get images from our firebase storage. If the image requires authentication this won't work.
-String _snackImageURL(String id) => "https://firebasestorage.googleapis.com/v0/b/snax-dde4e.appspot.com/o/snacks%2F$id.jpg?alt=media";
-String _userImageURL(String uid) => "https://firebasestorage.googleapis.com/v0/b/snax-dde4e.appspot.com/o/user-profiles%2F$uid.jpg?alt=media";
-String _snackBannerImageURL(String id) => "https://firebasestorage.googleapis.com/v0/b/snax-dde4e.appspot.com/o/snacks-banners%2F$id.png?alt=media";
+String snackImageURL(String id) => "https://firebasestorage.googleapis.com/v0/b/snax-dde4e.appspot.com/o/snacks%2F$id.jpg?alt=media";
+String userImageURL(String uid) => "https://firebasestorage.googleapis.com/v0/b/snax-dde4e.appspot.com/o/user-profiles%2F$uid.jpg?alt=media";
+String snackBannerImageURL(String id) => "https://firebasestorage.googleapis.com/v0/b/snax-dde4e.appspot.com/o/snacks-banners%2F$id.png?alt=media";
 
 
 
@@ -161,7 +161,7 @@ class SnaxBackend {
             : null,
         doc.data()["computed_ratings"],
         doc.data()["computed_trend"],
-        _snackImageURL(doc.id),
+        snackImageURL(doc.id),
         banner: bannerUrl);
   }
 
@@ -224,7 +224,7 @@ class SnaxBackend {
               : null,
           doc.data()["computed_ratings"],
           doc.data()["computed_trend"],
-          _snackImageURL(doc.id),
+          snackImageURL(doc.id),
           banner: bannerUrl));
     }
     Cache.add(query.parameters.toString(), snacks);
@@ -334,6 +334,7 @@ class SnaxBackend {
 
     //Remove from local database
     var followingBox = await Hive.openBox('user_following');
+    if (followingBox.values.toList().indexOf(uid) > 0)
     followingBox.deleteAt(followingBox.values.toList().indexOf(uid));
     // await Hive.close();
   }
@@ -376,7 +377,7 @@ class SnaxBackend {
           doc.data()["bio"],
           doc.get("followerCount"),
           doc.get("followingCount"),
-          photo: (doc.data()["hasPhoto"] ?? false) ? _userImageURL(doc.id) : null,
+          photo: (doc.data()["hasPhoto"] ?? false) ? userImageURL(doc.id) : null,
           userIsFollowing: followingBox.values.contains(doc.id)));
     }
     // await Hive.close();
@@ -432,7 +433,7 @@ class SnaxBackend {
           doc.data()["bio"],
           doc.get("followerCount"),
           doc.get("followingCount"),
-          photo: (doc.data()["hasPhoto"] ?? false) ? _userImageURL(doc.id) : null,
+          photo: (doc.data()["hasPhoto"] ?? false) ? userImageURL(doc.id) : null,
           userIsFollowing: followingBox.values.contains(doc.id)));
     }
     // await Hive.close();
@@ -674,7 +675,7 @@ class SnaxBackend {
                     : null,
                 e.value.data()["computed_ratings"],
                 e.value.data()["computed_trend"],
-                _snackImageURL(e.value.id)),
+                snackImageURL(e.value.id)),
             toDouble(docs[e.key].get("ratings.score_overall")),
             toDouble(docs[e.key].get("ratings.score_mouthfeel")),
             toDouble(docs[e.key].get("ratings.score_accessibility")),
@@ -765,7 +766,7 @@ class SnaxBackend {
           userDatas[data["uid"]]["bio"],
           userDatas[data["uid"]]["followerCount"],
           userDatas[data["uid"]]["followingCount"],
-          photo: (userDatas[data["uid"]]["hasPhoto"] ?? false) ? _userImageURL(data["uid"]) : null,
+          photo: (userDatas[data["uid"]]["hasPhoto"] ?? false) ? userImageURL(data["uid"]) : null,
           userIsFollowing: followingBox.values.contains(data["uid"]));
       comments.add(Comment(
           doc.id,
@@ -851,7 +852,7 @@ class SnaxBackend {
           userDatas[data["uid"]]["bio"],
           userDatas[data["uid"]]["followerCount"],
           userDatas[data["uid"]]["followingCount"],
-          photo: (userDatas[data["uid"]]["hasPhoto"] ?? false) ? _userImageURL(data["uid"]) : null,
+          photo: (userDatas[data["uid"]]["hasPhoto"] ?? false) ? userImageURL(data["uid"]) : null,
           userIsFollowing: followingBox.values.contains(data["uid"]));
 
       //Create snack
@@ -861,7 +862,7 @@ class SnaxBackend {
           snackDatas[data["snack_id"]]["computed_ratings"],
           toDouble((snackDatas[data["snack_id"]]["computed"] ??
               {"score_overall": null})["score_overall"]),
-          _snackImageURL(data["snack_id"]));
+          snackImageURL(data["snack_id"]));
       //Add post
       posts.add(Post(
           doc.id,
@@ -943,7 +944,7 @@ class SnaxBackend {
             : SnackRating(null, null, null, null, null, null, null, null),
         doc.data()["computed_ratings"],
         doc.data()["computed_trend"],
-        _snackImageURL(doc.id));
+        snackImageURL(doc.id));
   }
 
   static Future<List<SnaxUser>> searchUsers(String query) async {
@@ -969,7 +970,7 @@ class SnaxBackend {
             result["data"]["bio"],
             result["data"]["followerCount"],
             result["data"]["followingCount"],
-            photo: (result["data"]["hasPhoto"] ?? false) ? _userImageURL(result["id"]) : null,
+            photo: (result["data"]["hasPhoto"] ?? false) ? userImageURL(result["id"]) : null,
             userIsFollowing: followingBox.values.contains(result["id"])));
       }
       // await Hive.close();
@@ -999,7 +1000,7 @@ class SnaxBackend {
         doc.data()["followerCount"],
         doc.data()["followingCount"],
         userIsFollowing: followingBox.values.contains(doc.id),
-        photo: (doc.data()["hasPhoto"] ?? false) ? _userImageURL(uid) : null);
+        photo: (doc.data()["hasPhoto"] ?? false) ? userImageURL(uid) : null);
   }
 
   static Future<List<SnackSearchResultItem>> search(String query) async {
@@ -1023,7 +1024,7 @@ class SnaxBackend {
             result["id"].toString(),
             (result["count"] != null) ? (result["count"]) as int : null,
             (result["overall"] != null) ? (result["overall"]).toDouble() : null,
-            _snackImageURL(result["id"].toString())));
+            snackImageURL(result["id"].toString())));
       }
       //Return the list
       return returnItems;
