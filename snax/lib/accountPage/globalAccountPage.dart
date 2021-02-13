@@ -41,7 +41,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
     _tabController = TabController(vsync: this, length: 2, initialIndex: 0);
     _tabController.addListener(handleTabSelection);
 
-    this.isFollowing = this.widget.user.userIsFollowing;
+    //this.isFollowing = this.widget.user.userIsFollowing;
 
     this._scrollController = ScrollController()
       ..addListener(() {
