@@ -77,7 +77,23 @@ final List<SnaxTheme> lightThemeList = [
       HexColor.fromHex("ffdde1"),
       HexColor.fromHex("F7BCC3"),
       overrideTextColor: Colors.white,
-      overrideBrightness: Brightness.dark)
+      overrideBrightness: Brightness.dark),
+  SnaxTheme(
+      "pink",
+      "Ori's Theme",
+      HexColor.fromHex("FF1493"),
+      HexColor.fromHex("FF1493"),
+      HexColor.fromHex("ec008c"),
+      HexColor.fromHex("e14fad"),
+      HexColor.fromHex("ec008c")),
+  SnaxTheme(
+      "blue",
+      "Blue Raspberry",
+      HexColor.fromHex("0083B0"),
+      HexColor.fromHex("0083B0"),
+      HexColor.fromHex("00B4DB"),
+      HexColor.fromHex("0083B0"),
+      HexColor.fromHex("0083B0")),
 ];
 
 final List<SnaxTheme> darkThemeList = [
@@ -113,7 +129,7 @@ final List<SnaxTheme> darkThemeList = [
     HexColor.fromHex("ee9ca7"),
     HexColor.fromHex("ffdde1"),
     HexColor.fromHex("F7BCC3"),
-  )
+  ),
 ];
 
 SnaxTheme currentLightTheme = lightThemeList[0];
