@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:image_picker/image_picker.dart';
 
-import 'package:snax/backend/backend.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
+
 import 'package:snax/backend/requests.dart';
 import 'package:snax/helpers.dart';
 import 'package:snax/themes.dart';
@@ -22,9 +22,44 @@ class _EditProfileState extends State<EditProfile> {
   final nameController = TextEditingController();
   final bioController = TextEditingController();
   final usernameController = TextEditingController();
+  final webController = TextEditingController();
 
   bool uploadingImage = false;
   bool error = false;
+
+  //* Select an image via gallery or camera
+  _pickImage(ImageSource source) async {
+    // Navigator.of(context).pop();
+    setState(() {
+      this.uploadingImage = true;
+    });
+    try {
+      final pickedFile = await _imagePicker.getImage(source: source);
+      await SnaxBackend.updateProfilePhoto(pickedFile);
+      setState(() {
+        _imageFile = pickedFile;
+      });
+    } catch (error) {
+      print(error);
+      print("Failed to upload profile photo");
+    }
+    setState(() {
+      this.uploadingImage = false;
+    });
+  }
+
+  //* Crop an image
+  Future _cropImage() async {
+    File cropped = await ImageCropper.cropImage(
+      sourcePath: _imageFile.path,
+      cropStyle: CropStyle.circle,
+      maxWidth: 400,
+      maxHeight: 400,
+    );
+    setState(() {
+      _imageFile = cropped ?? _imageFile;
+    });
+  }
 
   @override
   void initState() {
@@ -47,7 +82,8 @@ class _EditProfileState extends State<EditProfile> {
         leading: FlatButton(
             child: Text(
               'Cancel',
-              style: TextStyle(color: getTheme(context).appBarContrastForText()),
+              style:
+                  TextStyle(color: getTheme(context).appBarContrastForText()),
             ),
             onPressed: () {
               Navigator.pop(context);
@@ -69,7 +105,8 @@ class _EditProfileState extends State<EditProfile> {
             },
             child: Text(
               'Done',
-              style: TextStyle(color: getTheme(context).appBarContrastForText()),
+              style:
+                  TextStyle(color: getTheme(context).appBarContrastForText()),
             ),
             shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
           ),
@@ -87,7 +124,8 @@ class _EditProfileState extends State<EditProfile> {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
+              // end: Alignment.center,
+              end: Alignment.centerRight,
               colors: [
                 getTheme(context).gradientStart,
                 getTheme(context).gradientEnd
@@ -103,19 +141,24 @@ class _EditProfileState extends State<EditProfile> {
                   child: InkWell(
                     child: Text(
                       'Change Profile Photo',
-                      style: TextStyle(fontSize: 15, color: getTheme(context).appBarContrastForText()),
+                      style: TextStyle(
+                          fontSize: 15,
+                          color: getTheme(context).appBarContrastForText()),
                     ),
                     onTap: () => {
                       showModalBottomSheet(
-                          context: context,
-                          builder: (builder) => _imageSheet(context))
+                        context: context,
+                        builder: (builder) => _imageSheet(),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(29),
+                        ),
+                      )
                     },
                   ),
                 ),
               ),
               Expanded(
                 child: Container(
-                  // height: size.height,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(60),
@@ -133,7 +176,6 @@ class _EditProfileState extends State<EditProfile> {
                       child: Column(
                         children: [
                           Container(
-                            // color: Colors.blue,
                             height: 400,
                             width: double.infinity,
                             padding: EdgeInsets.only(left: 16, right: 16),
@@ -195,10 +237,8 @@ class _EditProfileState extends State<EditProfile> {
 
   //* This is the pop up sheet that appears when the user requests to change
   //* their profile image
-  Widget _imageSheet(BuildContext context) {
+  Widget _imageSheet() {
     return Container(
-      height: 100,
-      width: MediaQuery.of(context).size.width,
       margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: Column(
         children: [
@@ -208,48 +248,47 @@ class _EditProfileState extends State<EditProfile> {
               fontSize: 20,
             ),
           ),
-          SizedBox(
-            height: 20,
-          ),
+          SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               FlatButton.icon(
                 icon: Icon(Icons.camera_alt_outlined),
-                onPressed: () => {takePhoto(ImageSource.camera, context)},
+                onPressed: () => {_pickImage(ImageSource.camera)},
                 label: Text('Camera'),
               ),
               FlatButton.icon(
                 icon: Icon(Icons.image_outlined),
-                onPressed: () => {takePhoto(ImageSource.gallery, context)},
+                onPressed: () => {_pickImage(ImageSource.gallery)},
+                // {_pickImage(ImageSource.gallery)},
                 label: Text('Gallery'),
               )
+            ],
+          ),
+          SizedBox(height: 20),
+          CircleAvatar(
+            radius: 80,
+            backgroundImage: _imageFile == null
+                ? AssetImage("assets/blank_user.png")
+                : Image.file(_imageFile as File),
+          ),
+          SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              FlatButton(
+                child: Icon(Icons.crop),
+                onPressed: () => {_cropImage},
+              ),
+              FlatButton(
+                child: Icon(Icons.check),
+                onPressed: () => {Navigator.pop(context)},
+              ),
             ],
           )
         ],
       ),
     );
-  }
-
-  //* This is the camera
-  takePhoto(ImageSource source, BuildContext context) async {
-    Navigator.of(context).pop();
-    setState(() {
-      this.uploadingImage = true;
-    });
-    try {
-      final pickedFile = await _imagePicker.getImage(source: source);
-      await SnaxBackend.updateProfilePhoto(pickedFile);
-      setState(() {
-        _imageFile = pickedFile;
-      });
-    } catch (error) {
-      print(error);
-      print("Failed to upload profile photo");
-    }
-    setState(() {
-      this.uploadingImage = false;
-    });
   }
 
   //* This allows the user to change their name
@@ -261,6 +300,7 @@ class _EditProfileState extends State<EditProfile> {
         borderRadius: BorderRadius.circular(20),
       ),
       child: TextFormField(
+        autocorrect: false,
         inputFormatters: [
           FilteringTextInputFormatter.allow(
               RegExp(r'([a-z])|([A-Z])|([0-9])|\_|\.|\s')),
@@ -292,6 +332,7 @@ class _EditProfileState extends State<EditProfile> {
         borderRadius: BorderRadius.circular(20),
       ),
       child: TextFormField(
+        autocorrect: false,
         inputFormatters: [
           FilteringTextInputFormatter.allow(
               RegExp(r'([a-z])|([A-Z])|([0-9])|\_|\.')),
@@ -317,20 +358,18 @@ class _EditProfileState extends State<EditProfile> {
 
   //* This allows the user to change their bio
   Widget _bioTextField() {
-    return Material(
-      elevation: 0,
-      // color: Colors.blue,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
+    return Container(
+      height: 100,
       child: TextFormField(
+        autocorrect: false,
         inputFormatters: [
           LengthLimitingTextInputFormatter(150),
         ],
         controller: bioController,
         minLines: 1,
-        maxLines: 10,
-        scrollPhysics: BouncingScrollPhysics(),
+        maxLines: 8,
+        maxLength: 150,
+        scrollPhysics: ClampingScrollPhysics(),
         decoration: InputDecoration(
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(20),

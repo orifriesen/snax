@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:snax/accountPage/globalAccountPage.dart';
 
@@ -29,7 +30,8 @@ class _UserListPageState extends State<UserListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(this.widget.pageTitle, style: TextStyle(color: getTheme(context).appBarContrastForText())),
+        title: Text(this.widget.pageTitle,
+            style: TextStyle(color: getTheme(context).appBarContrastForText())),
         brightness: getTheme(context).appBarBrightness(),
       ),
       body: FutureBuilder(
@@ -37,7 +39,7 @@ class _UserListPageState extends State<UserListPage> {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return ListView.builder(
-                  padding: EdgeInsets.only(top: 16),
+                  padding: EdgeInsets.only(top: 16, bottom: 16),
                   itemCount: snapshot.data.length,
                   itemBuilder: (context, index) {
                     SnaxUser user = snapshot.data[index];
@@ -100,7 +102,8 @@ class _UserListPageState extends State<UserListPage> {
                                               .textTheme
                                               .bodyText1
                                               .color
-                                          : getTheme(context).accentContrastForText())),
+                                          : getTheme(context)
+                                              .accentContrastForText())),
                               color: user.userIsFollowing
                                   ? Colors.transparent
                                   : getTheme(context).accentColor,

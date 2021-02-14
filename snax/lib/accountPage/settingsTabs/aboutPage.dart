@@ -4,14 +4,26 @@ import 'package:snax/customIcons/instagram_icons.dart';
 import 'package:snax/themes.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../helpers.dart';
+
 class AboutPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text("About",
+            style: TextStyle(color: getTheme(context).appBarContrastForText())),
+        leading: FlatButton(
+          child: Icon(
+            Icons.arrow_back_ios,
+            color: isDark(context) ? Colors.white : Colors.black,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         elevation: 0,
         brightness: getTheme(context).appBarBrightness(),
-        title: Text("About", style: TextStyle(color: getTheme(context).appBarContrastForText())),
       ),
       body: ListView(
         physics: ClampingScrollPhysics(),
@@ -43,7 +55,7 @@ class AboutPage extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Text(
-                      "Our goal is to bring everyone together to discuss all types of snack. No matter who you are, we believe that you should be able to express your feelings about your favorite foods.",
+                      "Our goal is to bring everyone together to discuss all types of snacks. No matter who you are, we believe that you should be able to express your feelings about your favorite foods.",
                     ),
                   ),
                 ],
