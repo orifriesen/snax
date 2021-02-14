@@ -1,6 +1,7 @@
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:loading/indicator.dart';
 import 'package:number_display/number_display.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:smooth_star_rating/smooth_star_rating.dart';
@@ -397,8 +398,8 @@ class _ProductPageState extends State<ProductPage> {
                           filledIconData: Icons.star_rounded,
                           halfFilledIconData: Icons.star_half_rounded,
                           defaultIconData: Icons.star_outline_rounded,
-                          color: SnaxColors.redAccent,
-                          borderColor: SnaxColors.redAccent,
+                          color: getTheme(context).accentColor,
+                          borderColor: getTheme(context).accentColor,
                           spacing: 0.0)
                     ],
                   ),
@@ -413,7 +414,7 @@ class _ProductPageState extends State<ProductPage> {
                         width: 250.0,
                         lineHeight: 10.0,
                         percent: .6,
-                        progressColor: SnaxColors.redAccent,
+                        progressColor: getTheme(context).accentColor,
                         backgroundColor: isDark(context)
                             ? Colors.grey[800]
                             : Colors.grey[200],
@@ -429,7 +430,7 @@ class _ProductPageState extends State<ProductPage> {
                         width: 250.0,
                         lineHeight: 10.0,
                         percent: .25,
-                        progressColor: SnaxColors.redAccent,
+                        progressColor: getTheme(context).accentColor,
                         backgroundColor: isDark(context)
                             ? Colors.grey[800]
                             : Colors.grey[200],
@@ -445,7 +446,7 @@ class _ProductPageState extends State<ProductPage> {
                         width: 250.0,
                         lineHeight: 10.0,
                         percent: .05,
-                        progressColor: SnaxColors.redAccent,
+                        progressColor: getTheme(context).accentColor,
                         backgroundColor: isDark(context)
                             ? Colors.grey[800]
                             : Colors.grey[200],
@@ -461,7 +462,7 @@ class _ProductPageState extends State<ProductPage> {
                         width: 250.0,
                         lineHeight: 10.0,
                         percent: .05,
-                        progressColor: SnaxColors.redAccent,
+                        progressColor: getTheme(context).accentColor,
                         backgroundColor: isDark(context)
                             ? Colors.grey[800]
                             : Colors.grey[200],
@@ -477,7 +478,7 @@ class _ProductPageState extends State<ProductPage> {
                         width: 250.0,
                         lineHeight: 10.0,
                         percent: .15,
-                        progressColor: SnaxColors.redAccent,
+                        progressColor: getTheme(context).accentColor,
                         backgroundColor: isDark(context)
                             ? Colors.grey[800]
                             : Colors.grey[200],
@@ -503,8 +504,8 @@ class _ProductPageState extends State<ProductPage> {
         filledIconData: Icons.star_rounded,
         halfFilledIconData: Icons.star_half_rounded,
         defaultIconData: Icons.star_outline_rounded,
-        color: SnaxColors.redAccent,
-        borderColor: SnaxColors.redAccent,
+        color: getTheme(context).accentColor,
+        borderColor: getTheme(context).accentColor,
         spacing: 0.0);
   }
 }
