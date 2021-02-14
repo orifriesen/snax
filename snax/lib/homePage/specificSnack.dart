@@ -35,12 +35,11 @@ class _ProductPageState extends State<ProductPage> {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        brightness: Brightness.dark,
+        brightness: getTheme(context).appBarBrightness(),
         elevation: 0,
         actions: <Widget>[
           IconButton(
               icon: Icon(Icons.search),
-              color: Colors.white,
               onPressed: () {
                 showSearch(
                     context: context,
@@ -147,12 +146,11 @@ class _ProductPageState extends State<ProductPage> {
                                               Text(this.widget.item.type.name,
                                                   style: TextStyle(
                                                       fontSize: 14,
-                                                      color: SnaxColors
-                                                          .redAccent)),
+                                                      color: getTheme(context).accentColor)),
                                               Icon(
                                                 Icons.arrow_forward_ios_rounded,
                                                 size: 14,
-                                                color: SnaxColors.redAccent,
+                                                color: getTheme(context).accentColor,
                                               )
                                             ],
                                           )),
@@ -204,7 +202,7 @@ class _ProductPageState extends State<ProductPage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: new FloatingActionButton.extended(
           highlightElevation: 1,
-          backgroundColor: getTheme(context).gradientStart,
+          backgroundColor: getTheme(context).primaryColor,
           onPressed: () {
             Navigator.push(
                 context,
@@ -219,9 +217,10 @@ class _ProductPageState extends State<ProductPage> {
               padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
               child: Row(
                 children: [
-                  Icon(Icons.star),
+                  Icon(Icons.star, color: getTheme(context).primaryContrastForText()),
                   Text("  Rate Snack ",
                       style: TextStyle(
+                        color: getTheme(context).primaryContrastForText(),
                           fontSize: 16,
                           letterSpacing: 0.1,
                           fontWeight: FontWeight.bold)),
@@ -408,7 +407,7 @@ class _ProductPageState extends State<ProductPage> {
                       LinearPercentIndicator(
                         leading: Text("5",
                             style: TextStyle(
-                                color: Colors.black,
+                                color: SnaxColors.subtext,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600)),
                         width: 250.0,
@@ -424,7 +423,7 @@ class _ProductPageState extends State<ProductPage> {
                       LinearPercentIndicator(
                         leading: Text("4",
                             style: TextStyle(
-                                color: Colors.black,
+                                color: SnaxColors.subtext,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600)),
                         width: 250.0,
@@ -440,7 +439,7 @@ class _ProductPageState extends State<ProductPage> {
                       LinearPercentIndicator(
                         leading: Text("3",
                             style: TextStyle(
-                                color: Colors.black,
+                                color: SnaxColors.subtext,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600)),
                         width: 250.0,
@@ -456,7 +455,7 @@ class _ProductPageState extends State<ProductPage> {
                       LinearPercentIndicator(
                         leading: Text("2",
                             style: TextStyle(
-                                color: Colors.black,
+                                color: SnaxColors.subtext,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600)),
                         width: 250.0,
@@ -472,7 +471,7 @@ class _ProductPageState extends State<ProductPage> {
                       LinearPercentIndicator(
                         leading: Text("1",
                             style: TextStyle(
-                                color: Colors.black,
+                                color: SnaxColors.subtext,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600)),
                         width: 250.0,

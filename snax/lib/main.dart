@@ -30,7 +30,6 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     themeUpdateStream.listen((_) {
       setState(() {});
-      print("stream update");
     });
 
     SharedPreferences.getInstance().then((prefs) {
@@ -81,6 +80,7 @@ class _MyAppState extends State<MyApp> {
                 CupertinoThemeData(primaryColor: currentDarkTheme.primaryColor),
             appBarTheme: AppBarTheme(
                 brightness: Brightness.light,
+                iconTheme: IconThemeData(color: currentLightTheme.appBarContrastForText()),
                 color: currentLightTheme.appBarColor)),
       ),
     );
@@ -112,6 +112,8 @@ void main() async {
     //     print("updated my bio from the app!");
     // });
 
+    //SnaxBackend.getRecentReviewsForUser(SnaxBackend.currentUser).then((_) {});
+
     // SnaxBackend.followUser("aWBb2fFQL5as5QiUs9leo3DiA1C3").then((_) {});
 
     // SnaxBackend.feedGetTrendingPosts().then((posts) {
@@ -121,7 +123,15 @@ void main() async {
     //   }
     // });
 
-    // SnaxBackend.searchUsers("esc").then((value) => print(value.length));
+    // SnaxBackend.searchUsers("esc").then((r) {
+    //   r.first.ratings().then((rs) {
+    //     rs.forEach((element) {
+    //       print(element.snack.name);
+    //       print(element.snack.image);
+    //       print(element.overall);
+    //     });
+    //   });
+    // });
 
     // SnaxBackend.feedLikePost("rlUXJBRe1MfKXI49Ux8M").then((_) {});
 

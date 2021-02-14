@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:snax/customIcons/instagram_icons.dart';
+import 'package:snax/themes.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AboutPage extends StatelessWidget {
@@ -9,7 +10,8 @@ class AboutPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.transparent,
+        brightness: getTheme(context).appBarBrightness(),
+        title: Text("About", style: TextStyle(color: getTheme(context).appBarContrastForText())),
       ),
       body: ListView(
         physics: ClampingScrollPhysics(),

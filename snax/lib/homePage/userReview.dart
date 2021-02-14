@@ -46,6 +46,7 @@ class _UserReviewPageState extends State<UserReviewPage> {
           elevation: 0,
           backgroundColor: Theme.of(context).canvasColor,
           centerTitle: true,
+          brightness: isDark(context) ? Brightness.dark : Brightness.light,
           title: Text(
             'Review Snack',
             style: TextStyle(

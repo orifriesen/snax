@@ -10,6 +10,8 @@ class SnaxTheme {
   Color gradientStart;
   Color gradientEnd;
   Color appBarColor;
+  Color overrideTextColor;
+  Brightness overrideBrightness;
   LinearGradient bigGradient() => LinearGradient(
         colors: [gradientStart, gradientEnd],
         begin: Alignment(0, -0.5),
@@ -20,8 +22,25 @@ class SnaxTheme {
         begin: Alignment(-0.5, -1.5),
         end: Alignment(1.5, 2.5),
       );
+
+  Color primaryContrastForText() =>
+      overrideTextColor ??
+      (primaryColor.computeLuminance() > 0.5 ? Colors.black : Colors.white);
+  Color accentContrastForText() =>
+      overrideTextColor ??
+      (accentColor.computeLuminance() > 0.5 ? Colors.black : Colors.white);
+  Color appBarContrastForText() =>
+      overrideTextColor ??
+      (appBarColor.computeLuminance() > 0.5 ? Colors.black : Colors.white);
+  Brightness appBarBrightness() =>
+      overrideBrightness ??
+      (appBarColor.computeLuminance() < 0.5
+          ? Brightness.dark
+          : Brightness.light);
+
   SnaxTheme(this.id, this.name, this.primaryColor, this.accentColor,
-      this.gradientStart, this.gradientEnd, this.appBarColor);
+      this.gradientStart, this.gradientEnd, this.appBarColor,
+      {this.overrideTextColor, this.overrideBrightness});
 }
 
 final List<SnaxTheme> lightThemeList = [
@@ -34,16 +53,34 @@ final List<SnaxTheme> lightThemeList = [
       HexColor.fromHex("FF416C"),
       HexColor.fromHex("FF4B2B")),
   SnaxTheme(
+      "purple",
+      "Midnight Snacking",
+      HexColor.fromHex("625E99"),
+      HexColor.fromHex("625E99"),
+      HexColor.fromHex("614385"),
+      HexColor.fromHex("516395"),
+      HexColor.fromHex("5B4F8B")),
+  SnaxTheme(
       "green",
       "Kale",
-      HexColor.fromHex("6AD68B"),
-      HexColor.fromHex("6AD68B"),
-      HexColor.fromHex("38EF7D"),
-      HexColor.fromHex("56B28D"),
-      HexColor.fromHex("74E987")),
+      HexColor.fromHex("91C55D"),
+      HexColor.fromHex("91C55D"),
+      HexColor.fromHex("6CA944"),
+      HexColor.fromHex("B2DD73"),
+      HexColor.fromHex("6CA944")),
+  SnaxTheme(
+      "escher",
+      "Escher's Theme",
+      HexColor.fromHex("ee9ca7"),
+      HexColor.fromHex("ee9ca7"),
+      HexColor.fromHex("ee9ca7"),
+      HexColor.fromHex("ffdde1"),
+      HexColor.fromHex("F7BCC3"),
+      overrideTextColor: Colors.white,
+      overrideBrightness: Brightness.dark),
   SnaxTheme(
       "pink",
-      "Ori",
+      "Ori's Theme",
       HexColor.fromHex("FF1493"),
       HexColor.fromHex("FF1493"),
       HexColor.fromHex("ec008c"),
@@ -77,13 +114,22 @@ final List<SnaxTheme> darkThemeList = [
       HexColor.fromHex("516395"),
       HexColor.fromHex("5B4F8B")),
   SnaxTheme(
-      "blue",
-      "test2",
-      HexColor.fromHex("0083B0"),
-      HexColor.fromHex("0083B0"),
-      HexColor.fromHex("00B4DB"),
-      HexColor.fromHex("0083B0"),
-      HexColor.fromHex("0083B0")),
+      "green",
+      "Kale",
+      HexColor.fromHex("91C55D"),
+      HexColor.fromHex("91C55D"),
+      HexColor.fromHex("6CA944"),
+      HexColor.fromHex("B2DD73"),
+      HexColor.fromHex("6CA944")),
+  SnaxTheme(
+    "escher",
+    "Escher's Theme",
+    HexColor.fromHex("FED8DD"),
+    HexColor.fromHex("FED8DD"),
+    HexColor.fromHex("ee9ca7"),
+    HexColor.fromHex("ffdde1"),
+    HexColor.fromHex("F7BCC3"),
+  ),
 ];
 
 SnaxTheme currentLightTheme = lightThemeList[0];

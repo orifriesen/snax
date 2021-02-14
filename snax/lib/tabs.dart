@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:snax/accountPage/globalAccountPage.dart';
 import 'package:snax/backend/requests.dart';
-import 'package:snax/feedPage/FeedPage.dart';
+import 'package:snax/feedPage/feedPage.dart';
 import 'package:snax/homePage/homePage.dart';
 import 'package:snax/activityPage/activityPage.dart';
 import 'package:snax/feedPage/makePostPage.dart';
+import 'package:snax/themes.dart';
 
 import 'helpers.dart';
 
@@ -45,6 +46,7 @@ class _AppTabsState extends State<AppTabs>
               FloatingActionButtonLocation.centerDocked,
           floatingActionButton: FloatingActionButton(
             child: const Icon(Icons.add),
+foregroundColor: getTheme(context).accentContrastForText(),
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => MakePostPage(),
@@ -76,6 +78,7 @@ class _AppTabsState extends State<AppTabs>
                           ? Theme.of(context).accentColor
                           : Theme.of(context).bottomAppBarTheme.color,
                       onPressed: () {
+                        if (_currentIndex == 1) feedTop.add(null);
                         setState(() {
                           _currentIndex = 1;
                         });

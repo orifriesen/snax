@@ -27,9 +27,9 @@ class _SettingsPageState extends State<SettingsPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: getTheme(context).appBarColor,
-        brightness: Brightness.dark,
+        brightness: getTheme(context).appBarBrightness(),
         elevation: 1,
-        title: Text('Settings'),
+        title: Text('Settings', style: TextStyle(color: getTheme(context).appBarContrastForText()),),
       ),
       bottomNavigationBar: BottomAppBar(
         elevation: 0,
@@ -388,6 +388,9 @@ class _SettingsPageState extends State<SettingsPage> {
       onPressed: () {
         showModalBottomSheet<Void>(
           context: context,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(24), topRight: Radius.circular(24))),
           builder: (BuildContext context) {
             if (dark)
               return themeSettings(darkThemeList, currentDarkTheme.name, true);
@@ -438,9 +441,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Container themeSettings(
       List<SnaxTheme> themes, String currentTheme, bool dark) {
     return Container(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(24), topRight: Radius.circular(24))),
+        padding: EdgeInsets.only(top: 4),
         child: ListView.builder(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
