@@ -436,21 +436,6 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          //* Following
-          Column(
-            children: [
-              FlatButton(
-                onPressed: () => {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => UserListPage("Following",
-                              SnaxBackend.getFollowing(this.widget.user.uid)))),
-                },
-                child: _following(),
-              ),
-            ],
-          ),
           //* Followers
           Column(
             children: [
@@ -464,6 +449,21 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                 },
                 child: _followers(),
               )
+            ],
+          ),
+          //* Following
+          Column(
+            children: [
+              FlatButton(
+                onPressed: () => {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => UserListPage("Following",
+                              SnaxBackend.getFollowing(this.widget.user.uid)))),
+                },
+                child: _following(),
+              ),
             ],
           ),
           //* Following/Unfollowing Profile

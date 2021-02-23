@@ -49,17 +49,17 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   //* Crop an image
-  Future _cropImage() async {
-    File cropped = await ImageCropper.cropImage(
-      sourcePath: _imageFile.path,
-      cropStyle: CropStyle.circle,
-      maxWidth: 400,
-      maxHeight: 400,
-    );
-    setState(() {
-      _imageFile = cropped ?? _imageFile;
-    });
-  }
+  // Future _cropImage() async {
+  //   File cropped = await ImageCropper.cropImage(
+  //     sourcePath: _imageFile.path,
+  //     cropStyle: CropStyle.circle,
+  //     maxWidth: 400,
+  //     maxHeight: 400,
+  //   );
+  //   setState(() {
+  //     _imageFile = cropped ?? _imageFile;
+  //   });
+  // }
 
   @override
   void initState() {
@@ -142,8 +142,9 @@ class _EditProfileState extends State<EditProfile> {
                     child: Text(
                       'Change Profile Photo',
                       style: TextStyle(
-                          fontSize: 15,
-                          color: getTheme(context).appBarContrastForText()),
+                        fontSize: 15,
+                        color: getTheme(context).appBarContrastForText(),
+                      ),
                     ),
                     onTap: () => {
                       showModalBottomSheet(
@@ -235,12 +236,12 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
-  //* This is the pop up sheet that appears when the user requests to change
-  //* their profile image
   Widget _imageSheet() {
     return Container(
+      // height: 100,
       margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Text(
             'Change Profile Photo',
@@ -265,27 +266,27 @@ class _EditProfileState extends State<EditProfile> {
               )
             ],
           ),
-          SizedBox(height: 20),
-          CircleAvatar(
-            radius: 80,
-            backgroundImage: _imageFile == null
-                ? AssetImage("assets/blank_user.png")
-                : Image.file(_imageFile as File),
-          ),
-          SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              FlatButton(
-                child: Icon(Icons.crop),
-                onPressed: () => {_cropImage},
-              ),
-              FlatButton(
-                child: Icon(Icons.check),
-                onPressed: () => {Navigator.pop(context)},
-              ),
-            ],
-          )
+          // SizedBox(height: 20),
+          // CircleAvatar(
+          //   radius: 80,
+          //   backgroundImage: _imageFile == null
+          //       ? AssetImage("assets/blank_user.png")
+          //       : Image.file(_imageFile as File),
+          // ),
+          // SizedBox(height: 20),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.center,
+          //   children: [
+          //     FlatButton(
+          //       child: Icon(Icons.crop),
+          //       onPressed: () => {_cropImage},
+          //     ),
+          //     FlatButton(
+          //       child: Icon(Icons.check),
+          //       onPressed: () => {Navigator.pop(context)},
+          //     ),
+          //   ],
+          // )
         ],
       ),
     );
