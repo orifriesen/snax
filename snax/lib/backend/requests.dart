@@ -34,12 +34,17 @@ import 'package:hive/hive.dart';
 //Example of what it looks like: { "candy-bar": "Candy Bar", "snack-mix": "Snack Mix" }
 Map _snackTypes = {};
 
+
+
+//Lazy (but way faster) way to get images from our firebase storage. If the image requires authentication this won't work.
+String snackImageURL(String id) => "https://firebasestorage.googleapis.com/v0/b/snax-dde4e.appspot.com/o/snacks%2F$id.jpg?alt=media";
+String userImageURL(String uid) => "https://firebasestorage.googleapis.com/v0/b/snax-dde4e.appspot.com/o/user-profiles%2F$uid.jpg?alt=media";
+String snackBannerImageURL(String id) => "https://firebasestorage.googleapis.com/v0/b/snax-dde4e.appspot.com/o/snacks-banners%2F$id.png?alt=media";
+
+
+
+//Sorting options. Make sure to add it to the SortRawStrings extension if you add a new sort here.
 enum SnackListSort { top, trending }
-
-//Use snackImageURLTemaplte.replace('#id#',id)
-final snackImageURLTemplate =
-    "https://firebasestorage.googleapis.com/v0/b/snax-dde4e.appspot.com/o/snacks%2F#id#.jpg?alt=media";
-
 extension SortRawStrings on SnackListSort {
   String get raw {
     switch (this) {
@@ -123,17 +128,9 @@ class SnaxBackend {
         _snackTypes[d.id] = d.get("name");
       });
     }
-    //Get the image
-    String imgUrl;
-    try {
-      imgUrl = await fbStorage
-          .ref()
-          .child("snacks")
-          .child(doc.id + ".jpg")
-          .getDownloadURL();
-    } catch (error) {
-      // fetch image error
-    }
+    //Grab the id of the snack type
+    String snackTypeId = (doc.get("type") as DocumentReference).id;
+    //Get the banner
     String bannerUrl;
     try {
       bannerUrl = await fbStorage
@@ -144,8 +141,6 @@ class SnaxBackend {
     } catch (error) {
       // fetch image error
     }
-    //Grab the id of the snack type
-    String snackTypeId = (doc.get("type") as DocumentReference).id;
     //Return the snack
     return SnackItem(
         doc.get("name"),
@@ -166,7 +161,7 @@ class SnaxBackend {
             : null,
         doc.data()["computed_ratings"],
         doc.data()["computed_trend"],
-        imgUrl,
+        snackImageURL(doc.id),
         banner: bannerUrl);
   }
 
@@ -175,7 +170,10 @@ class SnaxBackend {
       Query query, bool forceRefresh) async {
     //Check cache for value
     if (!forceRefresh && Cache.has(query.parameters.toString()))
-      return Cache.fetch(query.parameters.toString());
+      return (Cache.fetch(query.parameters.toString()) as List<SnackItem>).map((e) {
+        e.resetTransitionId();
+        return e;
+      }).toList();
     // String sort, bool desc, int limit) async {
     //Wait for the firebase to be initiated
     await _waitWhile(() => (fbStore == null));
@@ -195,17 +193,6 @@ class SnaxBackend {
     for (var doc in results) {
       //Grab the id of the snack type
       String snackTypeId = (doc.get("type") as DocumentReference).id;
-      //Get the image
-      String imgUrl;
-      try {
-        imgUrl = await fbStorage
-            .ref()
-            .child("snacks")
-            .child(doc.id + ".jpg")
-            .getDownloadURL();
-      } catch (error) {
-        // fetch image error
-      }
       //Get banner
       String bannerUrl;
       try {
@@ -237,7 +224,7 @@ class SnaxBackend {
               : null,
           doc.data()["computed_ratings"],
           doc.data()["computed_trend"],
-          imgUrl,
+          snackImageURL(doc.id),
           banner: bannerUrl));
     }
     Cache.add(query.parameters.toString(), snacks);
@@ -347,9 +334,11 @@ class SnaxBackend {
 
     //Remove from local database
     var followingBox = await Hive.openBox('user_following');
+    if (followingBox.values.toList().indexOf(uid) > 0)
     followingBox.deleteAt(followingBox.values.toList().indexOf(uid));
     // await Hive.close();
   }
+
 
   static Future<List<SnaxUser>> getFollowers(String uid) async {
     //Wait for the firebase to be initiated
@@ -381,7 +370,7 @@ class SnaxBackend {
     //Make the list
     List<SnaxUser> users = [];
     for (var doc in userDocs) {
-      var userImg = await getUserImage(doc.id);
+      
       users.add(SnaxUser(
           doc.get("username"),
           doc.get("name"),
@@ -389,23 +378,23 @@ class SnaxBackend {
           doc.data()["bio"],
           doc.get("followerCount"),
           doc.get("followingCount"),
-          photo: userImg,
+          photo: (doc.data()["hasPhoto"] ?? false) ? userImageURL(doc.id) : null,
           userIsFollowing: followingBox.values.contains(doc.id)));
     }
     // await Hive.close();
     return users;
   }
 
-  static Future<String> getUserImage(uid) async {
-    var ref = fbStorage.ref().child("user-profiles").child(uid + ".jpg");
-    try {
-      return await ref.getDownloadURL();
-    } catch (_) {
-      print(
-          "ignore previous firebase storage error, it was just a user without a profile photo");
-      return null;
-    }
-  }
+  // static Future<String> getUserImage(uid) async {
+  //   var ref = fbStorage.ref().child("user-profiles").child(uid + ".jpg");
+  //   try {
+  //     return await ref.getDownloadURL();
+  //   } catch (_) {
+  //     print(
+  //         "ignore previous firebase storage error, it was just a user without a profile photo");
+  //     return null;
+  //   }
+  // }
 
   static Future<List<SnaxUser>> getFollowing(String uid) async {
     //Wait for the firebase to be initiated
@@ -438,7 +427,6 @@ class SnaxBackend {
     //Make the list
     List<SnaxUser> users = [];
     for (var doc in userDocs) {
-      var userImg = await getUserImage(doc.id);
       users.add(SnaxUser(
           doc.get("username"),
           doc.get("name"),
@@ -446,7 +434,7 @@ class SnaxBackend {
           doc.data()["bio"],
           doc.get("followerCount"),
           doc.get("followingCount"),
-          photo: userImg,
+          photo: (doc.data()["hasPhoto"] ?? false) ? userImageURL(doc.id) : null,
           userIsFollowing: followingBox.values.contains(doc.id)));
     }
     // await Hive.close();
@@ -543,6 +531,23 @@ class SnaxBackend {
     var likeBox = await Hive.openBox('user_likes');
     like ? likeBox.put(postId, true) : likeBox.delete(postId);
     // await likeBox.close();
+  }
+
+  static Future<Post> feedGetPost(String id, {bool forceRefresh = false}) async {
+    //Wait for firebase init
+    await _waitWhile(() => (fbStore == null));
+    var query = fbStore.collection("feed").doc(id);
+    //Check the cache
+    if (!forceRefresh && Cache.has(query.toString()))
+      return Cache.fetch(query.toString());
+    //Fetch
+    DocumentSnapshot result = await query.get();
+    if (!result.exists) throw "Post Not Found";
+    //Make into post
+    var post = (await _feedGrabRefs([result].toList())).first;
+    //Add to cache
+    Cache.add(query.toString(), post);
+    return post;
   }
 
   static Future<List<Post>> feedGetTopPosts({bool forceRefresh = false}) async {
@@ -688,7 +693,7 @@ class SnaxBackend {
                     : null,
                 e.value.data()["computed_ratings"],
                 e.value.data()["computed_trend"],
-                snackImageURLTemplate.replaceFirst("#id#", e.value.id)),
+                snackImageURL(e.value.id)),
             toDouble(docs[e.key].get("ratings.score_overall")),
             toDouble(docs[e.key].get("ratings.score_mouthfeel")),
             toDouble(docs[e.key].get("ratings.score_accessibility")),
@@ -771,8 +776,6 @@ class SnaxBackend {
     List<Comment> comments = [];
     for (var doc in docs) {
       var data = doc.data();
-      //Grab photo of user
-      String userImg = await getUserImage(data["uid"]);
 
       SnaxUser user = SnaxUser(
           userDatas[data["uid"]]["username"],
@@ -781,7 +784,7 @@ class SnaxBackend {
           userDatas[data["uid"]]["bio"],
           userDatas[data["uid"]]["followerCount"],
           userDatas[data["uid"]]["followingCount"],
-          photo: userImg,
+          photo: (userDatas[data["uid"]]["hasPhoto"] ?? false) ? userImageURL(data["uid"]) : null,
           userIsFollowing: followingBox.values.contains(data["uid"]));
       comments.add(Comment(
           doc.id,
@@ -797,8 +800,7 @@ class SnaxBackend {
   }
 
   //Grab extra info like user and snack for a given list of feed database items
-  static Future<List<Post>> _feedGrabRefs(
-      List<QueryDocumentSnapshot> docs) async {
+  static Future<List<Post>> _feedGrabRefs(List<dynamic> docs) async {
     //Get local list of likes
     var likeBox = await Hive.openBox('user_likes');
     var followingBox = await Hive.openBox('user_following');
@@ -858,18 +860,7 @@ class SnaxBackend {
       if (!snackDatas.containsKey(data["snack_id"]) ||
           !userDatas.containsKey(data["uid"])) continue;
 
-      //Get snack image
-      String snackImg;
-      String userImg = await getUserImage(data["uid"]);
-
-      try {
-        snackImg = await fbStorage
-            .ref()
-            .child("snacks")
-            .child(data["snack_id"] + ".jpg")
-            .getDownloadURL();
-      } catch (error) {}
-
+      
       //Create user
       SnaxUser user = SnaxUser(
           userDatas[data["uid"]]["username"],
@@ -878,7 +869,7 @@ class SnaxBackend {
           userDatas[data["uid"]]["bio"],
           userDatas[data["uid"]]["followerCount"],
           userDatas[data["uid"]]["followingCount"],
-          photo: userImg,
+          photo: (userDatas[data["uid"]]["hasPhoto"] ?? false) ? userImageURL(data["uid"]) : null,
           userIsFollowing: followingBox.values.contains(data["uid"]));
 
       //Create snack
@@ -888,7 +879,7 @@ class SnaxBackend {
           snackDatas[data["snack_id"]]["computed_ratings"],
           toDouble((snackDatas[data["snack_id"]]["computed"] ??
               {"score_overall": null})["score_overall"]),
-          snackImg);
+          snackImageURL(data["snack_id"]));
       //Add post
       posts.add(Post(
           doc.id,
@@ -948,17 +939,6 @@ class SnaxBackend {
         _snackTypes[d.id] = d.get("name");
       });
     }
-    //Get the image
-    String imgUrl;
-    try {
-      imgUrl = await fbStorage
-          .ref()
-          .child("snacks")
-          .child(doc.id + ".jpg")
-          .getDownloadURL();
-    } catch (error) {
-      // fetch image error
-    }
     //Grab the id of the snack type
     String snackTypeId = (doc.get("type") as DocumentReference).id;
     //Return the snack
@@ -981,7 +961,7 @@ class SnaxBackend {
             : SnackRating(null, null, null, null, null, null, null, null),
         doc.data()["computed_ratings"],
         doc.data()["computed_trend"],
-        imgUrl);
+        snackImageURL(doc.id));
   }
 
   static Future<List<SnaxUser>> searchUsers(String query) async {
@@ -999,16 +979,6 @@ class SnaxBackend {
       List<SnaxUser> returnItems = [];
       //Iterate through search results
       for (var result in resultItems) {
-        //Get the image url
-        String imgUrl;
-        try {
-          imgUrl = await fbStorage
-              .ref()
-              .child("user-profiles")
-              .child(result["id"].toString() + ".jpg")
-              .getDownloadURL();
-        } catch (error) {}
-
         //Add to the list
         returnItems.add(SnaxUser(
             result["data"]["username"],
@@ -1017,7 +987,7 @@ class SnaxBackend {
             result["data"]["bio"],
             result["data"]["followerCount"],
             result["data"]["followingCount"],
-            photo: imgUrl,
+            photo: (result["data"]["hasPhoto"] ?? false) ? userImageURL(result["id"]) : null,
             userIsFollowing: followingBox.values.contains(result["id"])));
       }
       // await Hive.close();
@@ -1035,16 +1005,7 @@ class SnaxBackend {
     await _waitWhile(() => (fbStore == null));
 
     var doc = await fbStore.collection("users").doc(uid).get();
-    print(doc.id);
-    //Get the image
-    String imgUrl;
-    try {
-      imgUrl = await fbStorage
-          .ref()
-          .child("user-profiles")
-          .child(uid + ".jpg")
-          .getDownloadURL();
-    } catch (error) {}
+
     //Get following list
     var followingBox = await Hive.openBox('user_following');
 
@@ -1056,7 +1017,7 @@ class SnaxBackend {
         doc.data()["followerCount"],
         doc.data()["followingCount"],
         userIsFollowing: followingBox.values.contains(doc.id),
-        photo: imgUrl);
+        photo: (doc.data()["hasPhoto"] ?? false) ? userImageURL(uid) : null);
   }
 
   static Future<List<SnackSearchResultItem>> search(String query) async {
@@ -1072,15 +1033,7 @@ class SnaxBackend {
       List<SnackSearchResultItem> returnItems = [];
       //Iterate through search results
       for (var result in resultItems) {
-        //Get the image url
-        String imgUrl;
-        try {
-          imgUrl = await fbStorage
-              .ref()
-              .child("snacks")
-              .child(result["id"].toString() + ".jpg")
-              .getDownloadURL();
-        } catch (error) {}
+        
 
         //Add to the list
         returnItems.add(SnackSearchResultItem(
@@ -1088,7 +1041,7 @@ class SnaxBackend {
             result["id"].toString(),
             (result["count"] != null) ? (result["count"]) as int : null,
             (result["overall"] != null) ? (result["overall"]).toDouble() : null,
-            imgUrl));
+            snackImageURL(result["id"].toString())));
       }
       //Return the list
       return returnItems;

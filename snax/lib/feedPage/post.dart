@@ -76,7 +76,9 @@ String dateFormatPost(DateTime time) {
 String dateFormatComment(DateTime time) {
   Duration difference = time.difference(DateTime.now());
   difference *= -1;
-  if (difference.inMinutes <= 60)
+  if (difference.inSeconds <= 60)
+    return "just now";
+  else if (difference.inMinutes <= 60)
     return difference.inMinutes.toString() + "m";
   else if (difference.inHours <= 24)
     return difference.inHours.toString() + "h";

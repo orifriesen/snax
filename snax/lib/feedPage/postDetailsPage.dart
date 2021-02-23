@@ -13,10 +13,12 @@ import 'package:snax/helpers.dart';
 import '../themes.dart';
 
 class PostDetailsPage extends StatefulWidget {
-  final Post post;
-  const PostDetailsPage({
+  Post post;
+  String transitionid;
+  PostDetailsPage({
     Key key,
     @required this.post,
+    this.transitionid,
   }) : super(key: key);
 
   @override
@@ -60,13 +62,13 @@ class _PostDetailsPage extends State<PostDetailsPage> {
             bottom: false,
             child: Padding(
               padding: const EdgeInsets.only(top: 0.0),
-              child: postWidget(context, widget.post, opensDetails: false),
+              child: (widget.post == null) ? fakePostWidget(context, transitionId: widget.transitionid) : postWidget(context, widget.post, opensDetails: false, transitionId: widget.transitionid),
             ),
           ),
         ]),
-        commentLoader(context, widget.post),
+        if (this.widget.post != null) commentLoader(context, widget.post),
       ]),
-      bottomSheet: TextField(
+      bottomSheet: (widget.post != null) ? TextField(
         textInputAction: TextInputAction.send,
         controller: commentController,
         minLines: 1,
@@ -108,7 +110,7 @@ class _PostDetailsPage extends State<PostDetailsPage> {
             FocusScope.of(context).unfocus();
           });
         },
-      ),
+      ) : TextField(),
     );
   }
 
@@ -233,5 +235,41 @@ class _PostDetailsPage extends State<PostDetailsPage> {
         },
         future: post.getComments(),
       );
+  }
+}
+
+
+class FuturePostDetailsPage extends StatefulWidget {
+
+  String id;
+  String transitionId;
+
+  FuturePostDetailsPage(this.id, {this.transitionId});
+
+  @override
+  _FuturePostDetailsPageState createState() => _FuturePostDetailsPageState();
+}
+
+class _FuturePostDetailsPageState extends State<FuturePostDetailsPage> {
+
+  Post postObject;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    SnaxBackend.feedGetPost(this.widget.id).then((post) async {
+      await Future.delayed(Duration(milliseconds: 500));
+      setState(() {
+
+        this.postObject = post;
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PostDetailsPage(post: postObject, transitionid: widget.transitionId,);
   }
 }
