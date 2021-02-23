@@ -193,7 +193,7 @@ class _FeedPageState extends State<FeedPage>
                                 subtitle: "It's awfully quiet..."),
                           ));
                     } else {
-                      post = posts[index - 1];
+                      post = posts[index - 2];
                       return postWidget(context, post, refresh: refresh);
                     }
                   },

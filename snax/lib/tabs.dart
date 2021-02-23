@@ -46,7 +46,7 @@ class _AppTabsState extends State<AppTabs>
               FloatingActionButtonLocation.centerDocked,
           floatingActionButton: FloatingActionButton(
             child: const Icon(Icons.add),
-foregroundColor: getTheme(context).accentContrastForText(),
+            foregroundColor: getTheme(context).accentContrastForText(),
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => MakePostPage(),
@@ -110,7 +110,7 @@ foregroundColor: getTheme(context).accentContrastForText(),
                       })
                 ]),
             shape: CircularNotchedRectangle(),
-            notchMargin: 4.0,
+            notchMargin: 0.0,
             /*items: [
               new BottomNavigationBarItem(
                 icon: _currentIndex == 0
