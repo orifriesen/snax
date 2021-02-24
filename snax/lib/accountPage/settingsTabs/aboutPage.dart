@@ -16,7 +16,7 @@ class AboutPage extends StatelessWidget {
         leading: FlatButton(
           child: Icon(
             Icons.arrow_back_ios,
-            color: isDark(context) ? Colors.white : Colors.black,
+            color: getTheme(context).appBarContrastForText(),
           ),
           onPressed: () {
             Navigator.pop(context);
@@ -56,6 +56,9 @@ class AboutPage extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 8.0),
                     child: RichText(
                       text: TextSpan(
+                        style: TextStyle(
+                          color: isDark(context) ? Colors.white : Colors.black,
+                        ),
                         children: [
                           TextSpan(
                             text:
@@ -64,7 +67,7 @@ class AboutPage extends StatelessWidget {
                           TextSpan(
                             text: "SNAX.",
                             style: TextStyle(
-                              fontWeight: FontWeight.bold,
+                              fontWeight: FontWeight.w500,
                               letterSpacing: 1,
                             ),
                           ),
@@ -155,7 +158,10 @@ class AboutPage extends StatelessWidget {
               padding: const EdgeInsets.only(left: 8),
               child: Text(
                 name,
-                style: TextStyle(fontSize: 15),
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
             //* Instagram
