@@ -54,8 +54,22 @@ class AboutPage extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
-                    child: Text(
-                      "Our goal is to bring everyone together to discuss all types of snacks. No matter who you are, we believe that you should be able to express your feelings about your favorite foods.",
+                    child: RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text:
+                                "We are a group of four people who saw a flaw in the snack industry.\nSo we went to the drawing board and began planning a revolutionary app that would satisfy everyone;\nA social snacking platform -- this is ",
+                          ),
+                          TextSpan(
+                            text: "SNAX.",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
