@@ -2,9 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:snax/accountPage/editProfile.dart';
 
+import 'package:snax/accountPage/editProfile.dart';
 import 'package:snax/accountPage/userListPage.dart';
 import 'package:snax/accountPage/settingsPage.dart';
 import 'package:snax/backend/backend.dart';
@@ -15,7 +14,10 @@ import 'accountBottomTabs/secondTab.dart';
 
 import 'package:snax/backend/requests.dart';
 import 'package:snax/helpers.dart';
+import 'package:snax/backend/backend.dart';
 
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class GlobalAccountPage extends StatefulWidget {
@@ -74,12 +76,18 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
       extendBody: true,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor:
-            (showAppBar || (SnaxBackend.currentUser == null && this.widget.isAccountPage)) ? getTheme(context).appBarColor : Colors.transparent,
+        backgroundColor: (showAppBar ||
+                (SnaxBackend.currentUser == null && this.widget.isAccountPage))
+            ? getTheme(context).appBarColor
+            : Colors.transparent,
         brightness: getTheme(context).appBarBrightness(),
-        title: Text(this.widget.isAccountPage
-            ? "My Profile"
-            : "${this.widget.user.name}\'s Profile", style: TextStyle(color: getTheme(context).appBarContrastForText(),)),
+        title: Text(
+            this.widget.isAccountPage
+                ? "My Profile"
+                : "${this.widget.user.name}\'s Profile",
+            style: TextStyle(
+              color: getTheme(context).appBarContrastForText(),
+            )),
         actions: [
           //* Calls the settings pop up
           this.widget.isAccountPage
@@ -109,10 +117,14 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.login, color: getTheme(context).accentContrastForText()),
+                        Icon(Icons.login,
+                            color: getTheme(context).accentContrastForText()),
                         Padding(padding: EdgeInsets.only(left: 16)),
                         Text("Sign In",
-                            style: TextStyle(fontSize: 15, color: getTheme(context).accentContrastForText()))
+                            style: TextStyle(
+                                fontSize: 15,
+                                color:
+                                    getTheme(context).accentContrastForText()))
                       ],
                     ),
                   ),
@@ -148,15 +160,23 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                              color: Color.fromARGB(60, 0, 0, 0),
-                              blurRadius: 12)
+                      boxShadow: [
+                        BoxShadow(
+                            color: Color.fromARGB(60, 0, 0, 0), blurRadius: 12)
+                      ],
+                      borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(40),
+                          bottomRight: Radius.circular(40)),
+                      gradient: LinearGradient(
+                        begin: Alignment.center,
+                        // end: Alignment.bottomCenter,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          getTheme(context).gradientStart,
+                          getTheme(context).gradientEnd
                         ],
-                        borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(40),
-                            bottomRight: Radius.circular(40)),
-                        gradient: getTheme(context).bigGradient()),
+                      ),
+                    ),
                     child: SafeArea(
                       top: true,
                       bottom: false,
@@ -200,7 +220,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                   ),
                   [
                     PostTab(widget.user),
-                    ReviewedTab(),
+                    ReviewedTab(widget.user),
                   ][_tabController.index],
                 ],
               ),
@@ -245,7 +265,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
           ? CupertinoAlertDialog(
               title: Text("Report This User"),
               content: Text(
-                "Do you want to report this user? Your default email app will open.",
+                "Are you sure you want to report this user?",
               ),
               actions: [
                 FlatButton(
@@ -260,8 +280,9 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                     style: TextStyle(fontSize: 18),
                   ),
                   onPressed: () => {
-                    customLaunch(
-                        "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20User: ${this.widget.user.username}&body= Reason: "),
+                    reportLink(
+                      "mailto:thesnaxofficial@gmail.com?subject=Reporting%20User:%20@${this.widget.user.username}&body=Reason:",
+                    ),
                     Navigator.pop(context),
                   },
                 )
@@ -270,7 +291,8 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
           : AlertDialog(
               title: Text("Report This User"),
               content: Text(
-                  "Do you want to report this user? Your default email app will open."),
+                "Are you sure you want to report this user?",
+              ),
               actions: [
                 FlatButton(
                     child: Text(
@@ -290,8 +312,8 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                     ),
                   ),
                   onPressed: () => {
-                    customLaunch(
-                        "mailto:thesnaxofficial@gmail.com?subject=Reporting%20a%20User: ${this.widget.user.username}&body=Reason: "),
+                    reportLink(
+                        "mailto:thesnaxofficial@gmail.com?subject=Reporting%20User:%20@${this.widget.user.username}&body=Reason:"),
                     Navigator.pop(context),
                   },
                 )
@@ -309,17 +331,19 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
           padding: const EdgeInsets.all(8.0),
           child: Hero(
             tag: this.widget.transitionId ?? 'profile-photo',
-                      child: Container(
-                        width: 80,
-                        height: 80,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                        clipBehavior: Clip.hardEdge,
-                        child: (this.widget.user.photo != null)
-                                ? FadeInImage.assetNetwork(placeholder: "assets/blank_user.png",image: this.widget.user.photo)
-                                : Image.asset("assets/blank_user.png"),
-                      ),
+            child: Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+              ),
+              clipBehavior: Clip.hardEdge,
+              child: (this.widget.user.photo != null)
+                  ? FadeInImage.assetNetwork(
+                      placeholder: "assets/blank_user.png",
+                      image: this.widget.user.photo)
+                  : Image.asset("assets/blank_user.png"),
+            ),
           ),
         ),
         SizedBox(width: 10),
@@ -355,7 +379,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
     var _maxLines = bioShowTextFlag ? 4 : 8;
     return Container(
       child: Padding(
-        padding: const EdgeInsets.only(left: 16.0, right: 16),
+        padding: const EdgeInsets.only(left: 16, right: 16),
         child: Column(
           children: [
             (SnaxBackend.currentUser.bio != null)
@@ -379,7 +403,6 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                                   setState(() {
                                     bioShowTextFlag = !bioShowTextFlag;
                                   });
-                                  print(numLines);
                                 },
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
@@ -413,21 +436,6 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          //* Following
-          Column(
-            children: [
-              FlatButton(
-                onPressed: () => {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => UserListPage("Following",
-                              SnaxBackend.getFollowing(this.widget.user.uid)))),
-                },
-                child: _following(),
-              ),
-            ],
-          ),
           //* Followers
           Column(
             children: [
@@ -441,6 +449,21 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                 },
                 child: _followers(),
               )
+            ],
+          ),
+          //* Following
+          Column(
+            children: [
+              FlatButton(
+                onPressed: () => {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => UserListPage("Following",
+                              SnaxBackend.getFollowing(this.widget.user.uid)))),
+                },
+                child: _following(),
+              ),
             ],
           ),
           //* Following/Unfollowing Profile
@@ -554,18 +577,24 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
   }
 
   //* URL Launcher
-  //* command can be any link
-  customLaunch(command) async {
+  bioLink(command) async {
     if (await canLaunch(command)) {
       await launch(command);
     } else {
-      print("Could not work");
+      print("Command could not work");
+    }
+  }
+
+  reportLink(command) async {
+    if (await canLaunch(command)) {
+      await launch(command);
+    } else {
+      print("Reporting did not work");
     }
   }
 }
 
 class FutureGlobalAccountPage extends StatefulWidget {
-
   String uid;
   bool isFollowing;
   String transitionId;
@@ -573,16 +602,18 @@ class FutureGlobalAccountPage extends StatefulWidget {
   FutureGlobalAccountPage(this.uid, this.isFollowing, {this.transitionId});
 
   @override
-  _FutureGlobalAccountPageState createState() => _FutureGlobalAccountPageState();
+  _FutureGlobalAccountPageState createState() =>
+      _FutureGlobalAccountPageState();
 }
 
 class _FutureGlobalAccountPageState extends State<FutureGlobalAccountPage> {
-
   SnaxUser userObject;
 
   @override
   void initState() {
-    this.userObject = SnaxUser("", "", this.widget.uid, "", 0, 0, photo: userImageURL(this.widget.uid), userIsFollowing: this.widget.isFollowing);
+    this.userObject = SnaxUser("", "", this.widget.uid, "", 0, 0,
+        photo: userImageURL(this.widget.uid),
+        userIsFollowing: this.widget.isFollowing);
     super.initState();
 
     SnaxBackend.getUser(this.widget.uid).then((user) {
@@ -594,6 +625,9 @@ class _FutureGlobalAccountPageState extends State<FutureGlobalAccountPage> {
 
   @override
   Widget build(BuildContext context) {
-    return GlobalAccountPage(userObject, transitionId: this.widget.transitionId,);
+    return GlobalAccountPage(
+      userObject,
+      transitionId: this.widget.transitionId,
+    );
   }
 }

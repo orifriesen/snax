@@ -4,14 +4,26 @@ import 'package:snax/customIcons/instagram_icons.dart';
 import 'package:snax/themes.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../helpers.dart';
+
 class AboutPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text("About",
+            style: TextStyle(color: getTheme(context).appBarContrastForText())),
+        leading: FlatButton(
+          child: Icon(
+            Icons.arrow_back_ios,
+            color: getTheme(context).appBarContrastForText(),
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         elevation: 0,
         brightness: getTheme(context).appBarBrightness(),
-        title: Text("About", style: TextStyle(color: getTheme(context).appBarContrastForText())),
       ),
       body: ListView(
         physics: ClampingScrollPhysics(),
@@ -42,8 +54,25 @@ class AboutPage extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
-                    child: Text(
-                      "Our goal is to bring everyone together to discuss all types of snack. No matter who you are, we believe that you should be able to express your feelings about your favorite foods.",
+                    child: RichText(
+                      text: TextSpan(
+                        style: TextStyle(
+                          color: isDark(context) ? Colors.white : Colors.black,
+                        ),
+                        children: [
+                          TextSpan(
+                            text:
+                                "We are a group of four people who saw a flaw in the snack industry.\nSo we went to the drawing board and began planning a revolutionary app that would satisfy everyone;\nA social snacking platform -- this is ",
+                          ),
+                          TextSpan(
+                            text: "SNAX.",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: 1,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -129,7 +158,10 @@ class AboutPage extends StatelessWidget {
               padding: const EdgeInsets.only(left: 8),
               child: Text(
                 name,
-                style: TextStyle(fontSize: 15),
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
             //* Instagram
