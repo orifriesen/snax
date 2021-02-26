@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:snax/accountPage/globalAccountPage.dart';
 import 'package:snax/backend/requests.dart';
 import 'package:snax/feedPage/feedPage.dart';
@@ -42,108 +43,80 @@ class _AppTabsState extends State<AppTabs>
         length: 4,
         child: Scaffold(
           extendBody: true,
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerDocked,
-          floatingActionButton: FloatingActionButton(
-            child: const Icon(Icons.add),
-            foregroundColor: getTheme(context).accentContrastForText(),
-            onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => MakePostPage(),
-                  fullscreenDialog: true));
-            },
+          bottomNavigationBar: GNav(
+              rippleColor:
+                  Colors.grey[800], // tab button ripple color when pressed
+              hoverColor: Colors.grey[700], // tab button hover color
+              haptic: true,
+              tabBorderRadius: 22,
+              curve: Curves.easeOutExpo,
+              duration: Duration(milliseconds: 300),
+              gap: 4,
+              tabMargin: EdgeInsets.all(4),
+              color: isDark(context) == true ? Colors.white : Colors.black,
+              activeColor: getTheme(context).primaryContrastForText(),
+              iconSize: 24,
+              tabBackgroundColor: getTheme(context).accentColor,
+              backgroundColor: isDark(context) == true
+                  ? SnaxColors.darkGreyGradientEnd
+                  : Colors.white,
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              tabs: [
+                GButton(
+                  icon: Icons.home_rounded,
+                  text: 'Home',
+                ),
+                GButton(icon: Icons.chat_rounded, text: 'Feed'),
+                GButton(
+                  icon: Icons.add_circle_outline_rounded,
+                  iconSize: 26,
+                  onPressed: () {
+                    print("test");
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MakePostPage()));
+                  },
+                ),
+                GButton(
+                  icon: Icons.inbox_rounded,
+                  text: 'Activity',
+                ),
+                GButton(
+                  leading: CircleAvatar(
+                      radius: 14,
+                      child: ClipOval(
+                          child: FadeInImage.assetNetwork(
+                              placeholder: "assets/blank_user.png",
+                              image: userImageURL(
+                                  SnaxBackend.currentUser != null
+                                      ? SnaxBackend.currentUser.uid
+                                      : "")))),
+                  text: 'Profile',
+                )
+              ],
+              selectedIndex: _currentIndex,
+              onTabChange: (index) {
+                index == 2
+                    ? Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => MakePostPage()))
+                    : setState(() {
+                        _currentIndex = index;
+                      });
+              }),
+          body: Padding(
+            padding: const EdgeInsets.only(bottom: 44),
+            child: [
+              DefaultTabController(
+                  length: 2,
+                  child: MainPage(),
+                  key: PageStorageKey("home_key")),
+              FeedPage(),
+              Container(),
+              ActivityPage(),
+              GlobalAccountPage(SnaxBackend.currentUser, isAccountPage: true)
+            ][_currentIndex],
           ),
-          bottomNavigationBar: BottomAppBar(
-            child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  IconButton(
-                      icon: _currentIndex == 0
-                          ? Icon(Icons.home_rounded)
-                          : Icon(Icons.home_outlined),
-                      color: _currentIndex == 0
-                          ? Theme.of(context).accentColor
-                          : Theme.of(context).bottomAppBarTheme.color,
-                      onPressed: () {
-                        setState(() {
-                          _currentIndex = 0;
-                        });
-                      }),
-                  IconButton(
-                      icon: _currentIndex == 1
-                          ? Icon(Icons.chat_rounded)
-                          : Icon(Icons.chat_outlined),
-                      color: _currentIndex == 1
-                          ? Theme.of(context).accentColor
-                          : Theme.of(context).bottomAppBarTheme.color,
-                      onPressed: () {
-                        if (_currentIndex == 1) feedTop.add(null);
-                        setState(() {
-                          _currentIndex = 1;
-                        });
-                      }),
-                  Container(height: 20, width: 20),
-                  IconButton(
-                      icon: Icon(_currentIndex == 2
-                          ? Icons.inbox
-                          : Icons.inbox_outlined),
-                      color: _currentIndex == 2
-                          ? Theme.of(context).accentColor
-                          : Theme.of(context).bottomAppBarTheme.color,
-                      onPressed: () {
-                        setState(() {
-                          _currentIndex = 2;
-                        });
-                      }),
-                  IconButton(
-                      icon: Icon(_currentIndex == 3
-                          ? Icons.person
-                          : Icons.person_outlined),
-                      color: _currentIndex == 3
-                          ? Theme.of(context).accentColor
-                          : Theme.of(context).bottomAppBarTheme.color,
-                      onPressed: () {
-                        setState(() {
-                          _currentIndex = 3;
-                        });
-                      })
-                ]),
-            shape: CircularNotchedRectangle(),
-            notchMargin: 4.0,
-            /*items: [
-              new BottomNavigationBarItem(
-                icon: _currentIndex == 0
-                    ? Icon(Icons.home_rounded, color: SnaxColors.redAccent)
-                    : Icon(Icons.home_outlined, color: SnaxColors.subtext),
-                label: "Home",
-              ),
-              new BottomNavigationBarItem(
-                icon: _currentIndex == 1
-                    ? Icon(Icons.chat_rounded, color: SnaxColors.redAccent)
-                    : Icon(Icons.chat_outlined, color: SnaxColors.subtext),
-                label: "Feed",
-              ),
-              new BottomNavigationBarItem(
-                  icon: _currentIndex == 2
-                      ? Icon(Icons.inbox, color: SnaxColors.redAccent)
-                      : Icon(Icons.inbox_outlined, color: SnaxColors.subtext),
-                  label: "Activity"),
-              new BottomNavigationBarItem(
-                icon: _currentIndex == 3
-                    ? Icon(Icons.person, color: SnaxColors.redAccent)
-                    : Icon(Icons.person_outline, color: SnaxColors.subtext),
-                label: "Profile",
-              )
-            ],*/
-          ),
-          body: [
-            DefaultTabController(
-                length: 2, child: MainPage(), key: PageStorageKey("home_key")),
-            FeedPage(),
-            ActivityPage(),
-            GlobalAccountPage(SnaxBackend.currentUser, isAccountPage: true)
-          ][_currentIndex],
         ),
       ),
     );

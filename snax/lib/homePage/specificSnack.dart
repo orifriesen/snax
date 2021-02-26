@@ -122,6 +122,7 @@ class _ProductPageState extends State<ProductPage> {
                                           const EdgeInsets.only(bottom: 1.0),
                                       child: Text(
                                         this.widget.item.name,
+                                        overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.w600),
@@ -146,11 +147,13 @@ class _ProductPageState extends State<ProductPage> {
                                               Text(this.widget.item.type.name,
                                                   style: TextStyle(
                                                       fontSize: 14,
-                                                      color: getTheme(context).accentColor)),
+                                                      color: getTheme(context)
+                                                          .accentColor)),
                                               Icon(
                                                 Icons.arrow_forward_ios_rounded,
                                                 size: 14,
-                                                color: getTheme(context).accentColor,
+                                                color: getTheme(context)
+                                                    .accentColor,
                                               )
                                             ],
                                           )),
@@ -217,10 +220,11 @@ class _ProductPageState extends State<ProductPage> {
               padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
               child: Row(
                 children: [
-                  Icon(Icons.star, color: getTheme(context).primaryContrastForText()),
+                  Icon(Icons.star,
+                      color: getTheme(context).primaryContrastForText()),
                   Text("  Rate Snack ",
                       style: TextStyle(
-                        color: getTheme(context).primaryContrastForText(),
+                          color: getTheme(context).primaryContrastForText(),
                           fontSize: 16,
                           letterSpacing: 0.1,
                           fontWeight: FontWeight.bold)),
@@ -289,7 +293,7 @@ class _ProductPageState extends State<ProductPage> {
       divider(),
       returnSpecificCriteria(
           "Spiciness", this.widget.item.averageRatings.spicyness, false),
-      Padding(
+      /*Padding(
         padding: const EdgeInsets.only(left: 16.0, top: 16),
         child: Text("Rating Distribution",
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
@@ -310,7 +314,7 @@ class _ProductPageState extends State<ProductPage> {
                 this.widget.item),
           ],
         ),
-      ),
+      ),*/
     ]);
   }
 

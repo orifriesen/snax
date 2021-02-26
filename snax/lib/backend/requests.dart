@@ -34,17 +34,18 @@ import 'package:hive/hive.dart';
 //Example of what it looks like: { "candy-bar": "Candy Bar", "snack-mix": "Snack Mix" }
 Map _snackTypes = {};
 
-
-
 //Lazy (but way faster) way to get images from our firebase storage. If the image requires authentication this won't work.
-String snackImageURL(String id) => "https://firebasestorage.googleapis.com/v0/b/snax-dde4e.appspot.com/o/snacks%2F$id.jpg?alt=media";
-String userImageURL(String uid) => "https://firebasestorage.googleapis.com/v0/b/snax-dde4e.appspot.com/o/user-profiles%2F$uid.jpg?alt=media";
-String snackBannerImageURL(String id) => "https://firebasestorage.googleapis.com/v0/b/snax-dde4e.appspot.com/o/snacks-banners%2F$id.png?alt=media";
-
-
+String snackImageURL(String id) =>
+    "https://firebasestorage.googleapis.com/v0/b/snax-dde4e.appspot.com/o/snacks%2F$id.jpg?alt=media";
+String userImageURL(String uid) => uid != null
+    ? "https://firebasestorage.googleapis.com/v0/b/snax-dde4e.appspot.com/o/user-profiles%2F$uid.jpg?alt=media"
+    : null;
+String snackBannerImageURL(String id) =>
+    "https://firebasestorage.googleapis.com/v0/b/snax-dde4e.appspot.com/o/snacks-banners%2F$id.png?alt=media";
 
 //Sorting options. Make sure to add it to the SortRawStrings extension if you add a new sort here.
 enum SnackListSort { top, trending }
+
 extension SortRawStrings on SnackListSort {
   String get raw {
     switch (this) {
@@ -170,7 +171,8 @@ class SnaxBackend {
       Query query, bool forceRefresh) async {
     //Check cache for value
     if (!forceRefresh && Cache.has(query.parameters.toString()))
-      return (Cache.fetch(query.parameters.toString()) as List<SnackItem>).map((e) {
+      return (Cache.fetch(query.parameters.toString()) as List<SnackItem>)
+          .map((e) {
         e.resetTransitionId();
         return e;
       }).toList();
@@ -335,10 +337,9 @@ class SnaxBackend {
     //Remove from local database
     var followingBox = await Hive.openBox('user_following');
     if (followingBox.values.toList().indexOf(uid) > 0)
-    followingBox.deleteAt(followingBox.values.toList().indexOf(uid));
+      followingBox.deleteAt(followingBox.values.toList().indexOf(uid));
     // await Hive.close();
   }
-
 
   static Future<List<SnaxUser>> getFollowers(String uid) async {
     //Wait for the firebase to be initiated
@@ -370,7 +371,6 @@ class SnaxBackend {
     //Make the list
     List<SnaxUser> users = [];
     for (var doc in userDocs) {
-      
       users.add(SnaxUser(
           doc.get("username"),
           doc.get("name"),
@@ -378,7 +378,8 @@ class SnaxBackend {
           doc.data()["bio"],
           doc.get("followerCount"),
           doc.get("followingCount"),
-          photo: (doc.data()["hasPhoto"] ?? false) ? userImageURL(doc.id) : null,
+          photo:
+              (doc.data()["hasPhoto"] ?? false) ? userImageURL(doc.id) : null,
           userIsFollowing: followingBox.values.contains(doc.id)));
     }
     // await Hive.close();
@@ -434,7 +435,8 @@ class SnaxBackend {
           doc.data()["bio"],
           doc.get("followerCount"),
           doc.get("followingCount"),
-          photo: (doc.data()["hasPhoto"] ?? false) ? userImageURL(doc.id) : null,
+          photo:
+              (doc.data()["hasPhoto"] ?? false) ? userImageURL(doc.id) : null,
           userIsFollowing: followingBox.values.contains(doc.id)));
     }
     // await Hive.close();
@@ -533,7 +535,8 @@ class SnaxBackend {
     // await likeBox.close();
   }
 
-  static Future<Post> feedGetPost(String id, {bool forceRefresh = false}) async {
+  static Future<Post> feedGetPost(String id,
+      {bool forceRefresh = false}) async {
     //Wait for firebase init
     await _waitWhile(() => (fbStore == null));
     var query = fbStore.collection("feed").doc(id);
@@ -784,7 +787,9 @@ class SnaxBackend {
           userDatas[data["uid"]]["bio"],
           userDatas[data["uid"]]["followerCount"],
           userDatas[data["uid"]]["followingCount"],
-          photo: (userDatas[data["uid"]]["hasPhoto"] ?? false) ? userImageURL(data["uid"]) : null,
+          photo: (userDatas[data["uid"]]["hasPhoto"] ?? false)
+              ? userImageURL(data["uid"])
+              : null,
           userIsFollowing: followingBox.values.contains(data["uid"]));
       comments.add(Comment(
           doc.id,
@@ -860,7 +865,6 @@ class SnaxBackend {
       if (!snackDatas.containsKey(data["snack_id"]) ||
           !userDatas.containsKey(data["uid"])) continue;
 
-      
       //Create user
       SnaxUser user = SnaxUser(
           userDatas[data["uid"]]["username"],
@@ -869,7 +873,9 @@ class SnaxBackend {
           userDatas[data["uid"]]["bio"],
           userDatas[data["uid"]]["followerCount"],
           userDatas[data["uid"]]["followingCount"],
-          photo: (userDatas[data["uid"]]["hasPhoto"] ?? false) ? userImageURL(data["uid"]) : null,
+          photo: (userDatas[data["uid"]]["hasPhoto"] ?? false)
+              ? userImageURL(data["uid"])
+              : null,
           userIsFollowing: followingBox.values.contains(data["uid"]));
 
       //Create snack
@@ -987,7 +993,9 @@ class SnaxBackend {
             result["data"]["bio"],
             result["data"]["followerCount"],
             result["data"]["followingCount"],
-            photo: (result["data"]["hasPhoto"] ?? false) ? userImageURL(result["id"]) : null,
+            photo: (result["data"]["hasPhoto"] ?? false)
+                ? userImageURL(result["id"])
+                : null,
             userIsFollowing: followingBox.values.contains(result["id"])));
       }
       // await Hive.close();
@@ -1033,8 +1041,6 @@ class SnaxBackend {
       List<SnackSearchResultItem> returnItems = [];
       //Iterate through search results
       for (var result in resultItems) {
-        
-
         //Add to the list
         returnItems.add(SnackSearchResultItem(
             result["name"].toString(),
