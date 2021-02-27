@@ -62,7 +62,7 @@ class _AppTabsState extends State<AppTabs>
                 backgroundColor: isDark(context) == true
                     ? SnaxColors.darkGreyGradientEnd
                     : Colors.white,
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 tabs: [
                   GButton(
                     icon: Icons.home_rounded,
