@@ -44,13 +44,10 @@ class _AppTabsState extends State<AppTabs>
         child: Scaffold(
           extendBody: true,
           bottomNavigationBar: GNav(
-              rippleColor:
-                  Colors.grey[800], // tab button ripple color when pressed
-              hoverColor: Colors.grey[700], // tab button hover color
               haptic: true,
               tabBorderRadius: 22,
               curve: Curves.easeOutExpo,
-              duration: Duration(milliseconds: 300),
+              duration: Duration(milliseconds: 500),
               gap: 4,
               tabMargin: EdgeInsets.all(4),
               color: isDark(context) == true ? Colors.white : Colors.black,

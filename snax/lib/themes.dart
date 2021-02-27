@@ -53,14 +53,6 @@ final List<SnaxTheme> lightThemeList = [
       HexColor.fromHex("FF416C"),
       HexColor.fromHex("FF4B2B")),
   SnaxTheme(
-      "purple",
-      "Midnight Snacking",
-      HexColor.fromHex("625E99"),
-      HexColor.fromHex("625E99"),
-      HexColor.fromHex("614385"),
-      HexColor.fromHex("516395"),
-      HexColor.fromHex("5B4F8B")),
-  SnaxTheme(
       "green",
       "Kale",
       HexColor.fromHex("91C55D"),
@@ -68,16 +60,6 @@ final List<SnaxTheme> lightThemeList = [
       HexColor.fromHex("6CA944"),
       HexColor.fromHex("B2DD73"),
       HexColor.fromHex("6CA944")),
-  SnaxTheme(
-      "escher",
-      "Escher's Theme",
-      HexColor.fromHex("ee9ca7"),
-      HexColor.fromHex("ee9ca7"),
-      HexColor.fromHex("ee9ca7"),
-      HexColor.fromHex("ffdde1"),
-      HexColor.fromHex("F7BCC3"),
-      overrideTextColor: Colors.white,
-      overrideBrightness: Brightness.dark),
   SnaxTheme(
       "pink",
       "Ori's Theme",
