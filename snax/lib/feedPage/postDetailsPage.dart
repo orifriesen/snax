@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:like_button/like_button.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:snax/accountPage/globalAccountPage.dart';
 import 'package:snax/backend/requests.dart';
 import 'package:snax/feedPage/demoValues.dart';
@@ -256,7 +257,7 @@ class FuturePostDetailsPage extends StatefulWidget {
   String id;
   String transitionId;
 
-  FuturePostDetailsPage(this.id, {this.transitionId});
+  FuturePostDetailsPage({this.id, this.transitionId});
 
   @override
   _FuturePostDetailsPageState createState() => _FuturePostDetailsPageState();
@@ -269,6 +270,8 @@ class _FuturePostDetailsPageState extends State<FuturePostDetailsPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    String id = this.widget.id ?? ModalRoute.of(context).settings.arguments;
 
     SnaxBackend.feedGetPost(this.widget.id).then((post) async {
       await Future.delayed(Duration(milliseconds: 500));

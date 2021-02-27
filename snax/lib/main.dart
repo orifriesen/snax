@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:snax/feedPage/demoValues.dart';
+import 'package:snax/feedPage/postDetailsPage.dart';
 import 'package:snax/loginPage/loginPage.dart';
 import 'package:snax/tabs.dart';
 import 'package:snax/themes.dart';
@@ -62,7 +63,9 @@ class _MyAppState extends State<MyApp> {
           //Route the app will stay in most of the time
           "/": (context) => AppTabs(),
           //Top-level route to present login screen w/ navigatorKey
-          "/login": (context) => LoginPage()
+          "/login": (context) => LoginPage(),
+          //A feed post
+          "/post": (context) => FuturePostDetailsPage(),
         },
         initialRoute: "/",
         darkTheme: ThemeData(

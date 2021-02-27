@@ -112,7 +112,7 @@ class _ActivityPageState extends State<ActivityPage>
           context,
           MaterialPageRoute(
             builder: (context) =>
-                FuturePostDetailsPage(postId, transitionId: transitionId),
+                FuturePostDetailsPage(id: postId, transitionId: transitionId),
           ),
         );
       },
@@ -160,7 +160,7 @@ class _ActivityPageState extends State<ActivityPage>
                               color: isDark(context)
                                   ? Colors.white
                                   : Colors.black),
-                          recognizer: TapGestureRecognizer()..onTap = () {}),
+                          ),
                     TextSpan(
                         text: body,
                         style: TextStyle(
