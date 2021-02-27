@@ -45,14 +45,14 @@ class _AppTabsState extends State<AppTabs>
           extendBody: true,
           bottomNavigationBar: GNav(
               haptic: true,
-              tabBorderRadius: 22,
+              tabBorderRadius: 20,
               curve: Curves.easeOutExpo,
               duration: Duration(milliseconds: 500),
               gap: 4,
               tabMargin: EdgeInsets.all(4),
               color: isDark(context) == true ? Colors.white : Colors.black,
               activeColor: getTheme(context).primaryContrastForText(),
-              iconSize: 24,
+              iconSize: 20,
               tabBackgroundColor: getTheme(context).accentColor,
               backgroundColor: isDark(context) == true
                   ? SnaxColors.darkGreyGradientEnd
@@ -66,7 +66,7 @@ class _AppTabsState extends State<AppTabs>
                 GButton(icon: Icons.chat_rounded, text: 'Feed'),
                 GButton(
                   icon: Icons.add_circle_outline_rounded,
-                  iconSize: 26,
+                  iconSize: 22,
                   onPressed: () {
                     print("test");
                     Navigator.push(
