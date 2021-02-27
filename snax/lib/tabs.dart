@@ -44,7 +44,7 @@ class _AppTabsState extends State<AppTabs>
         child: Scaffold(
           extendBody: true,
           bottomNavigationBar: SafeArea(
-            bottom: false,
+            bottom: true,
             child: GNav(
                 haptic: true,
                 tabBorderRadius: 20,
@@ -107,7 +107,7 @@ class _AppTabsState extends State<AppTabs>
                 }),
           ),
           body: Padding(
-            padding: EdgeInsets.only(bottom: 54),
+            padding: EdgeInsets.only(bottom: 90),
             child: [
               DefaultTabController(
                   length: 2,
