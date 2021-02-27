@@ -109,14 +109,19 @@ class _AppTabsState extends State<AppTabs>
                         });
                 }),
           ),
-          body: [
-            DefaultTabController(
-                length: 2, child: MainPage(), key: PageStorageKey("home_key")),
-            FeedPage(),
-            Container(),
-            ActivityPage(),
-            GlobalAccountPage(SnaxBackend.currentUser, isAccountPage: true)
-          ][_currentIndex],
+          body: SafeArea(
+            top: false,
+            child: [
+              DefaultTabController(
+                  length: 2,
+                  child: MainPage(),
+                  key: PageStorageKey("home_key")),
+              FeedPage(),
+              Container(),
+              ActivityPage(),
+              GlobalAccountPage(SnaxBackend.currentUser, isAccountPage: true)
+            ][_currentIndex],
+          ),
         ),
       ),
     );
