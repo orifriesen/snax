@@ -101,8 +101,7 @@ class _AppTabsState extends State<AppTabs>
                         _currentIndex = index;
                       });
               }),
-          body: Padding(
-            padding: const EdgeInsets.only(bottom: 44),
+          body: SafeArea(
             child: [
               DefaultTabController(
                   length: 2,
