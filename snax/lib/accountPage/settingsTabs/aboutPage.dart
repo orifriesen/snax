@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:snax/customIcons/eschr_icons.dart';
+import 'package:snax/customIcons/git_hub_icons.dart';
 
 import 'package:snax/customIcons/instagram_icons.dart';
 import 'package:snax/themes.dart';
@@ -102,30 +104,60 @@ class AboutPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     teamSocials(
-                        context,
-                        'Snax',
-                        () => customLaunch(
-                            "https://www.instagram.com/snaxappofficial/")),
+                      context,
+                      'Snax',
+                      Instagram.icons8_instagram,
+                      null,
+                      null,
+                      null,
+                      null,
+                      () => instagramLink(
+                          "https://www.instagram.com/snaxappofficial/"),
+                    ),
                     teamSocials(
-                        context,
-                        'Ori',
-                        () => customLaunch(
-                            "https://www.instagram.com/orifriesen/")),
+                      context,
+                      'Ori',
+                      GitHub.github,
+                      null,
+                      Instagram.icons8_instagram,
+                      null,
+                      () => instagramLink(
+                          "https://www.instagram.com/orifriesen/"),
+                      () => githubLink("https://github.com/orifriesen"),
+                    ),
                     teamSocials(
-                        context,
-                        'Escher',
-                        () => customLaunch(
-                            "https://www.instagram.com/escherwd/")),
+                      context,
+                      'Escher',
+                      GitHub.github,
+                      Instagram.icons8_instagram,
+                      Eschr.proj_eschrus__1_,
+                      () =>
+                          instagramLink("https://www.instagram.com/escherwd/"),
+                      () => eschrLink("https://eschr.us"),
+                      () => githubLink("https://github.com/escherwd"),
+                    ),
                     teamSocials(
-                        context,
-                        'Walt',
-                        () => customLaunch(
-                            "https://www.instagram.com/waltbringenberg/")),
+                      context,
+                      'Walt',
+                      GitHub.github,
+                      null,
+                      Instagram.icons8_instagram,
+                      null,
+                      () => instagramLink(
+                          "https://www.instagram.com/waltbringenberg/"),
+                      () => githubLink("https://github.com/walterbb"),
+                    ),
                     teamSocials(
-                        context,
-                        'Brandon',
-                        () => customLaunch(
-                            "https://www.instagram.com/ramirez.brrandon/")),
+                      context,
+                      'Brandon',
+                      GitHub.github,
+                      null,
+                      Instagram.icons8_instagram,
+                      null,
+                      () => instagramLink(
+                          "https://www.instagram.com/ramirez.brrandon/"),
+                      () => githubLink("https://github.com/rBrandon1/"),
+                    )
                   ],
                 ),
               ],
@@ -136,7 +168,16 @@ class AboutPage extends StatelessWidget {
     );
   }
 
-  Widget teamSocials(BuildContext context, String name, customLaunch()) {
+  Widget teamSocials(
+    BuildContext context,
+    String name,
+    IconData eschrIcon,
+    IconData instaIcon,
+    IconData gitIcon,
+    instagramLink(),
+    githubLink(),
+    eschrLink(),
+  ) {
     return Padding(
       padding: const EdgeInsets.only(left: 8, top: 16, bottom: 16, right: 8),
       child: Container(
@@ -164,27 +205,75 @@ class AboutPage extends StatelessWidget {
                 ),
               ),
             ),
-            //* Instagram
-            FlatButton(
-              onPressed: () {
-                customLaunch();
-              },
-              child: Icon(
-                Instagram.icons8_instagram,
-                size: 30,
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              minWidth: 5,
-            ),
+            Row(
+              children: [
+                //* Instagram
+                FlatButton(
+                  onPressed: () {
+                    instagramLink();
+                  },
+                  child: Icon(
+                    instaIcon,
+                    size: 30,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  minWidth: 5,
+                ),
+                //* GitHub
+                FlatButton(
+                  onPressed: () {
+                    githubLink();
+                  },
+                  child: Icon(
+                    gitIcon,
+                    size: 30,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  minWidth: 5,
+                ),
+                //* Escher's Website
+                FlatButton(
+                  onPressed: () {
+                    eschrLink();
+                  },
+                  child: Icon(
+                    eschrIcon,
+                    size: 30,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  minWidth: 5,
+                ),
+              ],
+            )
           ],
         ),
       ),
     );
   }
 
-  customLaunch(command) async {
+  instagramLink(command) async {
+    if (await canLaunch(command)) {
+      await launch(command);
+    } else {
+      print("Could not work");
+    }
+  }
+
+  githubLink(command) async {
+    if (await canLaunch(command)) {
+      await launch(command);
+    } else {
+      print("Could not work");
+    }
+  }
+
+  eschrLink(command) async {
     if (await canLaunch(command)) {
       await launch(command);
     } else {

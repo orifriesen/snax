@@ -130,6 +130,12 @@ flutter:
     - family: Instagram
       fonts: 
         - asset: assets/fonts/Instagram.ttf
+    - family:  GitHub
+      fonts:
+        - asset: assets/fonts/GitHub.ttf
+    - family:  Eschr
+      fonts:
+        - asset: assets/fonts/Eschr.ttf
   # fonts:
   #   - family: Schyler
   #     fonts:
