@@ -66,7 +66,7 @@ class SnaxBackend {
   static Future<List<SnackItem>> chartTop(
       {int limit = 25, bool forceRefresh = false}) async {
     //Wait for the firebase to be initiated
-    await _waitWhile(() => (fbStore == null));
+    await waitWhile(() => (fbStore == null));
 
     return await SnaxBackend._queryAllSnacks(
         fbStore
@@ -80,7 +80,7 @@ class SnaxBackend {
   static Future<List<SnackItem>> chartTrending(
       {int limit = 25, bool forceRefresh = false}) async {
     //Wait for the firebase to be initiated
-    await _waitWhile(() => (fbStore == null));
+    await waitWhile(() => (fbStore == null));
     return await SnaxBackend._queryAllSnacks(
         fbStore
             .collection("snacks")
@@ -92,7 +92,7 @@ class SnaxBackend {
   // Snack of the week
   static Future<SnackItem> snackOfTheWeek({bool forceRefresh = false}) async {
     //Wait for the firebase to be initiated
-    await _waitWhile(() => (fbStore == null));
+    await waitWhile(() => (fbStore == null));
     return (await SnaxBackend._queryAllSnacks(
             fbStore
                 .collection("snacks")
@@ -107,7 +107,7 @@ class SnaxBackend {
       {int limit = 25, bool forceRefresh = false}) async {
     //Wait for the firebase to be initiated
     print(sort.raw);
-    await _waitWhile(() => (fbStore == null));
+    await waitWhile(() => (fbStore == null));
     return await SnaxBackend._queryAllSnacks(
         fbStore
             .collection("snacks")
@@ -120,7 +120,7 @@ class SnaxBackend {
 
   static Future<SnackItem> getSnack(String id) async {
     //Wait for the firebase to be initiated
-    await _waitWhile(() => (fbStore == null));
+    await waitWhile(() => (fbStore == null));
     //Make request
     DocumentSnapshot doc = await fbStore.collection("snacks").doc(id).get();
     //Fetch the snack types (if they don't already exist)
@@ -178,7 +178,7 @@ class SnaxBackend {
       }).toList();
     // String sort, bool desc, int limit) async {
     //Wait for the firebase to be initiated
-    await _waitWhile(() => (fbStore == null));
+    await waitWhile(() => (fbStore == null));
     //Get the results, ordered by overall score, with an optional limit.
     List<QueryDocumentSnapshot> results = (await query.get()).docs;
     //Fetch the snack types (if they don't already exist)
@@ -262,7 +262,7 @@ class SnaxBackend {
     //Get token
     String token = await fbAuth.currentUser.getIdToken();
 
-    await _waitWhile(() => (currentUser == null));
+    await waitWhile(() => (currentUser == null));
 
     params["token"] = token;
 
@@ -343,7 +343,7 @@ class SnaxBackend {
 
   static Future<List<SnaxUser>> getFollowers(String uid) async {
     //Wait for the firebase to be initiated
-    await _waitWhile(() => (fbStore == null));
+    await waitWhile(() => (fbStore == null));
     //Get the list of ids
     List<String> userIds = (await fbStore
             .collection("users")
@@ -399,7 +399,7 @@ class SnaxBackend {
 
   static Future<List<SnaxUser>> getFollowing(String uid) async {
     //Wait for the firebase to be initiated
-    await _waitWhile(() => (fbStore == null));
+    await waitWhile(() => (fbStore == null));
     //Get the list of ids
     List<String> userIds = (await fbStore
             .collection("users")
@@ -538,7 +538,7 @@ class SnaxBackend {
   static Future<Post> feedGetPost(String id,
       {bool forceRefresh = false}) async {
     //Wait for firebase init
-    await _waitWhile(() => (fbStore == null));
+    await waitWhile(() => (fbStore == null));
     var query = fbStore.collection("feed").doc(id);
     //Check the cache
     if (!forceRefresh && Cache.has(query.toString()))
@@ -555,7 +555,7 @@ class SnaxBackend {
 
   static Future<List<Post>> feedGetTopPosts({bool forceRefresh = false}) async {
     //Wait for firebase init
-    await _waitWhile(() => (fbStore == null));
+    await waitWhile(() => (fbStore == null));
     var query =
         fbStore.collection("feed").orderBy("likes", descending: true).limit(25);
     //Check cache before actually fetching
@@ -572,7 +572,7 @@ class SnaxBackend {
   static Future<List<Post>> feedGetRecentFriendPosts(
       {bool forceRefresh = false}) async {
     //Wait for firebase init
-    await _waitWhile(() => (fbStore == null));
+    await waitWhile(() => (fbStore == null));
     await auth.loginIfNotAlready();
     var followingBox = await Hive.openBox('user_following');
     if (followingBox.keys.isEmpty) return [];
@@ -611,7 +611,7 @@ class SnaxBackend {
   static Future<List<Post>> feedGetTrendingPosts(
       {bool forceRefresh = false}) async {
     //Wait for firebase init
-    await _waitWhile(() => (fbStore == null));
+    await waitWhile(() => (fbStore == null));
     var query =
         fbStore.collection("feed").orderBy("trend", descending: true).limit(25);
     //Check cache before actually fetching
@@ -625,7 +625,7 @@ class SnaxBackend {
   }
 
   static Future<List<Post>> feedGetTopPostsForSnack(String snackId) async {
-    await _waitWhile(() => (fbStore == null));
+    await waitWhile(() => (fbStore == null));
     List<QueryDocumentSnapshot> docs = (await fbStore
             .collection("feed")
             .where("snack_id", isEqualTo: snackId)
@@ -637,7 +637,7 @@ class SnaxBackend {
   }
 
   static Future<List<Post>> feedGetRecentPostsForUser(String uid) async {
-    await _waitWhile(() => (fbStore == null));
+    await waitWhile(() => (fbStore == null));
     List<QueryDocumentSnapshot> docs = (await fbStore
             .collection("feed")
             .where("uid", isEqualTo: uid)
@@ -650,7 +650,7 @@ class SnaxBackend {
 
   static Future<List<SnackUserRating>> getRecentReviewsForUser(SnaxUser user,
       {int limit = 10}) async {
-    await _waitWhile(() => (fbStore == null));
+    await waitWhile(() => (fbStore == null));
     List<QueryDocumentSnapshot> docs = (await fbStore
             .collectionGroup("ratings")
             .where("user_id", isEqualTo: user.uid)
@@ -710,7 +710,7 @@ class SnaxBackend {
 
   static Future<List<Comment>> feedGetComments(String postId) async {
     //Wait for firebase init
-    await _waitWhile(() => (fbStore == null));
+    await waitWhile(() => (fbStore == null));
     List<QueryDocumentSnapshot> docs = (await fbStore
             .collection("feed")
             .doc(postId)
@@ -904,7 +904,7 @@ class SnaxBackend {
 
   static Future<void> addUpc(int upc, String snackId) async {
     //Wait for the cloud functions client to be initiated
-    await _waitWhile(() => (fbCloud == null));
+    await waitWhile(() => (fbCloud == null));
     //Call search function from database
     HttpsCallableResult result = await fbCloud
         .httpsCallable("addUserUpc")
@@ -919,7 +919,7 @@ class SnaxBackend {
 
   static Future<SnackItem> upcResult(int upc) async {
     //Wait for the firebase to be initiated
-    await _waitWhile(() => (fbStore == null));
+    await waitWhile(() => (fbStore == null));
     //Make request
     QuerySnapshot docs = await fbStore
         .collection("snacks")
@@ -972,7 +972,7 @@ class SnaxBackend {
 
   static Future<List<SnaxUser>> searchUsers(String query) async {
     //Wait for the cloud functions client to be initiated
-    await _waitWhile(() => (fbCloud == null));
+    await waitWhile(() => (fbCloud == null));
     //Call search function from database
     HttpsCallableResult result =
         await fbCloud.httpsCallable("searchUsers").call({"q": query.trim()});
@@ -1010,7 +1010,7 @@ class SnaxBackend {
 
   static Future<SnaxUser> getUser(String uid) async {
     //Wait for the firebase to be initiated
-    await _waitWhile(() => (fbStore == null));
+    await waitWhile(() => (fbStore == null));
 
     var doc = await fbStore.collection("users").doc(uid).get();
 
@@ -1030,7 +1030,7 @@ class SnaxBackend {
 
   static Future<List<SnackSearchResultItem>> search(String query) async {
     //Wait for the cloud functions client to be initiated
-    await _waitWhile(() => (fbCloud == null));
+    await waitWhile(() => (fbCloud == null));
     //Call search function from database
     HttpsCallableResult result =
         await fbCloud.httpsCallable("searchSnacks").call({"q": query.trim()});
@@ -1072,7 +1072,7 @@ class SnaxBackend {
 
   static Future<void> postReview(String snackId, SnackRating rating) async {
     //Wait for fbAuth
-    await _waitWhile(() => (fbAuth == null));
+    await waitWhile(() => (fbAuth == null));
     //User has to be logged in
     await auth.loginIfNotAlready();
     String token = await fbAuth.currentUser.getIdToken();
@@ -1124,7 +1124,7 @@ class _SnaxBackendAuth {
     }
 
     //Wait for the login
-    await _waitWhile(() => (loggedIn == null));
+    await waitWhile(() => (loggedIn == null));
 
     //If the user didnt log in
     if (!loggedIn) throw "You must log in first.";
@@ -1132,7 +1132,7 @@ class _SnaxBackendAuth {
     print("User Logged in via loginIfNotAlready");
 
     //Wait for the current user to be fetched from the database and return
-    await _waitWhile(() => (SnaxBackend.currentUser == null));
+    await waitWhile(() => (SnaxBackend.currentUser == null));
     return SnaxBackend.currentUser;
   }
 
@@ -1247,7 +1247,7 @@ class _SnaxBackendAuth {
 
   Future<void> uploadFCMToken(String fcmToken) async {
     //Wait for the cloud functions client to be initiated
-    await _waitWhile(() => (fbCloud == null));
+    await waitWhile(() => (fbCloud == null));
     if (fbAuth.currentUser == null) throw "Not Logged In";
     //Get token
     String token = await fbAuth.currentUser.getIdToken();
@@ -1279,7 +1279,7 @@ double toDouble(dynamic number) {
   }
 }
 
-Future _waitWhile(bool test(), [Duration pollInterval = Duration.zero]) {
+Future waitWhile(bool test(), [Duration pollInterval = Duration.zero]) {
   var completer = new Completer();
   check() {
     if (!test()) {

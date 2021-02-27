@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:snax/accountPage/globalAccountPage.dart';
 import 'package:snax/backend/backend.dart';
@@ -151,7 +152,9 @@ class _FeedPageState extends State<FeedPage>
     return Scaffold(
         backgroundColor: Theme.of(context).canvasColor,
         body: AnnotatedRegion<SystemUiOverlayStyle>(
-            value: isDark(context) ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+            value: isDark(context)
+                ? SystemUiOverlayStyle.light
+                : SystemUiOverlayStyle.dark,
             child: (posts == null)
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -198,7 +201,7 @@ class _FeedPageState extends State<FeedPage>
                                     subtitle: "It's awfully quiet..."),
                               ));
                         } else {
-                          post = posts[index - 1];
+                          post = posts[index - 2];
                           return postWidget(context, post, refresh: refresh);
                         }
                       },
@@ -324,15 +327,16 @@ Widget getFeed(BuildContext context, List<Post> posts, Function refresh) {
 }
 
 Widget postWidget(BuildContext context, Post post,
-    {bool opensDetails = true, Function refresh, String transitionId }) {
+    {bool opensDetails = true, Function refresh, String transitionId}) {
   return Padding(
     padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 16.0),
     child: GestureDetector(
       onTap: () {
         if (opensDetails)
           Navigator.of(context)
-              .push(MaterialPageRoute(
-            builder: (context) => PostDetailsPage(post: post),
+              .push(PageTransition(
+            type: PageTransitionType.fade,
+            child: PostDetailsPage(post: post),
           ))
               .whenComplete(() {
             if (refresh != null) refresh();
@@ -508,9 +512,9 @@ Widget postWidget(BuildContext context, Post post,
   );
 }
 
-Widget fakePostWidget(BuildContext context, { String transitionId }) {
-
-  Color baseColor = isDark(context) ? Colors.grey.shade600: Colors.grey.shade300;
+Widget fakePostWidget(BuildContext context, {String transitionId}) {
+  Color baseColor =
+      isDark(context) ? Colors.grey.shade600 : Colors.grey.shade300;
   Color highlightColor = isDark(context) ? Colors.grey : Colors.grey.shade50;
 
   return Padding(
@@ -560,10 +564,23 @@ Widget fakePostWidget(BuildContext context, { String transitionId }) {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Shimmer.fromColors(child: Container(width: 150,height: 18, color: Colors.white), baseColor: baseColor, highlightColor: highlightColor),
+                          Shimmer.fromColors(
+                              child: Container(
+                                  width: 150, height: 18, color: Colors.white),
+                              baseColor: baseColor,
+                              highlightColor: highlightColor),
                           Padding(
                             padding: const EdgeInsets.only(top: 5.0),
-                            child: Opacity(opacity: 0.5, child: Shimmer.fromColors(child: Container(width: 60,height: 14, color: Colors.white), baseColor: getTheme(context).gradientStart, highlightColor: getTheme(context).gradientEnd)),
+                            child: Opacity(
+                                opacity: 0.5,
+                                child: Shimmer.fromColors(
+                                    child: Container(
+                                        width: 60,
+                                        height: 14,
+                                        color: Colors.white),
+                                    baseColor: getTheme(context).gradientStart,
+                                    highlightColor:
+                                        getTheme(context).gradientEnd)),
                           )
                         ],
                       ),
@@ -572,21 +589,37 @@ Widget fakePostWidget(BuildContext context, { String transitionId }) {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 16.0),
-                  child: Shimmer.fromColors(child: Container(width: 150,height: 16, color: Colors.white), baseColor: baseColor, highlightColor: highlightColor),
+                  child: Shimmer.fromColors(
+                      child: Container(
+                          width: 150, height: 16, color: Colors.white),
+                      baseColor: baseColor,
+                      highlightColor: highlightColor),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[] + ([0,0,0].map((_) => Padding(
-                      padding: const EdgeInsets.only(bottom: 5.0),
-                      child: Shimmer.fromColors(child: Container(height: 16, color: Colors.white), baseColor: baseColor, highlightColor: highlightColor),
-                    )).toList()) + <Widget>[
-                      Shimmer.fromColors(child: Container(width: 100, height: 16, color: Colors.white), baseColor: baseColor, highlightColor: highlightColor)
-                    ],
-                      
-                  )
-                ),
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[] +
+                          ([0, 0, 0]
+                              .map((_) => Padding(
+                                    padding: const EdgeInsets.only(bottom: 5.0),
+                                    child: Shimmer.fromColors(
+                                        child: Container(
+                                            height: 16, color: Colors.white),
+                                        baseColor: baseColor,
+                                        highlightColor: highlightColor),
+                                  ))
+                              .toList()) +
+                          <Widget>[
+                            Shimmer.fromColors(
+                                child: Container(
+                                    width: 100,
+                                    height: 16,
+                                    color: Colors.white),
+                                baseColor: baseColor,
+                                highlightColor: highlightColor)
+                          ],
+                    )),
                 Padding(
                   padding: const EdgeInsets.only(top: 16.0, bottom: 8.0),
                   child: Row(
@@ -626,10 +659,16 @@ Widget fakePostWidget(BuildContext context, { String transitionId }) {
                           ),
                         ),
                       ),
-                      Expanded(child: Container(),),
+                      Expanded(
+                        child: Container(),
+                      ),
                       Padding(
                         padding: const EdgeInsets.only(top: 7, right: 4),
-                        child: Shimmer.fromColors(child: Container(width: 40, height: 14, color: Colors.white), baseColor: baseColor, highlightColor: highlightColor),
+                        child: Shimmer.fromColors(
+                            child: Container(
+                                width: 40, height: 14, color: Colors.white),
+                            baseColor: baseColor,
+                            highlightColor: highlightColor),
                       )
                     ],
                   ),

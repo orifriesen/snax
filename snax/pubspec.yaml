@@ -46,6 +46,7 @@ dependencies:
   dots_indicator: ^1.2.0
   shimmer: ^1.1.2
   google_nav_bar: ^4.0.2
+  page_transition: ^1.1.7+6
 
   # firebase dependancies (1% chance of breaking everything)
   firebase_core: ^0.7.0
