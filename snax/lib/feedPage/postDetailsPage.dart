@@ -63,55 +63,69 @@ class _PostDetailsPage extends State<PostDetailsPage> {
             bottom: false,
             child: Padding(
               padding: const EdgeInsets.only(top: 0.0),
-              child: (widget.post == null) ? fakePostWidget(context, transitionId: widget.transitionid) : postWidget(context, widget.post, opensDetails: false, transitionId: widget.transitionid),
+              child: (widget.post == null)
+                  ? fakePostWidget(context, transitionId: widget.transitionid)
+                  : postWidget(context, widget.post,
+                      opensDetails: false, transitionId: widget.transitionid),
             ),
           ),
         ]),
         if (this.widget.post != null) commentLoader(context, widget.post),
       ]),
-      bottomSheet: (widget.post != null) ? TextField(
-        textInputAction: TextInputAction.send,
-        controller: commentController,
-        minLines: 1,
-        maxLines: 5,
-        decoration: InputDecoration(
-            hintText: "Add Comment...", contentPadding: EdgeInsets.all(16.0)),
-        onEditingComplete: () {
-          widget.post.comment(commentController.text).then((Comment comment) {
-            //Find the index of the temp comment and replace it
-            var tempIndex =
-                widget.post.comments.indexWhere((e) => e.id == 'temp-cmt-id');
-            if (tempIndex > 0)
-              setState(() {
-                widget.post.comments[tempIndex] = comment;
+      bottomNavigationBar: BottomAppBar(
+        color: isDark(context) ? null : Theme.of(context).canvasColor,
+        elevation: 16,
+        child: Padding(
+          padding: MediaQuery.of(context).viewInsets,
+          child: TextField(
+            textInputAction: TextInputAction.send,
+            controller: commentController,
+            minLines: 1,
+            maxLines: 5,
+            decoration: InputDecoration(
+                border: InputBorder.none,
+                hintText: "Add Comment...",
+                contentPadding: EdgeInsets.fromLTRB(16, 16, 16, 16)),
+            onEditingComplete: () {
+              widget.post
+                  .comment(commentController.text)
+                  .then((Comment comment) {
+                //Find the index of the temp comment and replace it
+                var tempIndex = widget.post.comments
+                    .indexWhere((e) => e.id == 'temp-cmt-id');
+                if (tempIndex > 0)
+                  setState(() {
+                    widget.post.comments[tempIndex] = comment;
+                  });
+                print("Sent Comment");
+              }).catchError((error) {
+                print("Error");
+                Fluttertoast.showToast(msg: "An error occurred");
+                //Remove temp comment
+                var tempIndex = widget.post.comments
+                    .indexWhere((e) => e.id == 'temp-cmt-id');
+                if (tempIndex > 0)
+                  setState(() {
+                    widget.post.comments.removeAt(tempIndex);
+                  });
               });
-            print("Sent Comment");
-          }).catchError((error) {
-            print("Error");
-            Fluttertoast.showToast(msg: "An error occurred");
-            //Remove temp comment
-            var tempIndex =
-                widget.post.comments.indexWhere((e) => e.id == 'temp-cmt-id');
-            if (tempIndex > 0)
+              var tempComment = Comment(
+                  "temp-cmt-id",
+                  this.widget.post.id,
+                  SnaxBackend.currentUser,
+                  commentController.text,
+                  DateTime.now(),
+                  0);
               setState(() {
-                widget.post.comments.removeAt(tempIndex);
+                widget.post.comments.insert(0, tempComment);
+                widget.post.commentCount++;
+                commentController.clear();
+                FocusScope.of(context).unfocus();
               });
-          });
-          var tempComment = Comment(
-              "temp-cmt-id",
-              this.widget.post.id,
-              SnaxBackend.currentUser,
-              commentController.text,
-              DateTime.now(),
-              0);
-          setState(() {
-            widget.post.comments.insert(0, tempComment);
-            widget.post.commentCount++;
-            commentController.clear();
-            FocusScope.of(context).unfocus();
-          });
-        },
-      ) : TextField(),
+            },
+          ),
+        ),
+      ),
     );
   }
 
@@ -239,9 +253,7 @@ class _PostDetailsPage extends State<PostDetailsPage> {
   }
 }
 
-
 class FuturePostDetailsPage extends StatefulWidget {
-
   String id;
   String transitionId;
 
@@ -252,7 +264,6 @@ class FuturePostDetailsPage extends StatefulWidget {
 }
 
 class _FuturePostDetailsPageState extends State<FuturePostDetailsPage> {
-
   Post postObject;
 
   @override
@@ -264,15 +275,17 @@ class _FuturePostDetailsPageState extends State<FuturePostDetailsPage> {
 
     SnaxBackend.feedGetPost(this.widget.id).then((post) async {
       await Future.delayed(Duration(milliseconds: 500));
-      Navigator.of(context).pushReplacement(PageTransition(
-        type: PageTransitionType.fade,
-            child: PostDetailsPage(post: post, transitionid: this.widget.transitionId),
-          ),);
+      setState(() {
+        this.postObject = post;
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return PostDetailsPage(post: postObject, transitionid: widget.transitionId,);
+    return PostDetailsPage(
+      post: postObject,
+      transitionid: widget.transitionId,
+    );
   }
 }

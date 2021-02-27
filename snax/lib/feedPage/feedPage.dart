@@ -205,49 +205,7 @@ class _FeedPageState extends State<FeedPage>
                           return postWidget(context, post, refresh: refresh);
                         }
                       },
-                    )
-
-                    //Expanded(child: getFeed(context, posts, refresh)),
-
-                    )
-            // Column(
-            //   children: [
-            // FlatButton(
-            //   onPressed: () async {
-            //     String value = await showModalBottomSheet<String>(
-            //         context: context,
-            //         shape: RoundedRectangleBorder(
-            //             borderRadius: BorderRadius.only(
-            //                 topLeft: Radius.circular(24),
-            //                 topRight: Radius.circular(24))),
-            //         builder: (BuildContext context) {
-            //           return sortSettings(options, dropDownValue);
-            //         });
-            //     setState(() {
-            //       dropDownValue = value;
-            //       print(value);
-            //       print(dropDownValue);
-            //     });
-            //     this.getPosts();
-            //   },
-            //   splashColor: Colors.transparent,
-            //   child: Row(
-            //     children: [
-            //       Text(
-            //         options.firstWhere(
-            //             (e) => e['value'] == dropDownValue)['title'],
-            //         style: TextStyle(
-            //             color: getTheme(context).accentColor,
-            //             fontSize: 20,
-            //             fontWeight: FontWeight.w600),
-            //       )
-            //     ],
-            //   ),
-            // ),
-            //     getFeed(context, posts, refresh),
-            //   ],
-            // )
-            ));
+                    ))));
   }
 }
 
