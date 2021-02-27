@@ -98,13 +98,14 @@ final List<SnaxTheme> darkThemeList = [
       HexColor.fromHex("516395"),
       HexColor.fromHex("5B4F8B")),
   SnaxTheme(
-      "green",
-      "Kale",
-      HexColor.fromHex("91C55D"),
-      HexColor.fromHex("91C55D"),
-      HexColor.fromHex("6CA944"),
-      HexColor.fromHex("B2DD73"),
-      HexColor.fromHex("6CA944")),
+    "green",
+    "Kale",
+    HexColor.fromHex("91C55D"),
+    HexColor.fromHex("91C55D"),
+    HexColor.fromHex("6CA944"),
+    HexColor.fromHex("B2DD73"),
+    HexColor.fromHex("6CA944"),
+  ),
   SnaxTheme(
     "escher",
     "Escher's Theme",
@@ -113,7 +114,7 @@ final List<SnaxTheme> darkThemeList = [
     HexColor.fromHex("ee9ca7"),
     HexColor.fromHex("ffdde1"),
     HexColor.fromHex("F7BCC3"),
-  )
+  ),
 ];
 
 SnaxTheme currentLightTheme = lightThemeList[0];
