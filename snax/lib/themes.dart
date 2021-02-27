@@ -34,9 +34,9 @@ class SnaxTheme {
       (appBarColor.computeLuminance() > 0.5 ? Colors.black : Colors.white);
   Brightness appBarBrightness() =>
       overrideBrightness ??
-      (appBarColor.computeLuminance() < 0.5
-          ? Brightness.dark
-          : Brightness.light);
+      (appBarColor.computeLuminance() > 0.5
+          ? Brightness.light
+          : Brightness.dark);
 
   SnaxTheme(this.id, this.name, this.primaryColor, this.accentColor,
       this.gradientStart, this.gradientEnd, this.appBarColor,

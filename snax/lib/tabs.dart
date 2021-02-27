@@ -88,12 +88,13 @@ class _AppTabsState extends State<AppTabs>
                     leading: CircleAvatar(
                         radius: 14,
                         child: ClipOval(
-                            child: FadeInImage.assetNetwork(
-                                placeholder: "assets/blank_user.png",
-                                image: userImageURL(
-                                    SnaxBackend.currentUser != null
-                                        ? SnaxBackend.currentUser.uid
-                                        : "")))),
+                          child: SnaxBackend.currentUser != null
+                              ? FadeInImage.assetNetwork(
+                                  placeholder: "assets/blank_user.png",
+                                  image:
+                                      userImageURL(SnaxBackend.currentUser.uid))
+                              : Image.asset("assets/blank_user.png"),
+                        )),
                     text: 'Profile',
                   )
                 ],

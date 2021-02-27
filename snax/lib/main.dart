@@ -26,6 +26,9 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
+
+
   @override
   void initState() {
     super.initState();
@@ -46,6 +49,9 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+
+    print(currentDarkTheme.appBarContrastForText());
+
     globalContext = context;
     return GestureDetector(
       onTap: () {
@@ -73,9 +79,10 @@ class _MyAppState extends State<MyApp> {
             primaryColor: currentDarkTheme.primaryColor,
             accentColor: currentDarkTheme.accentColor,
             brightness: ThemeData.dark().brightness,
-            appBarTheme: AppBarTheme(color: currentDarkTheme.appBarColor),
+            appBarTheme: AppBarTheme(color: currentDarkTheme.appBarColor, iconTheme: IconThemeData(color: currentDarkTheme.appBarContrastForText())),
             cupertinoOverrideTheme: CupertinoThemeData(
-                primaryColor: currentDarkTheme.primaryColor)),
+                primaryColor: currentDarkTheme.primaryColor),
+        ),
         theme: ThemeData(
             primaryColor: currentLightTheme.primaryColor,
             accentColor: currentLightTheme.accentColor,
