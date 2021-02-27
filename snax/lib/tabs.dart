@@ -49,7 +49,8 @@ class _AppTabsState extends State<AppTabs>
               curve: Curves.easeOutExpo,
               duration: Duration(milliseconds: 500),
               gap: 4,
-              tabMargin: EdgeInsets.all(4),
+              tabMargin:
+                  EdgeInsets.only(top: 10, bottom: 10, left: 4, right: 4),
               color: isDark(context) == true ? Colors.white : Colors.black,
               activeColor: getTheme(context).primaryContrastForText(),
               iconSize: 20,
