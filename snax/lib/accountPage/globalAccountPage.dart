@@ -388,13 +388,17 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         (bioText != null)
-                            ? Text(
-                                bioText,
+                            ? Linkify(
+                                text: bioText,
                                 style: TextStyle(
-                                    color: getTheme(context)
-                                        .appBarContrastForText(),
-                                    fontSize: 15),
-                                maxLines: _maxLines,
+                                  color:
+                                      getTheme(context).appBarContrastForText(),
+                                  fontSize: 15,
+                                ),
+                                options: LinkifyOptions(
+                                  removeWww: true,
+                                  looseUrl: true,
+                                ),
                               )
                             : Container(),
                         numLines >= 4
