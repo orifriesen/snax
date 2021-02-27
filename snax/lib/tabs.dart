@@ -43,71 +43,66 @@ class _AppTabsState extends State<AppTabs>
         length: 4,
         child: Scaffold(
           extendBody: true,
-          bottomNavigationBar: SafeArea(
-            bottom: true,
-            child: GNav(
-                haptic: true,
-                tabBorderRadius: 20,
-                curve: Curves.easeOutExpo,
-                duration: Duration(milliseconds: 500),
-                gap: 4,
-                tabMargin: EdgeInsets.all(4),
-                color: isDark(context) == true ? Colors.white : Colors.black,
-                activeColor: getTheme(context).primaryContrastForText(),
-                iconSize: 20,
-                tabBackgroundColor: getTheme(context).accentColor,
-                backgroundColor: isDark(context) == true
-                    ? SnaxColors.darkGreyGradientEnd
-                    : Colors.white,
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                tabs: [
-                  GButton(
-                    icon: Icons.home_rounded,
-                    text: 'Home',
-                  ),
-                  GButton(icon: Icons.chat_rounded, text: 'Feed'),
-                  GButton(
-                    icon: Icons.add_circle_outline_rounded,
-                    iconSize: 22,
-                    onPressed: () {
-                      print("test");
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => MakePostPage()));
-                    },
-                  ),
-                  GButton(
-                    icon: Icons.inbox_rounded,
-                    text: 'Activity',
-                  ),
-                  GButton(
-                    leading: CircleAvatar(
-                        radius: 14,
-                        child: ClipOval(
-                            child: FadeInImage.assetNetwork(
-                                placeholder: "assets/blank_user.png",
-                                image: userImageURL(
-                                    SnaxBackend.currentUser != null
-                                        ? SnaxBackend.currentUser.uid
-                                        : "")))),
-                    text: 'Profile',
-                  )
-                ],
-                selectedIndex: _currentIndex,
-                onTabChange: (index) {
-                  index == 2
-                      ? Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => MakePostPage()))
-                      : setState(() {
-                          _currentIndex = index;
-                        });
-                }),
-          ),
-          body: Padding(
-            padding: EdgeInsets.only(bottom: 90),
+          bottomNavigationBar: GNav(
+              haptic: true,
+              tabBorderRadius: 20,
+              curve: Curves.easeOutExpo,
+              duration: Duration(milliseconds: 500),
+              gap: 4,
+              tabMargin:
+                  EdgeInsets.only(top: 10, bottom: 10, left: 4, right: 4),
+              color: isDark(context) == true ? Colors.white : Colors.black,
+              activeColor: getTheme(context).primaryContrastForText(),
+              iconSize: 20,
+              tabBackgroundColor: getTheme(context).accentColor,
+              backgroundColor: isDark(context) == true
+                  ? SnaxColors.darkGreyGradientEnd
+                  : Colors.white,
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              tabs: [
+                GButton(
+                  icon: Icons.home_rounded,
+                  text: 'Home',
+                ),
+                GButton(icon: Icons.chat_rounded, text: 'Feed'),
+                GButton(
+                  icon: Icons.add_circle_outline_rounded,
+                  iconSize: 22,
+                  onPressed: () {
+                    print("test");
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MakePostPage()));
+                  },
+                ),
+                GButton(
+                  icon: Icons.inbox_rounded,
+                  text: 'Activity',
+                ),
+                GButton(
+                  leading: CircleAvatar(
+                      radius: 14,
+                      child: ClipOval(
+                          child: FadeInImage.assetNetwork(
+                              placeholder: "assets/blank_user.png",
+                              image: userImageURL(
+                                  SnaxBackend.currentUser != null
+                                      ? SnaxBackend.currentUser.uid
+                                      : "")))),
+                  text: 'Profile',
+                )
+              ],
+              selectedIndex: _currentIndex,
+              onTabChange: (index) {
+                index == 2
+                    ? Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => MakePostPage()))
+                    : setState(() {
+                        _currentIndex = index;
+                      });
+              }),
+          body: SafeArea(
             child: [
               DefaultTabController(
                   length: 2,
