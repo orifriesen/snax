@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:snax/accountPage/globalAccountPage.dart';
 import 'package:snax/backend/backend.dart';
@@ -333,8 +334,9 @@ Widget postWidget(BuildContext context, Post post,
       onTap: () {
         if (opensDetails)
           Navigator.of(context)
-              .push(MaterialPageRoute(
-            builder: (context) => PostDetailsPage(post: post),
+              .push(PageTransition(
+            type: PageTransitionType.fade,
+            child: PostDetailsPage(post: post),
           ))
               .whenComplete(() {
             if (refresh != null) refresh();
