@@ -339,6 +339,7 @@ class SnaxBackend {
     // await Hive.close();
   }
 
+
   static Future<List<SnaxUser>> getFollowers(String uid) async {
     //Wait for the firebase to be initiated
     await _waitWhile(() => (fbStore == null));
@@ -530,6 +531,23 @@ class SnaxBackend {
     var likeBox = await Hive.openBox('user_likes');
     like ? likeBox.put(postId, true) : likeBox.delete(postId);
     // await likeBox.close();
+  }
+
+  static Future<Post> feedGetPost(String id, {bool forceRefresh = false}) async {
+    //Wait for firebase init
+    await _waitWhile(() => (fbStore == null));
+    var query = fbStore.collection("feed").doc(id);
+    //Check the cache
+    if (!forceRefresh && Cache.has(query.toString()))
+      return Cache.fetch(query.toString());
+    //Fetch
+    DocumentSnapshot result = await query.get();
+    if (!result.exists) throw "Post Not Found";
+    //Make into post
+    var post = (await _feedGrabRefs([result].toList())).first;
+    //Add to cache
+    Cache.add(query.toString(), post);
+    return post;
   }
 
   static Future<List<Post>> feedGetTopPosts({bool forceRefresh = false}) async {
@@ -782,8 +800,7 @@ class SnaxBackend {
   }
 
   //Grab extra info like user and snack for a given list of feed database items
-  static Future<List<Post>> _feedGrabRefs(
-      List<QueryDocumentSnapshot> docs) async {
+  static Future<List<Post>> _feedGrabRefs(List<dynamic> docs) async {
     //Get local list of likes
     var likeBox = await Hive.openBox('user_likes');
     var followingBox = await Hive.openBox('user_following');

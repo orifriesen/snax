@@ -8,6 +8,7 @@ import 'package:snax/backend/requests.dart';
 import 'package:snax/feedPage/makePostPage.dart';
 import 'package:snax/backend/backend.dart';
 import 'package:snax/feedPage/post.dart';
+import 'package:snax/feedPage/postDetailsPage.dart';
 import 'package:snax/helpers.dart';
 import 'package:snax/themes.dart';
 
@@ -105,73 +106,88 @@ class _ActivityPageState extends State<ActivityPage>
 
   Widget postActivity(BuildContext context, String title, String body,
       String userId, String postId, DateTime time, String transitionId) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          //Text(comment.user.name),
-          Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 16.0),
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => FutureGlobalAccountPage(
-                            userId,
-                            (this.followingBox != null &&
-                                this.followingBox.values.contains(userId)),
-                            transitionId: transitionId),
-                      ),
-                    );
-                  },
-                  child: Hero(
-                    tag: transitionId,
-                    child: CircleAvatar(
-                        child: ClipOval(
-                            child: FadeInImage.assetNetwork(
-                                placeholder: "assets/blank_user.png",
-                                image: userImageURL(userId)))),
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                FuturePostDetailsPage(postId, transitionId: transitionId),
+          ),
+        );
+      },
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            //Text(comment.user.name),
+            Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 16.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FutureGlobalAccountPage(
+                              userId,
+                              (this.followingBox != null &&
+                                  this.followingBox.values.contains(userId)),
+                              transitionId: transitionId+"u"),
+                        ),
+                      );
+                    },
+                    child: Hero(
+                      tag: transitionId+"u",
+                      child: CircleAvatar(
+                          child: ClipOval(
+                              child: FadeInImage.assetNetwork(
+                                  placeholder: "assets/blank_user.png",
+                                  image: userImageURL(userId)))),
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: RichText(
-                    text: TextSpan(children: [
-                  if (title != null)
+                Expanded(
+                  child: RichText(
+                      text: TextSpan(children: [
+                    if (title != null)
+                      TextSpan(
+                          text: title+'\n',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              color: isDark(context)
+                                  ? Colors.white
+                                  : Colors.black),
+                          recognizer: TapGestureRecognizer()..onTap = () {}),
                     TextSpan(
-                        text: title,
+                        text: body,
                         style: TextStyle(
-                            height: 2,
-                            fontWeight: FontWeight.w700,
                             color:
-                                isDark(context) ? Colors.white : Colors.black),
-                        recognizer: TapGestureRecognizer()..onTap = () {}),
-                  TextSpan(
-                      text: body,
-                      style: TextStyle(
-                          color: isDark(context) ? Colors.white : Colors.black,
-                          fontWeight: FontWeight.normal)),
-                  TextSpan(
-                      text: " " + dateFormatComment(time),
-                      style: TextStyle(
-                          fontWeight: FontWeight.w300,
-                          fontSize: 11.5,
-                          color: SnaxColors.subtext))
-                ])),
-              ),
-              Padding(
-                  padding: const EdgeInsets.only(left: 16.0),
-                  child: Image.asset(
-                    "assets/feedPostIcon.png",
-                    height: 40,
-                  )),
-            ],
-          ),
-        ],
+                                isDark(context) ? Colors.white : Colors.black,
+                            fontWeight: FontWeight.normal)),
+                    TextSpan(
+                        text: " " + dateFormatComment(time),
+                        style: TextStyle(
+                            fontWeight: FontWeight.w300,
+                            fontSize: 11.5,
+                            color: SnaxColors.subtext))
+                  ])),
+                ),
+                Padding(
+                    padding: const EdgeInsets.only(left: 16.0),
+                    child: Hero(
+                      tag: transitionId,
+                                          child: Image.asset(
+                        isDark(context) ? "assets/feedPostIconDark.png" : "assets/feedPostIcon.png",
+                        height: 40,
+                      ),
+                    )),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

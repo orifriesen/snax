@@ -110,7 +110,7 @@ class _AppTabsState extends State<AppTabs>
                       })
                 ]),
             shape: CircularNotchedRectangle(),
-            notchMargin: 4.0,
+            notchMargin: 0.0,
             /*items: [
               new BottomNavigationBarItem(
                 icon: _currentIndex == 0
