@@ -389,6 +389,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                       children: [
                         (bioText != null)
                             ? Linkify(
+                                onOpen: (link) => bioLink(link),
                                 text: bioText,
                                 style: TextStyle(
                                   color:
@@ -399,6 +400,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                                   removeWww: true,
                                   looseUrl: true,
                                 ),
+                                maxLines: _maxLines,
                               )
                             : Container(),
                         numLines >= 4
@@ -418,7 +420,12 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                                               color: Colors.white70,
                                             ),
                                           )
-                                        : Container(),
+                                        : Text(
+                                            "less",
+                                            style: TextStyle(
+                                              color: Colors.white70,
+                                            ),
+                                          ),
                                   ],
                                 ),
                               )
