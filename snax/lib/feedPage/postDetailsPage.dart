@@ -76,7 +76,7 @@ class _PostDetailsPage extends State<PostDetailsPage> {
         color: isDark(context)
             ? SnaxColors.darkGreyGradientEnd
             : Theme.of(context).canvasColor,
-        elevation: 16,
+        elevation: 8,
         child: Padding(
           padding: MediaQuery.of(context).viewInsets,
           child: TextField(

@@ -50,11 +50,11 @@ class _AppTabsState extends State<AppTabs>
             child: GNav(
                 haptic: true,
                 tabBorderRadius: 20,
-                curve: Curves.easeOutExpo,
-                duration: Duration(milliseconds: 500),
-                gap: 4,
+                curve: Curves.decelerate,
+                duration: Duration(milliseconds: 200),
+                gap: 8,
                 tabMargin:
-                    EdgeInsets.only(top: 8, bottom: 0, left: 8, right: 8),
+                    EdgeInsets.only(top: 8, bottom: 8, left: 8, right: 8),
                 color: isDark(context) == true ? Colors.white : Colors.black,
                 activeColor: getTheme(context).primaryContrastForText(),
                 iconSize: 20,
@@ -71,6 +71,7 @@ class _AppTabsState extends State<AppTabs>
                   GButton(icon: Icons.chat_rounded, text: 'Feed'),
                   GButton(
                     icon: Icons.add_circle_outline_rounded,
+                    iconSize: 22,
                     onPressed: () {
                       print("test");
                       Navigator.push(
@@ -85,7 +86,7 @@ class _AppTabsState extends State<AppTabs>
                   ),
                   GButton(
                     leading: CircleAvatar(
-                        radius: 12,
+                        radius: 14,
                         child: ClipOval(
                             child: FadeInImage.assetNetwork(
                                 placeholder: "assets/blank_user.png",
