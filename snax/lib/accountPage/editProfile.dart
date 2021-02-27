@@ -49,17 +49,17 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   //* Crop an image
-  Future _cropImage() async {
-    File cropped = await ImageCropper.cropImage(
-      sourcePath: _imageFile.path,
-      cropStyle: CropStyle.circle,
-      maxWidth: 400,
-      maxHeight: 400,
-    );
-    setState(() {
-      _imageFile = cropped ?? _imageFile;
-    });
-  }
+  // Future _cropImage() async {
+  //   File cropped = await ImageCropper.cropImage(
+  //     sourcePath: _imageFile.path,
+  //     cropStyle: CropStyle.circle,
+  //     maxWidth: 400,
+  //     maxHeight: 400,
+  //   );
+  //   setState(() {
+  //     _imageFile = cropped ?? _imageFile;
+  //   });
+  // }
 
   @override
   void initState() {
@@ -124,8 +124,7 @@ class _EditProfileState extends State<EditProfile> {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
-              // end: Alignment.center,
-              end: Alignment.centerRight,
+              end: Alignment.center,
               colors: [
                 getTheme(context).gradientStart,
                 getTheme(context).gradientEnd
@@ -142,8 +141,9 @@ class _EditProfileState extends State<EditProfile> {
                     child: Text(
                       'Change Profile Photo',
                       style: TextStyle(
-                          fontSize: 15,
-                          color: getTheme(context).appBarContrastForText()),
+                        fontSize: 15,
+                        color: getTheme(context).appBarContrastForText(),
+                      ),
                     ),
                     onTap: () => {
                       showModalBottomSheet(
@@ -211,23 +211,22 @@ class _EditProfileState extends State<EditProfile> {
             Hero(
               tag: 'profile-photo',
               child: CircleAvatar(
-                backgroundColor: Colors.grey,
-                radius: 80.0,
-                child: this.uploadingImage
-                    ? Container(
-                        child: Center(child: CircularProgressIndicator()),
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle, color: Colors.black54),
-                      )
-                    : null,
-                backgroundImage: _imageFile == null
-                    ? (SnaxBackend.currentUser.photo != null)
-                        ? NetworkImage(SnaxBackend.currentUser.photo)
-                        : AssetImage("assets/blank_user.png")
-                    : FileImage(
-                        File(_imageFile.path),
-                      ),
-              ),
+                  backgroundColor: Colors.grey,
+                  radius: 80.0,
+                  child: this.uploadingImage
+                      ? Container(
+                          child: Center(child: CircularProgressIndicator()),
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle, color: Colors.black54),
+                        )
+                      : null,
+                  backgroundImage: _imageFile == null
+                      ? (SnaxBackend.currentUser.photo != null)
+                          ? NetworkImage(SnaxBackend.currentUser.photo)
+                          : AssetImage("assets/blank_user.png")
+                      : FileImage(
+                          File(_imageFile.path),
+                        )),
             ),
           ],
         ),
@@ -235,12 +234,12 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
-  //* This is the pop up sheet that appears when the user requests to change
-  //* their profile image
   Widget _imageSheet() {
     return Container(
+      // height: 100,
       margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Text(
             'Change Profile Photo',
@@ -266,26 +265,31 @@ class _EditProfileState extends State<EditProfile> {
             ],
           ),
           SizedBox(height: 20),
-          CircleAvatar(
-            radius: 80,
-            backgroundImage: _imageFile == null
-                ? AssetImage("assets/blank_user.png")
-                : Image.file(_imageFile as File),
-          ),
-          SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              FlatButton(
-                child: Icon(Icons.crop),
-                onPressed: () => {_cropImage},
-              ),
-              FlatButton(
-                child: Icon(Icons.check),
-                onPressed: () => {Navigator.pop(context)},
-              ),
-            ],
-          )
+          // CircleAvatar(
+          //     radius: 80,
+          //     backgroundImage: _imageFile == null
+          //         ? (SnaxBackend.currentUser.photo != null)
+          //             ? NetworkImage(SnaxBackend.currentUser.photo)
+          //             : AssetImage("assets/blank_user.png")
+          //         : FileImage(
+          //             File(_imageFile.path),
+          //           )),
+          // SizedBox(height: 20),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.center,
+          //   children: [
+          //     FlatButton(
+          //       child: Icon(Icons.cancel_outlined),
+          //       onPressed: () =>
+          //           {},
+          //     ),
+          //     FlatButton(
+          //       child: Icon(Icons.check),
+          //       onPressed: () =>
+          //           {},
+          //     ),
+          //   ],
+          // )
         ],
       ),
     );
