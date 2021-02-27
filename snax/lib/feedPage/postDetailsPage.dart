@@ -73,7 +73,9 @@ class _PostDetailsPage extends State<PostDetailsPage> {
         if (this.widget.post != null) commentLoader(context, widget.post),
       ]),
       bottomNavigationBar: BottomAppBar(
-        color: isDark(context) ? null : Theme.of(context).canvasColor,
+        color: isDark(context)
+            ? SnaxColors.darkGreyGradientEnd
+            : Theme.of(context).canvasColor,
         elevation: 16,
         child: Padding(
           padding: MediaQuery.of(context).viewInsets,
