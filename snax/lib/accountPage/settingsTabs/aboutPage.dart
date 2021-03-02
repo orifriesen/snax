@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+
 import 'package:snax/customIcons/eschr_icons.dart';
 import 'package:snax/customIcons/git_hub_icons.dart';
-
 import 'package:snax/customIcons/instagram_icons.dart';
+
 import 'package:snax/themes.dart';
 import 'package:url_launcher/url_launcher.dart';
 
