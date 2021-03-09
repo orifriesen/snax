@@ -378,6 +378,7 @@ class SnaxBackend {
           doc.data()["bio"],
           doc.get("followerCount"),
           doc.get("followingCount"),
+          doc.data()["verified"] ?? false,
           photo:
               (doc.data()["hasPhoto"] ?? false) ? userImageURL(doc.id) : null,
           userIsFollowing: followingBox.values.contains(doc.id)));
@@ -435,6 +436,7 @@ class SnaxBackend {
           doc.data()["bio"],
           doc.get("followerCount"),
           doc.get("followingCount"),
+          doc.data()["verified"] ?? false,
           photo:
               (doc.data()["hasPhoto"] ?? false) ? userImageURL(doc.id) : null,
           userIsFollowing: followingBox.values.contains(doc.id)));
@@ -787,6 +789,7 @@ class SnaxBackend {
           userDatas[data["uid"]]["bio"],
           userDatas[data["uid"]]["followerCount"],
           userDatas[data["uid"]]["followingCount"],
+          userDatas[data["uid"]]["verified"] ?? false,
           photo: (userDatas[data["uid"]]["hasPhoto"] ?? false)
               ? userImageURL(data["uid"])
               : null,
@@ -873,6 +876,7 @@ class SnaxBackend {
           userDatas[data["uid"]]["bio"],
           userDatas[data["uid"]]["followerCount"],
           userDatas[data["uid"]]["followingCount"],
+          userDatas[data["uid"]]["verified"] ?? false,
           photo: (userDatas[data["uid"]]["hasPhoto"] ?? false)
               ? userImageURL(data["uid"])
               : null,
@@ -993,6 +997,7 @@ class SnaxBackend {
             result["data"]["bio"],
             result["data"]["followerCount"],
             result["data"]["followingCount"],
+            result["data"]["verified"] ?? false,
             photo: (result["data"]["hasPhoto"] ?? false)
                 ? userImageURL(result["id"])
                 : null,
@@ -1024,6 +1029,7 @@ class SnaxBackend {
         doc.data()["bio"],
         doc.data()["followerCount"],
         doc.data()["followingCount"],
+        doc.data()["verified"] ?? false,
         userIsFollowing: followingBox.values.contains(doc.id),
         photo: (doc.data()["hasPhoto"] ?? false) ? userImageURL(uid) : null);
   }
@@ -1205,6 +1211,7 @@ class _SnaxBackendAuth {
           userInDB.data()["bio"],
           userInDB.get("followerCount"),
           userInDB.get("followingCount"),
+          userInDB.data()["verified"] ?? false,
           photo: image);
     }
   }
@@ -1220,6 +1227,7 @@ class _SnaxBackendAuth {
           prefs.getString("user_bio"),
           int.parse(prefs.getString("user_followerCount")),
           int.parse(prefs.getString("user_followingCount")),
+          prefs.containsKey("verified") ? prefs.getBool("verified") : false,
           photo: prefs.getString("user_image"));
     } else {
       throw "No user data present";

@@ -96,6 +96,7 @@ flutter:
     - assets/snax.png
     - assets/feedPostIcon.png
     - assets/feedPostIconDark.png
+    - assets/verified.png
     
 
   # To add assets to your application, add an assets section, like this:
