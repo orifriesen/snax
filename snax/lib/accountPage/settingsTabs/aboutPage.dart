@@ -134,7 +134,7 @@ class AboutPage extends StatelessWidget {
                       Eschr.proj_eschrus__1_,
                       () =>
                           instagramLink("https://www.instagram.com/escherwd/"),
-                      () => eschrLink("https://eschr.us"),
+                      () => eschrLink("https://escher.wtf"),
                       () => githubLink("https://github.com/escherwd"),
                     ),
                     teamSocials(
