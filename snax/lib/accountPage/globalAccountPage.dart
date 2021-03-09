@@ -232,31 +232,33 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
 
   //* Settings when viewing someone else's profile
   Widget _globalSettings() {
-    return PopupMenuButton(
-      onSelected: (value) {
-        value == 1 ? reportButton() : Container();
-      },
-      itemBuilder: (context) => [
-        PopupMenuItem(
-          value: 1,
-          child: Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(2, 2, 8, 2),
+    return this.widget.user.uid != SnaxBackend.currentUser.uid
+        ? PopupMenuButton(
+            onSelected: (value) {
+              value == 1 ? reportButton() : Container();
+            },
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 1,
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(2, 2, 8, 2),
+                    ),
+                    Text(
+                      'Report',
+                      style: TextStyle(color: getTheme(context).accentColor),
+                    )
+                  ],
+                ),
+                height: 32,
               ),
-              Text(
-                'Report',
-                style: TextStyle(color: getTheme(context).accentColor),
-              )
             ],
-          ),
-          height: 32,
-        ),
-      ],
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
-    );
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          )
+        : Container();
   }
 
   //* Report Button in the pop up menu
@@ -404,12 +406,23 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         (bioText != null)
-                            ? Text(
-                                bioText,
+                            ? Linkify(
+                                onOpen: (link) => bioLink(link),
+                                text: bioText,
                                 style: TextStyle(
-                                    color: getTheme(context)
-                                        .appBarContrastForText(),
-                                    fontSize: 15),
+                                  color:
+                                      getTheme(context).appBarContrastForText(),
+                                  fontSize: 15,
+                                ),
+                                linkStyle: TextStyle(
+                                  color:
+                                      getTheme(context).appBarContrastForText(),
+                                  fontSize: 15,
+                                ),
+                                options: LinkifyOptions(
+                                  removeWww: true,
+                                  looseUrl: true,
+                                ),
                                 maxLines: _maxLines,
                               )
                             : Container(),
@@ -430,7 +443,12 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                                               color: Colors.white70,
                                             ),
                                           )
-                                        : Container(),
+                                        : Text(
+                                            "less",
+                                            style: TextStyle(
+                                              color: Colors.white70,
+                                            ),
+                                          ),
                                   ],
                                 ),
                               )

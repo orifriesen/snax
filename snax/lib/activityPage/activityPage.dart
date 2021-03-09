@@ -11,6 +11,7 @@ import 'package:snax/feedPage/post.dart';
 import 'package:snax/feedPage/postDetailsPage.dart';
 import 'package:snax/helpers.dart';
 import 'package:snax/themes.dart';
+import 'package:sup/quick_sup.dart';
 
 class ActivityPage extends StatefulWidget {
   @override
@@ -77,30 +78,36 @@ class _ActivityPageState extends State<ActivityPage>
               actions: [],
             ),
           ],
-          body: ListView.separated(
-              separatorBuilder: (BuildContext context, int index) =>
-                  Divider(indent: 16, height: 0),
-              itemBuilder: (BuildContext context, int index) {
-                var notif = notifications.reversed.toList()[index];
-                switch (notif.type) {
-                  case SnaxNotificationType.post:
-                    return postActivity(
-                        context,
-                        notif.title,
-                        notif.body,
-                        notif.value.split(",")[0],
-                        notif.value.split(",")[1],
-                        notif.time,
-                        getRandomString(9));
-                  case SnaxNotificationType.user:
-                    return userActivity(context, notif.title, notif.body,
-                        notif.value, notif.time, getRandomString(9));
-                  default:
-                    return defaultActivity(
-                        context, notif.title, notif.body, notif.time);
-                }
-              },
-              itemCount: notifications.length),
+          body: notifications.length == 0
+              ? Center(
+                  child: QuickSup.empty(
+                    title: "No Notifications",
+                  ),
+                )
+              : ListView.separated(
+                  separatorBuilder: (BuildContext context, int index) =>
+                      Divider(indent: 16, height: 0),
+                  itemBuilder: (BuildContext context, int index) {
+                    var notif = notifications.reversed.toList()[index];
+                    switch (notif.type) {
+                      case SnaxNotificationType.post:
+                        return postActivity(
+                            context,
+                            notif.title,
+                            notif.body,
+                            notif.value.split(",")[0],
+                            notif.value.split(",")[1],
+                            notif.time,
+                            getRandomString(9));
+                      case SnaxNotificationType.user:
+                        return userActivity(context, notif.title, notif.body,
+                            notif.value, notif.time, getRandomString(9));
+                      default:
+                        return defaultActivity(
+                            context, notif.title, notif.body, notif.time);
+                    }
+                  },
+                  itemCount: notifications.length),
         ));
   }
 
@@ -135,12 +142,12 @@ class _ActivityPageState extends State<ActivityPage>
                               userId,
                               (this.followingBox != null &&
                                   this.followingBox.values.contains(userId)),
-                              transitionId: transitionId+"u"),
+                              transitionId: transitionId + "u"),
                         ),
                       );
                     },
                     child: Hero(
-                      tag: transitionId+"u",
+                      tag: transitionId + "u",
                       child: CircleAvatar(
                           child: ClipOval(
                               child: FadeInImage.assetNetwork(
@@ -154,13 +161,12 @@ class _ActivityPageState extends State<ActivityPage>
                       text: TextSpan(children: [
                     if (title != null)
                       TextSpan(
-                          text: title+'\n',
-                          style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              color: isDark(context)
-                                  ? Colors.white
-                                  : Colors.black),
-                          ),
+                        text: title + '\n',
+                        style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            color:
+                                isDark(context) ? Colors.white : Colors.black),
+                      ),
                     TextSpan(
                         text: body,
                         style: TextStyle(
@@ -179,8 +185,10 @@ class _ActivityPageState extends State<ActivityPage>
                     padding: const EdgeInsets.only(left: 16.0),
                     child: Hero(
                       tag: transitionId,
-                                          child: Image.asset(
-                        isDark(context) ? "assets/feedPostIconDark.png" : "assets/feedPostIcon.png",
+                      child: Image.asset(
+                        isDark(context)
+                            ? "assets/feedPostIconDark.png"
+                            : "assets/feedPostIcon.png",
                         height: 40,
                       ),
                     )),

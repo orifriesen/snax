@@ -50,11 +50,11 @@ class _AppTabsState extends State<AppTabs>
             child: GNav(
                 haptic: true,
                 tabBorderRadius: 20,
-                curve: Curves.easeOutExpo,
-                duration: Duration(milliseconds: 500),
-                gap: 4,
+                curve: Curves.decelerate,
+                duration: Duration(milliseconds: 200),
+                gap: 8,
                 tabMargin:
-                    EdgeInsets.only(top: 8, bottom: 0, left: 4, right: 4),
+                    EdgeInsets.only(top: 8, bottom: 8, left: 8, right: 8),
                 color: isDark(context) == true ? Colors.white : Colors.black,
                 activeColor: getTheme(context).primaryContrastForText(),
                 iconSize: 20,
@@ -62,7 +62,7 @@ class _AppTabsState extends State<AppTabs>
                 backgroundColor: isDark(context) == true
                     ? SnaxColors.darkGreyGradientEnd
                     : Colors.white,
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 tabs: [
                   GButton(
                     icon: Icons.home_rounded,
@@ -110,14 +110,19 @@ class _AppTabsState extends State<AppTabs>
                         });
                 }),
           ),
-          body: [
-            DefaultTabController(
-                length: 2, child: MainPage(), key: PageStorageKey("home_key")),
-            FeedPage(),
-            Container(),
-            ActivityPage(),
-            GlobalAccountPage(SnaxBackend.currentUser, isAccountPage: true)
-          ][_currentIndex],
+          body: SafeArea(
+            top: false,
+            child: [
+              DefaultTabController(
+                  length: 2,
+                  child: MainPage(),
+                  key: PageStorageKey("home_key")),
+              FeedPage(),
+              Container(),
+              ActivityPage(),
+              GlobalAccountPage(SnaxBackend.currentUser, isAccountPage: true)
+            ][_currentIndex],
+          ),
         ),
       ),
     );

@@ -112,65 +112,70 @@ class _ProductPageState extends State<ProductPage> {
                                     child:
                                         Image.network(this.widget.item.image)),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.only(bottom: 1.0),
-                                      child: Text(
-                                        this.widget.item.name,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(1.0),
-                                      child: InkWell(
-                                          onTap: () {
-                                            //Present Widget
-                                            Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                    builder: (BuildContext
-                                                            context) =>
-                                                        CategoryPage(
-                                                            item: this
-                                                                .widget
-                                                                .item)));
-                                          },
-                                          child: Row(
-                                            children: [
-                                              Text(this.widget.item.type.name,
-                                                  style: TextStyle(
-                                                      fontSize: 14,
-                                                      color: getTheme(context)
-                                                          .accentColor)),
-                                              Icon(
-                                                Icons.arrow_forward_ios_rounded,
-                                                size: 14,
-                                                color: getTheme(context)
-                                                    .accentColor,
-                                              )
-                                            ],
-                                          )),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(1.0),
-                                      child: Text(
-                                          display(this
-                                                  .widget
-                                                  .item
-                                                  .numberOfRatings) +
-                                              " total ratings",
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 8),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 1.0),
+                                        child: Text(
+                                          this.widget.item.name,
+                                          overflow: TextOverflow.fade,
+                                          softWrap: false,
                                           style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.grey[400])),
-                                    )
-                                  ],
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(1.0),
+                                        child: InkWell(
+                                            onTap: () {
+                                              //Present Widget
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (BuildContext
+                                                              context) =>
+                                                          CategoryPage(
+                                                              item: this
+                                                                  .widget
+                                                                  .item)));
+                                            },
+                                            child: Row(
+                                              children: [
+                                                Text(this.widget.item.type.name,
+                                                    style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: getTheme(context)
+                                                            .accentColor)),
+                                                Icon(
+                                                  Icons
+                                                      .arrow_forward_ios_rounded,
+                                                  size: 14,
+                                                  color: getTheme(context)
+                                                      .accentColor,
+                                                )
+                                              ],
+                                            )),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(1.0),
+                                        child: Text(
+                                            display(this
+                                                    .widget
+                                                    .item
+                                                    .numberOfRatings) +
+                                                " total ratings",
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.grey[400])),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               )
                             ],
