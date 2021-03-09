@@ -46,6 +46,8 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
 
     //this.isFollowing = this.widget.user.userIsFollowing;
 
+    print(this.widget.user.verified);
+
     this._scrollController = ScrollController()
       ..addListener(() {
         var height = MediaQuery.of(context).padding.top;
@@ -352,11 +354,25 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              this.widget.user.name,
-              style: TextStyle(
-                  fontSize: 20,
-                  color: getTheme(context).appBarContrastForText()),
+            Row(
+              children: [
+                Text(
+                  this.widget.user.name,
+                  style: TextStyle(
+                      fontSize: 20,
+                      color: getTheme(context).appBarContrastForText()),
+                ),
+                if (this.widget.user.verified)
+                Padding(
+                  padding: const EdgeInsets.only(left: 4.0),
+                  child: Image.asset("assets/verified.png", color: getTheme(context).appBarContrastForText(),height: 19,),
+                ),
+                if (founders.contains(this.widget.uid ?? this.widget.user.uid))
+                Padding(
+                  padding: const EdgeInsets.only(left: 6.0),
+                  child: Image.asset("assets/snax-chip.png", color: getTheme(context).appBarContrastForText(),height: 14,),
+                )
+              ],
             ),
             SizedBox(height: 5),
             Text(
@@ -629,7 +645,7 @@ class _FutureGlobalAccountPageState extends State<FutureGlobalAccountPage> {
 
   @override
   void initState() {
-    this.userObject = SnaxUser("", "", this.widget.uid, "", 0, 0,
+    this.userObject = SnaxUser("", "", this.widget.uid, "", 0, 0,false,
         photo: userImageURL(this.widget.uid),
         userIsFollowing: this.widget.isFollowing);
     super.initState();

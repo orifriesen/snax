@@ -328,7 +328,25 @@ class BarcodeAddSearch extends SearchDelegate<String> {
                                                                 "assets/blank_user.png")),
                                                     radius: 25,
                                                   ),
-                                                  title: Text(user.name),
+                                                  title: Row(
+                                                    children: [
+                                                      Text(user.name),
+                                                      if (user.verified)
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 4.0),
+                                                          child: Image.asset(
+                                                            "assets/verified.png",
+                                                            color: getTheme(
+                                                                    context)
+                                                                .accentColor,
+                                                            height: 15,
+                                                          ),
+                                                        )
+                                                    ],
+                                                  ),
                                                   subtitle:
                                                       Text("@" + user.username),
                                                   onTap: () => {

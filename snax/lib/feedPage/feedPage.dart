@@ -364,11 +364,25 @@ Widget postWidget(BuildContext context, Post post,
                             Padding(
                               padding: const EdgeInsets.only(top: 2.0),
                               child: GestureDetector(
-                                child: Text(
-                                  "@" + post.user.username,
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      color: getTheme(context).accentColor),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      "@" + post.user.username,
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          color: getTheme(context).accentColor),
+                                    ),
+                                    if (post.user.verified)
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 4.0),
+                                        child: Image.asset(
+                                          "assets/verified.png",
+                                          color: getTheme(context).accentColor,
+                                          height: 15,
+                                        ),
+                                      )
+                                  ],
                                 ),
                                 onTap: () => {
                                   Navigator.push(

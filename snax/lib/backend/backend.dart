@@ -18,6 +18,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:math';
 // written by escher
 
+const List<String> founders = ['2sRbgRT7hqd6iLuvYg2VbCC4YDN2', '92kBXfyxAKdkYcwYIRPo7SrKVKj1', 'KZ2OfBJ5cRhAe7BGkC5GamciP253', 'UwmVvSnchmUmlve27a2jcAhtSdk2', 'KyERS8Rbf3XkOmdOeF4mNtUWtS12'];
+
 FirebaseApp fbApp;
 FirebaseAuth fbAuth;
 FirebaseFirestore fbStore;
@@ -150,7 +152,8 @@ class SnaxNotificationsController {
     //Add to storage
     await box.add(jsonEncode(obj));
     //Add to stream
-    if (!background) _notificationStream.add(SnaxNotification(obj));
+    //if (!background) 
+    _notificationStream.add(SnaxNotification(obj));
     //await box.close();
     //Delete from server
     await SnaxNotificationsController.deleteMissedFromServer();
@@ -265,6 +268,7 @@ class SnaxUser {
   String uid;
   String bio;
   String photo;
+  bool verified;
 
   int followerCount;
   int followingCount;
@@ -282,7 +286,7 @@ class SnaxUser {
   }
 
   SnaxUser(this.username, this.name, this.uid, this.bio, this.followerCount,
-      this.followingCount,
+      this.followingCount, this.verified,
       {this.photo, this.userIsFollowing = false});
 
   Future<List<SnackUserRating>> ratings({int limit = 10}) =>
