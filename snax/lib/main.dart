@@ -26,9 +26,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
-
-
   @override
   void initState() {
     super.initState();
@@ -49,7 +46,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-
     print(currentDarkTheme.appBarContrastForText());
 
     globalContext = context;
@@ -75,13 +71,16 @@ class _MyAppState extends State<MyApp> {
         },
         initialRoute: "/",
         darkTheme: ThemeData(
-            canvasColor: HexColor.fromHex("252525"),
-            primaryColor: currentDarkTheme.primaryColor,
-            accentColor: currentDarkTheme.accentColor,
-            brightness: ThemeData.dark().brightness,
-            appBarTheme: AppBarTheme(color: currentDarkTheme.appBarColor, iconTheme: IconThemeData(color: currentDarkTheme.appBarContrastForText())),
-            cupertinoOverrideTheme: CupertinoThemeData(
-                primaryColor: currentDarkTheme.primaryColor),
+          canvasColor: HexColor.fromHex("252525"),
+          primaryColor: currentDarkTheme.primaryColor,
+          accentColor: currentDarkTheme.accentColor,
+          brightness: ThemeData.dark().brightness,
+          appBarTheme: AppBarTheme(
+              color: currentDarkTheme.appBarColor,
+              iconTheme: IconThemeData(
+                  color: currentDarkTheme.appBarContrastForText())),
+          cupertinoOverrideTheme:
+              CupertinoThemeData(primaryColor: currentDarkTheme.primaryColor),
         ),
         theme: ThemeData(
             primaryColor: currentLightTheme.primaryColor,
@@ -90,7 +89,8 @@ class _MyAppState extends State<MyApp> {
                 CupertinoThemeData(primaryColor: currentDarkTheme.primaryColor),
             appBarTheme: AppBarTheme(
                 brightness: Brightness.light,
-                iconTheme: IconThemeData(color: currentLightTheme.appBarContrastForText()),
+                iconTheme: IconThemeData(
+                    color: currentLightTheme.appBarContrastForText()),
                 color: currentLightTheme.appBarColor)),
       ),
     );
