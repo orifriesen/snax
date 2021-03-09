@@ -234,6 +234,13 @@ class SnaxBackend {
     return snacks;
   }
 
+  static Future<bool> hasReviewedSnack(String id) async {
+    //Not logged in
+    if (SnaxBackend.currentUser == null) return false;
+    //Check
+    return (await fbStore.collection("snacks").doc(id).collection("ratings").where("uid",isEqualTo: SnaxBackend.currentUser.uid).limit(1).get()).size > 0;
+  }
+
   //This random string is being used as an alternative to 'undefined' which doesnt exist in dart
   static const _undefinedBioString = "zX43XBOZ7PtzulR";
 

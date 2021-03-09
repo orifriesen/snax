@@ -341,6 +341,8 @@ class SnackItem {
   void resetTransitionId() {
     this.transitionId = getRandomString(10);
   }
+
+  Future<bool> hasReviewed() async => SnaxBackend.hasReviewedSnack(this.id);
 }
 
 //A snack rating that is calculated, no user data is attached
