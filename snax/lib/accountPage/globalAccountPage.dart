@@ -398,6 +398,11 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                                       getTheme(context).appBarContrastForText(),
                                   fontSize: 15,
                                 ),
+                                linkStyle: TextStyle(
+                                  color:
+                                      getTheme(context).appBarContrastForText(),
+                                  fontSize: 15,
+                                ),
                                 options: LinkifyOptions(
                                   removeWww: true,
                                   looseUrl: true,
