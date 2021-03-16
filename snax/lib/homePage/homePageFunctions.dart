@@ -69,25 +69,19 @@ Widget getHorizontalList(
                                           child: Stack(
                                             children: [
                                               ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                                child: (snackList[index]
-                                                            .banner !=
-                                                        null)
-                                                    ? Image.network(
-                                                        snackList[index].banner,
-                                                        errorBuilder: (context,
-                                                                obj, stack) =>
-                                                            Image.asset(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                  child: AspectRatio(
+                                                    aspectRatio: 2 / 1,
+                                                    child: FadeInImage
+                                                        .assetNetwork(
+                                                      placeholder:
                                                           "assets/placeholderImage.jpg",
-                                                          fit: BoxFit.cover,
-                                                        ),
-                                                      )
-                                                    : Image.asset(
-                                                        "assets/placeholderImage.jpg",
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                              ),
+                                                      image: snackList[index]
+                                                          .banner,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  )),
                                               Container(
                                                   child: Opacity(
                                                     opacity: 0.5,
@@ -548,14 +542,20 @@ Widget snackOfTheWeek(BuildContext context, SnackItem snackItem) {
                           color: Color.fromARGB(24, 0, 0, 0), blurRadius: 8)
                     ]),
                 child: ClipRRect(
-                    borderRadius: BorderRadius.circular(18),
-                    child: Image.network(
-                      snackItem.banner,
-                      errorBuilder: (context, obj, stack) => Image.asset(
-                        "assets/placeholderImage.jpg",
-                        fit: BoxFit.cover,
-                      ),
-                    ))),
+                  borderRadius: BorderRadius.circular(18),
+                  child: FadeInImage.assetNetwork(
+                    placeholder: "assets/placeholderImage.jpg",
+                    image: snackItem.banner,
+                    //fit: BoxFit.cover,
+                  ),
+                  // child: Image.network(
+                  //   snackItem.banner,
+                  //   errorBuilder: (context, obj, stack) => Image.asset(
+                  //     "assets/placeholderImage.jpg",
+                  //     fit: BoxFit.cover,
+                  //   ),
+                  // )
+                )),
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(

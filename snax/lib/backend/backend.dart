@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi';
+import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -18,7 +19,13 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:math';
 // written by escher
 
-const List<String> founders = ['2sRbgRT7hqd6iLuvYg2VbCC4YDN2', '92kBXfyxAKdkYcwYIRPo7SrKVKj1', 'KZ2OfBJ5cRhAe7BGkC5GamciP253', 'UwmVvSnchmUmlve27a2jcAhtSdk2', 'KyERS8Rbf3XkOmdOeF4mNtUWtS12'];
+const List<String> founders = [
+  '2sRbgRT7hqd6iLuvYg2VbCC4YDN2',
+  '92kBXfyxAKdkYcwYIRPo7SrKVKj1',
+  'KZ2OfBJ5cRhAe7BGkC5GamciP253',
+  'UwmVvSnchmUmlve27a2jcAhtSdk2',
+  'KyERS8Rbf3XkOmdOeF4mNtUWtS12'
+];
 
 FirebaseApp fbApp;
 FirebaseAuth fbAuth;
@@ -83,8 +90,9 @@ Future<void> initializeFirebase() async {
       alert: true, sound: true);
   FirebaseMessaging.onMessage
       .listen(SnaxNotificationsController.handleNotification);
-  FirebaseMessaging.onBackgroundMessage((msg) =>
-      SnaxNotificationsController.handleNotification(msg, background: true));
+  if (Platform.isIOS)
+    FirebaseMessaging.onBackgroundMessage((msg) =>
+        SnaxNotificationsController.handleNotification(msg, background: true));
   FirebaseMessaging.onMessageOpenedApp
       .listen(SnaxNotificationsController.openNotification);
   var initialMessage = await fbMessaging.getInitialMessage();
@@ -149,10 +157,13 @@ class SnaxNotificationsController {
       'timestamp': int.tryParse(message.data['timestamp']) ??
           DateTime.now().millisecondsSinceEpoch
     };
+    if (box.values
+        .map((e) => jsonDecode(e)["data"].toString())
+        .contains(message.data.toString())) return;
     //Add to storage
     await box.add(jsonEncode(obj));
     //Add to stream
-    //if (!background) 
+    //if (!background)
     _notificationStream.add(SnaxNotification(obj));
     //await box.close();
     //Delete from server
