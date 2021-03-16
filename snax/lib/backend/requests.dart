@@ -84,7 +84,7 @@ class SnaxBackend {
     return await SnaxBackend._queryAllSnacks(
         fbStore
             .collection("snacks")
-            .orderBy("computed_trend", descending: true)
+            .orderBy("score", descending: true)
             .limit(limit),
         forceRefresh);
   }
@@ -132,16 +132,16 @@ class SnaxBackend {
     //Grab the id of the snack type
     String snackTypeId = (doc.get("type") as DocumentReference).id;
     //Get the banner
-    String bannerUrl;
-    try {
-      bannerUrl = await fbStorage
-          .ref()
-          .child("snacks-banners")
-          .child(doc.id + ".png")
-          .getDownloadURL();
-    } catch (error) {
-      // fetch image error
-    }
+    // String bannerUrl;
+    // try {
+    //   bannerUrl = await fbStorage
+    //       .ref()
+    //       .child("snacks-banners")
+    //       .child(doc.id + ".png")
+    //       .getDownloadURL();
+    // } catch (error) {
+    //   // fetch image error
+    // }
     //Return the snack
     return SnackItem(
         doc.get("name"),
@@ -163,7 +163,7 @@ class SnaxBackend {
         doc.data()["computed_ratings"],
         doc.data()["computed_trend"],
         snackImageURL(doc.id),
-        banner: bannerUrl);
+        banner: snackBannerImageURL(doc.id));
   }
 
   // Private function for getting list of snacks with a sort and limit
@@ -196,16 +196,16 @@ class SnaxBackend {
       //Grab the id of the snack type
       String snackTypeId = (doc.get("type") as DocumentReference).id;
       //Get banner
-      String bannerUrl;
-      try {
-        bannerUrl = await fbStorage
-            .ref()
-            .child("snacks-banners")
-            .child(doc.id + ".png")
-            .getDownloadURL();
-      } catch (error) {
-        // fetch image error
-      }
+      // String bannerUrl;
+      // try {
+      //   bannerUrl = await fbStorage
+      //       .ref()
+      //       .child("snacks-banners")
+      //       .child(doc.id + ".png")
+      //       .getDownloadURL();
+      // } catch (error) {
+      //   // fetch image error
+      // }
       //Return the snack
       snacks.add(SnackItem(
           doc.get("name"),
@@ -227,7 +227,7 @@ class SnaxBackend {
           doc.data()["computed_ratings"],
           doc.data()["computed_trend"],
           snackImageURL(doc.id),
-          banner: bannerUrl));
+          banner: snackBannerImageURL(doc.id)));
     }
     Cache.add(query.parameters.toString(), snacks);
     //Return the mapped data
@@ -238,7 +238,15 @@ class SnaxBackend {
     //Not logged in
     if (SnaxBackend.currentUser == null) return false;
     //Check
-    return (await fbStore.collection("snacks").doc(id).collection("ratings").where("uid",isEqualTo: SnaxBackend.currentUser.uid).limit(1).get()).size > 0;
+    return (await fbStore
+                .collection("snacks")
+                .doc(id)
+                .collection("ratings")
+                .where("uid", isEqualTo: SnaxBackend.currentUser.uid)
+                .limit(1)
+                .get())
+            .size >
+        0;
   }
 
   //This random string is being used as an alternative to 'undefined' which doesnt exist in dart
