@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/services.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -521,6 +522,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                         width: 2),
                   ),
                   onPressed: () {
+                    HapticFeedback.mediumImpact();
                     if (this.widget.user.uid == SnaxBackend.currentUser.uid) {
                       Navigator.push(
                         context,
