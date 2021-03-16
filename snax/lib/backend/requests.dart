@@ -84,7 +84,7 @@ class SnaxBackend {
     return await SnaxBackend._queryAllSnacks(
         fbStore
             .collection("snacks")
-            .orderBy("score", descending: true)
+            .orderBy("computed_trend", descending: true)
             .limit(limit),
         forceRefresh);
   }
@@ -630,7 +630,7 @@ class SnaxBackend {
     //Wait for firebase init
     await waitWhile(() => (fbStore == null));
     var query =
-        fbStore.collection("feed").orderBy("trend", descending: true).limit(25);
+        fbStore.collection("feed").orderBy("score", descending: true).limit(25);
     //Check cache before actually fetching
     if (!forceRefresh && Cache.has(query.parameters.toString()))
       return Cache.fetch(query.parameters.toString());
