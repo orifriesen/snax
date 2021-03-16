@@ -14,7 +14,6 @@ import 'accountBottomTabs/secondTab.dart';
 
 import 'package:snax/backend/requests.dart';
 import 'package:snax/helpers.dart';
-import 'package:snax/backend/backend.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
@@ -363,15 +362,23 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                       color: getTheme(context).appBarContrastForText()),
                 ),
                 if (this.widget.user.verified)
-                Padding(
-                  padding: const EdgeInsets.only(left: 4.0),
-                  child: Image.asset("assets/verified.png", color: getTheme(context).appBarContrastForText(),height: 19,),
-                ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 4.0),
+                    child: Image.asset(
+                      "assets/verified.png",
+                      color: getTheme(context).appBarContrastForText(),
+                      height: 19,
+                    ),
+                  ),
                 if (founders.contains(this.widget.uid ?? this.widget.user.uid))
-                Padding(
-                  padding: const EdgeInsets.only(left: 6.0),
-                  child: Image.asset("assets/snax-chip.png", color: getTheme(context).appBarContrastForText(),height: 14,),
-                )
+                  Padding(
+                    padding: const EdgeInsets.only(left: 6.0),
+                    child: Image.asset(
+                      "assets/snax-chip.png",
+                      color: getTheme(context).appBarContrastForText(),
+                      height: 14,
+                    ),
+                  )
               ],
             ),
             SizedBox(height: 5),
@@ -611,11 +618,11 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
   }
 
   //* URL Launcher
-  bioLink(command) async {
-    if (await canLaunch(command)) {
-      await launch(command);
+  bioLink(link) async {
+    if (await canLaunch(link.url)) {
+      await launch(link.url);
     } else {
-      print("Command could not work");
+      print("Link could not work");
     }
   }
 
@@ -645,7 +652,7 @@ class _FutureGlobalAccountPageState extends State<FutureGlobalAccountPage> {
 
   @override
   void initState() {
-    this.userObject = SnaxUser("", "", this.widget.uid, "", 0, 0,false,
+    this.userObject = SnaxUser("", "", this.widget.uid, "", 0, 0, false,
         photo: userImageURL(this.widget.uid),
         userIsFollowing: this.widget.isFollowing);
     super.initState();
