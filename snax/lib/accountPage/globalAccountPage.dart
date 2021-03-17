@@ -522,7 +522,6 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                         width: 2),
                   ),
                   onPressed: () {
-                    HapticFeedback.mediumImpact();
                     if (this.widget.user.uid == SnaxBackend.currentUser.uid) {
                       Navigator.push(
                         context,
@@ -547,6 +546,7 @@ class _GlobalAccountPageState extends State<GlobalAccountPage>
                       });
                       this.isFollowing = true;
                       this.widget.user.followerCount++;
+                      HapticFeedback.mediumImpact();
                     }
                     this.setState(() {});
                   },
